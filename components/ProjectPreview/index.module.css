@@ -1,0 +1,49 @@
+.project{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  overflow: hidden;
+  border: solid 2px rgba(27, 30, 50, 0.089);
+}
+
+.project header{
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.project section{
+  width: 100%;
+  overflow: hidden;
+}
+
+.project section img{
+  width: 100%;
+  transform: scale(1.1);
+  object-fit: cover;
+}
+
+.project:hover section img{
+  transform: scale(1.5);
+}
+
+.project footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.project footer div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 15px 0;
+  background: rgba(255, 255, 255, 0.74);
+  color: black;
+  font-weight: bolder;
+}
+
+.project footer div:first-child{
+  border-right: solid 1px rgba(138, 138, 138, 0.2);
+}

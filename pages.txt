@@ -1,0 +1,69 @@
+PARCOURS UTILISATEUR : 
+  
+  Lorsqu'un utilisateur attérit sur notre site, il se retrouve sur la page d'accueil.
+  S'affiche devant lui une suite de popups, qui servent à lui présenter le produit
+
+  Une fois le défilé de popup achevé, ou interrompu par l'utilisateur, il peut voir sur la page d'accueil tous les projets en cours.
+  Il peut alors cliquer sur un de ses projets pour en voir les détails.
+  À ce stade, il est limité par les informations qu'il peut afficher, et ne peut voir que :
+  - le nom du projet,
+  - le status du projet
+  - l'offre de base du projet
+  - le nombre de participants,
+  - le niveau de complétion (le rapport entre l'offre de base, et les offres de participants)
+
+  À ce stade également, il peut voir les pages de profile des autres utilisateurs, ainsi que le nombre de projets mené, en cours de ces utilisateurs.
+
+  Naturellement, il pourrait être intéressé par un des projets, ou vouloir suivre un utilisateur en particulier. Dans ce cas, il peut cliquer sur "rejoindre" ou "suivre" le projet ou juste "suivre" l'utilisateur X.
+
+  À ce stade, l'utilisateur n'est pas encore connecté. Il est donc redirigé vers la page de connexion.
+  Les options de connexion sont les suivantes :
+  - google
+  - facebook
+  - email et infos simples
+  Dans le cas où l'utilisateur opte pour une connexion par facebook ou google, à la suite de la création de compte, on lui demande dans un popup les informations supplémentaires. Il peut les ignorer.
+
+  Une fois le compte créé, il est redirigé vers la page du projet dans lequel il se trouvait quelques minutes plus tôt. 
+  Si le projet n'est pas privé, à ce stade, il peut voir
+  - les détails du produit du projet
+  - les membres du projet
+  - leurs participations respectives de chaque membre
+
+  Afin d'intégrer un projet, il lui faudra donner la participation qu'il souhaite apporter, en nombre d'unités.
+
+  Une fois le projet intégré, il peut voir tous les participants et leurs offres respectives
+
+  lorsqu'un projet est achevé, et son but atteint, l'auteur peut le classer archivé.
+
+  Lors de la création d'un projet de groupage, l'auteur peut partager ( de manière directe ) le projet sur ses réseaux sociaux, afin d'attirer plus de gens.
+  À la fin de la création de son projet, il lui est recommandé, via un pop up, de partager sur différents médias sociaux (page, groupe, compte facebook, whatsapp business).
+
+voici les pages que j'envisage pour la plateforme :
+
+- accueil
+  * Créez un projet d'achat groupé
+  * établisser votre réseau (remmener vos clients)
+  * élargissez votre réseau (rejoignez des projets d'autres vendeurs, élargissez votre clientelle)
+- projets
+- projet
+- profile
+- auth
+- compte :
+  * infos générales
+  * projets
+  * paramètres de secu
+  * archives
+- blog (after)
+- réseau
+
+container :
+
+- popup wrapper
+- liste de projets
+- auth wrapper
+
+component :
+
+- element de projets
+- boutton
+- input
