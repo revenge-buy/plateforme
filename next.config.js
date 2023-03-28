@@ -1,6 +1,12 @@
 /** @type {import('next').NextConfig} */
+const repo = 'revenge-buy/plateforme'
+const assetPrefix = `/${repo}/`
+const basePath = `/${repo}`
+
 const nextConfig = {
   reactStrictMode: true,
+  assetPrefix: assetPrefix,
+  basePath: basePath,
   images: {
     remotePatterns: [
       {
