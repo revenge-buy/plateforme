@@ -8,13 +8,49 @@
 }
 
 .project header{
-  padding: 5px;
+  padding: 10px 5px;
   margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.infos{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+}
+
+.infos img{
+  border-radius: 50%;
+  border: solid goldenrod 2px;
+}
+
+.infos h4:hover{
+  text-decoration: underline;
+}
+
+.infos p{
+  color: rgb(195, 195, 207);
+  font-weight: 700;
+}
+
+.suppInfos span{
+  color: goldenrod;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  border: solid 0.5px;
+  border-radius: 50%;
 }
 
 .project section{
   width: 100%;
   overflow: hidden;
+  position: relative;
 }
 
 .project section img{
@@ -27,6 +63,42 @@
   transform: scale(1.5);
 }
 
+.project section div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(27, 30, 50, 0.4);
+  color: rgb(255, 255, 255);
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  backdrop-filter: blur(5px);
+  opacity: 0;
+}
+
+.project section div h4{
+  text-transform: uppercase;
+  font-size: 1.3rem;
+}
+
+.project section div p{
+  color: rgb(225, 225, 240);
+  font-weight: 500;
+  border: solid;
+  padding: 5px 10px;
+  border-radius: 3px;
+}
+
+.project:hover section div{
+  opacity: 1;
+}
+
 .project footer {
   display: flex;
   justify-content: center;
@@ -35,10 +107,11 @@
 
 .project footer div{
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 15px 0;
+  padding: 10px 0;
   background: rgba(255, 255, 255, 0.74);
   color: black;
   font-weight: bolder;

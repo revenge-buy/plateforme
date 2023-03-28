@@ -40,6 +40,16 @@ input{
   stroke: unset;
 }
 
+svg {
+  font-size: 1.5rem;
+  color: rgb(27, 30, 50);
+  /* border: solid; */
+}
+
+img{
+  object-fit: cover;
+}
+
 .page{
   margin-bottom: 60px;
 }

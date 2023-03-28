@@ -1,10 +1,15 @@
 import { ProjectPreview } from "@/components"
 import style from "./index.module.css"
 
-export default function List() {
+export default function List({ projects }) {
+
   return (
     <div className={style.list}>
-      <ProjectPreview />
+      {
+        projects.map(({ _id, creator, name, _createdAt, productImage }, index) => 
+          <ProjectPreview  _id={_id} creator={creator} name={name} _createdAt={_createdAt} productImage={productImage}  key={index} />
+        )
+      }
     </div>
   )
 }

@@ -3,14 +3,20 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  background-color: rgb(27, 30, 50);
-  color: rgb(195, 195, 207);
+  padding: 20px 40px;
+  /* background-color: rgb(27, 30, 50);*/
+  color: rgb(27, 30, 50);
+  /* color: rgb(195, 195, 207); */
   max-height: 70px;
   min-height: 70px;
   position: relative;
+  box-shadow: 0 1px 3px rgb(195, 195, 207);
 }
 
+.headerLogo{
+  display: flex;
+  align-items: flex-start;
+}
 
 
 /* .header nav ul {

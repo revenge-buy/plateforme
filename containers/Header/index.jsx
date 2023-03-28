@@ -1,8 +1,11 @@
 import { useState } from "react"
+import { TbHome } from "react-icons/tb"
+import { BiSearch } from "react-icons/bi"
 
 import Logo from "@/components/Logo/Logo"
 
 import style from './index.module.css'
+import Link from "next/link"
 
 export default function Header() {
   const [searching, setSearching] = useState(false) 
@@ -10,8 +13,11 @@ export default function Header() {
 
   return (
     <header className={style.header}>
-      <Logo />
-      <div onClick={() => setSearching(true)}>Search</div>
+      <Link className={style.headerLogo} href="/">
+        <TbHome />
+        <Logo />
+      </Link>
+      <div onClick={() => setSearching(true)}><BiSearch /></div>
       {searching &&
         <div className={style.searchResults}>
           <form action="">

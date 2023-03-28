@@ -1,5 +1,7 @@
 import Link from "next/link"
 import { useState } from "react";
+import { GiShinyPurse } from "react-icons/gi"
+import { BiMenuAltLeft, BiUser } from "react-icons/bi"
 
 import style from './index.module.css'
 
@@ -33,25 +35,21 @@ export default function Footer() {
     <footer className={style.footer}>
       <nav>
         <ul>
-          <li><Link href='/'>Home</Link> </li>
-          <li><Link href='/projects'>projets</Link></li>
-          <li class={style.toggleMenu}>
+          <li><Link href='/projects'><BiMenuAltLeft /></Link></li>
+          <li><Link href='/updates'><GiShinyPurse /></Link> </li>
+          {/* <li className={style.toggleMenu}>
             <button>profile</button>
             <menu>
               <h4>menu</h4>
-              <div>
-                {/* <span></span><span></span><span></span> */}
-              </div>
+              <div />
             </menu>
-          </li>
-          <li class={style.toggleMenu}>
-            <button>Compte</button>
+          </li> */}
+          <li className={style.toggleMenu}>
+            <button><BiUser /></button>
             <menu>
               <Link href='/account'>Paramètres</Link>
-              <p>mode</p>
-              <div>
-                <span className={style.narrowSpan}></span><span className={style.narrowSpan}></span><span className={style.narrowSpan}></span>
-              </div>
+              <Link href='/account'>Profile</Link>
+              <div />
             </menu>
           </li>
         </ul>

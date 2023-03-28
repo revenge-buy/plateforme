@@ -40,7 +40,10 @@ PARCOURS UTILISATEUR :
 
 voici les pages que j'envisage pour la plateforme :
 
+- shadow testing pages :
+  - page comming soon : explique au visiteurs les fonctionnalités futures de la ola plateforme et comment suivre les mises à jours régulières
 - accueil
+  * hero :" réservez votre place, c'est gratuit ! " qui redirige vers la page de "coming soon"
   * Créez un projet d'achat groupé
   * établisser votre réseau (remmener vos clients)
   * élargissez votre réseau (rejoignez des projets d'autres vendeurs, élargissez votre clientelle)

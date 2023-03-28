@@ -9,19 +9,23 @@
   padding: 0;
   min-width: max-content;
   align-items: center;
-  transform: translate(0, 5px);
+  /* transform: translate(0, 5px); */
+  border: solid 1px;
+  padding: 2px 10px;
+  border-radius: 20px;
 }
 
 .logo h1{
-  font-size: 24px;
-  color: goldenrod;
+  font-size: 18px;
+  /* color: goldenrod; */
+  text-shadow: 0 0 5px rgb(27, 30, 50) ;
 }
 
 .logo h1 span{
-  color: white;
-  display: block;
-  transform: translate(10px, -15px);
-  opacity: 0.6;
+  color: rgb(27, 30, 50);  /* display: block; */
+  /* transform: translate(10px, -15px); */
+  /* opacity: 0.9; */
+  text-shadow: none;
 }
 
 .logo h1 p{
