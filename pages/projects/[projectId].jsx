@@ -2,6 +2,7 @@ import Head from 'next/head'
 import styles from '@/styles/Home.module.css'
 // import Metas from '@/components/Metas'
 
+
 // const metas = {
 //   title: "Ensemble Fendi Femme"
 // }
