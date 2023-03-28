@@ -1,7 +1,7 @@
 import styles from "./index.module.css"
 import Image from "next/image"
-import { RiUserFollowFill } from 'react-icons/ri'
-import { MdJoinInner } from 'react-icons/md'
+// import { RiUserFollowFill } from 'react-icons/ri'
+// import { MdJoinInner } from 'react-icons/md'
 import Link from "next/link"
 
 export default function ProjectPreview({ _id, creator, name, _createdAt, productImage }) {
@@ -40,11 +40,11 @@ export default function ProjectPreview({ _id, creator, name, _createdAt, product
       </section>
       <footer>
         <div>
-          <RiUserFollowFill />
+          {/* <RiUserFollowFill /> */}
           <p>Suivre</p> 
         </div>
         <div>
-          <MdJoinInner />
+          {/* <MdJoinInner /> */}
           <p>Rejoindre</p>
         </div>
       </footer>

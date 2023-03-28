@@ -1,12 +1,12 @@
 import Link from "next/link"
 import { useState } from "react";
-import { GiShinyPurse } from "react-icons/gi"
-import { BiMenuAltLeft, BiUser } from "react-icons/bi"
+// import { GiShinyPurse } from "react-icons/gi"
+// import { BiMenuAltLeft, BiUser } from "react-icons/bi"
 
 import style from './index.module.css'
 
 export default function Footer() {
-  const [toggleMenu, setToggleMenu] = useState(false)
+  // const [toggleMenu, setToggleMenu] = useState(false)
 
    // checking if code is from client or server side
   let WINDOW = {};
@@ -35,8 +35,14 @@ export default function Footer() {
     <footer className={style.footer}>
       <nav>
         <ul>
-          <li><Link href='/projects'><BiMenuAltLeft /></Link></li>
-          <li><Link href='/updates'><GiShinyPurse /></Link> </li>
+          <li><Link href='/projects'>
+            menu
+            {/* <BiMenuAltLeft /> */}
+          </Link></li>
+          <li><Link href='/updates'>
+            updates
+            {/* <GiShinyPurse /> */}
+          </Link> </li>
           {/* <li className={style.toggleMenu}>
             <button>profile</button>
             <menu>
@@ -45,7 +51,10 @@ export default function Footer() {
             </menu>
           </li> */}
           <li className={style.toggleMenu}>
-            <button><BiUser /></button>
+            <button>
+              compte
+              {/* <BiUser /> */}
+            </button>
             <menu>
               <Link href='/account'>Paramètres</Link>
               <Link href='/account'>Profile</Link>
