@@ -34,7 +34,7 @@ export default function ProjectPreview({ _id, creator, name, _createdAt, product
         />
         <Link href={`/projects/${_id}`}>
           <div>
-            <p>"{ name }"</p>
+            <p>{`" ${name} "`}</p>
           </div>
         </Link>
       </section>
