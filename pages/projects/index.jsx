@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 import Metas from '@/components/Metas'
 import { List } from '@/containers'
 
