@@ -19,7 +19,7 @@ export default function Header() {
       </Link>
       <div onClick={() => setSearching(true)}>
         <BiSearch />
-        search
+        {/* search */}
       </div>
       {searching &&
         <div className={style.searchResults}>
