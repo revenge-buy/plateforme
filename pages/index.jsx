@@ -6,11 +6,11 @@ import { Hero, Steps, Partners } from '@/containers/Home'
 import styles from '@/styles/Home.module.css'
 
 const metas = {
-  title: 'Revenge-Buy, Achats groupés, maximiser les profits.',
+  title: 'Revenge-Buy',
   metas: [
     {
       name: "description",
-      content: 'Revenge-Buy, Achats groupés, maximiser les profits.'
+      content: 'Revenge-Buy, Économisez en faisant vos achats en groupe'
     }
   ]
 }
@@ -21,8 +21,8 @@ export default function Home() {
       <Metas title={metas.title} metas={metas.metas} />
       <main className={styles.main}>
         <Hero />
-        <Steps />
-        <Partners />
+        {/* <Steps />
+        <Partners /> */}
       </main>
     </div>
   )

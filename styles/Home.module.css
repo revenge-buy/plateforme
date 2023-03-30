@@ -1,4 +1,9 @@
-.home .main{
+.home{
+  /* background-color: var(--color-dark_blue); */
+  padding-bottom: 0;
+}
+
+.main{
   display: flex;
   flex-direction: column;
   gap: 50px;
@@ -7,16 +12,71 @@
 
 .hero{
   width: 100%;
-  height: calc(100vh - 130px);
-  background-color: rgb(11, 12, 20);
+  height: calc(100vh - 70px);
+  max-height: calc(100vh - 70px);
+  background: linear-gradient(-45deg, white, rgb(230, 230, 230), rgb(199, 199, 199), rgb(161, 161, 161),
+    rgb(124, 124, 124));
+  background-size: 1000% 1000%;
+  animation: gradient 10s ease infinite;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  flex-direction: column;
+  color: var(--color-dark_blue);
   text-align: center;
+  gap: 20px;
 }
 
 .hero h2{
-  font-size: 48px;
-  text-align: justify;
+  font-size: 36px;
+  text-align: center;
+}
+
+.hero p{
+  font-weight: 500;
+}
+
+.hero div {
+  display: flex;
+  gap: 10px;
+}
+
+.hero div button{
+  /* border: solid goldenrod 2px; */
+  padding: 10px 25px;
+  border-radius: 5px;
+  /* color: goldenrod; */
+  color: white;
+  font-weight: bold;
+  background-color: var(--color-dark_blue);
+}
+
+.hero div button:last-child{
+  background-color: white;
+  color: var(--color-dark_blue)
+}
+
+.hero div button:hover{
+  box-shadow: 5px 5px 10px var(--color-dark_blue);
+}
+/* body {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+  height: 100vh;
+} */
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
