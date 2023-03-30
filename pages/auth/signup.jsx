@@ -31,7 +31,7 @@ export default function Login() {
   const router = useRouter()
   
   function checkTag() {
-    console.log(process.env.NEXT_SANITY_ID)
+    console.log(process.env.NEXT_PUBLIC_SANITY_ID)
     client.fetch(
       `
         * [_type == "seller" && userTag == ${user.userTag}]{
