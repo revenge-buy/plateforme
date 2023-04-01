@@ -1,6 +1,10 @@
 .home{
   /* background-color: var(--color-dark_blue); */
   padding-bottom: 0;
+  height: 100vh;
+  max-height: 100vh;
+  border: none;
+  margin: 0;
 }
 
 .main{
@@ -8,14 +12,16 @@
   flex-direction: column;
   gap: 50px;
   text-align: center;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
 .hero{
   width: 100%;
-  height: calc(100vh - 70px);
-  max-height: calc(100vh - 70px);
-  background: linear-gradient(-45deg, white, rgb(230, 230, 230), rgb(199, 199, 199), rgb(161, 161, 161),
-    rgb(124, 124, 124));
+  height: calc(100vh);
+  background: linear-gradient(-45deg, white, rgb(230, 230, 230), rgb(199, 199, 199), rgb(161, 161, 161),rgb(124, 124, 124));
   background-size: 1000% 1000%;
   animation: gradient 10s ease infinite;
   height: 100vh;

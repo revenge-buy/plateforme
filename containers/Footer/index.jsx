@@ -5,32 +5,12 @@ import { BiMenuAltLeft, BiUser } from "react-icons/bi"
 
 import style from './index.module.css'
 
+var user = localStorage.getItem("rb-user") ?
+  JSON.parse(localStorage.getItem("rb-user")) :
+  {}
+
 export default function Footer() {
-  // const [toggleMenu, setToggleMenu] = useState(false)
 
-   // checking if code is from client or server side
-  let WINDOW = {};
-
-  if (typeof window !== "undefined") {
-    // When code is on client-side. So we need to use actual methods and data.
-    WINDOW = window;
-  } else {
-    // When code is on server-side.
-
-    // Other component are mostly server-side and need to match their logic and check their variable with other server-side components and logics.
-    // So following code will be use for them to pass the logic checking.
-    WINDOW = {
-      document: {
-        location: {},
-      },
-      localStorage: {
-        getItem :() => {},
-        setItem :() => {}
-      },
-    };
-  }
-  WINDOW.localStorage.setItem('rb-user', 'durin')
-  const user = WINDOW.localStorage.getItem('rb-user')
   return (
     <footer className={style.footer}>
       <nav>
@@ -51,15 +31,20 @@ export default function Footer() {
             </menu>
           </li> */}
           <li className={style.toggleMenu}>
-            <button>
-              {/* compte */}
-              <BiUser />
-            </button>
-            <menu>
-              <Link href='/account'>Paramètres</Link>
-              <Link href='/account'>Profile</Link>
-              <div />
-            </menu>
+            {
+              user?.email ? 
+              <>
+                <button>
+                  {/* compte */}
+                  <BiUser />
+                </button>
+                <menu>
+                  <Link href='/account'>Paramètres</Link>
+                  <Link href='/account'>Profile</Link>
+                  <div />
+                </menu>
+              </> : <Link className={style.loginBtn} href="/auth">Connexion</Link>
+            }
           </li>
         </ul>
       </nav>

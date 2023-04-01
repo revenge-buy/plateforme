@@ -27,8 +27,8 @@ export default function ProjectPreview({ _id, creator, name, _createdAt, product
       </header>
       <section>
         <Image
-          width={200}
-          height={200}
+          width={400}
+          height={300}
           alt={ name }
           src={productImage}
         />

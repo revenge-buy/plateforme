@@ -60,7 +60,7 @@ export async function getServerSideProps({ req, res }) {
       }
     }
   } catch (error) {
-    console.log({ error })
+    // console.log({ error })
     return {
       props: {
         allProjects: []

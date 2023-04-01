@@ -21,8 +21,8 @@ export default function Login() {
   const [user, setUser] = useState({
     email: "",
     password: "",
-    incPassword: "",
     message: "",
+    // loading: "false"
   })
 
   const router = useRouter()
@@ -30,27 +30,28 @@ export default function Login() {
   function getUser(e) {
     e.preventDefault();
 
+    // setUser((user) => ({ ...user, loading: true }))
     client.fetch(
       `
         * [_type == "seller" && email == "${user.email}"]{
           password,
-          firstName
+          firstName,
         }
       `
     )
       .then((resp) => {
         console.log(resp)
-        setUser((user) => ({ ...user, incPassword: resp[0]?.password}))
+        
         if (resp[0]?.password == user.password) {
           let rbUser = {
+            firstName: resp[0]?.firstName,
             email: user.email,
-            firstName: resp[0].firstName
           }
           localStorage.setItem("rb-user", JSON.stringify(rbUser));
           router.push("/projects");
-
         } else {
           setUser((user) => ({ ...user, message: 'Mot de passe incorrecte' }))
+          alert(user.message)
         }
         // return {
         //   props: {
@@ -85,6 +86,7 @@ export default function Login() {
               <input className='input' name="email" type="email" placeholder='Entrez votre email' value={user.email} onChange={handleChange} />
               <input className='input' name="password" type="password" placeholder='Entrez votre mot de passe' value={user.password} onChange={handleChange} />
               {user.message !== "" && <p>{user.message}</p>}
+
               <input className='submit' type="submit" value="Connexion" onClick={getUser} />
               <Link href='/auth/signup'>Créer un compte</Link>
             </form>

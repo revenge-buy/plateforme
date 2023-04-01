@@ -17,7 +17,7 @@ const metas = {
 
 export default function Home() {
   return (
-    <div className={`page ${styles.home}`}>
+    <div className={`${styles.home} page`}>
       <Metas title={metas.title} metas={metas.metas} />
       <main className={styles.main}>
         <Hero />
