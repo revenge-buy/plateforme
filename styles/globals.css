@@ -77,6 +77,10 @@ img{
   padding: 15px 25px;
 }
 
+.btn{
+  cursor: pointer;
+}
+
 .submit {
   width: 300px;
   border: solid rgb(195, 195, 207) 1px;

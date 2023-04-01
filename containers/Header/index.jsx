@@ -17,7 +17,7 @@ export default function Header() {
         <TbHome />
         <Logo />
       </Link>
-      <div onClick={() => setSearching(true)}>
+      <div className="btn" onClick={() => setSearching(true)}>
         <BiSearch />
         {/* search */}
       </div>
@@ -25,7 +25,7 @@ export default function Header() {
         <div className={style.searchResults}>
           <form action="">
             <input value={searchKey} onChange={(e) => setSearchKey(e.target.value)} type="text" name="search" placeholder="search" />
-            <div onClick={() => setSearching(false)}>
+            <div className="btn" onClick={() => setSearching(false)}>
               <span></span>
               <span></span>
             </div>
