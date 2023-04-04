@@ -71,6 +71,72 @@ img{
   padding: 20px 40px;
 }
 
+.form-step-header{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 60px;
+}
+
+.form-step-header h3{
+  display: flex;
+  font-size: 15px;
+  align-items: center;
+  gap: 15px;
+}
+
+.form-step-header h3 p{
+  color: white;
+  background-color: var(--color-dark_blue);
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 30px;
+}
+
+.form-step-header h3 span{
+  font-size: 12px;
+  font-style: italic;
+  color: #777;
+}
+
+.form-step-header > p{
+  font-size: 13px;
+  border-bottom: 2px var(--color-dark_blue) solid;
+  padding-bottom: 4px;
+  font-weight: 500;
+}
+
+textarea{
+  font-family: inherit;
+  max-width: 100%;
+  min-width: 100%;
+}
+
+.input-set{
+  display: flex;
+  flex-direction: column;
+  margin: 20px 0;
+  gap: 7px;
+  align-items: flex-start;
+}
+
+.input-set label{
+  font-weight: bolder;
+  font-size: 14px;
+  /* color:#666; */
+}
+
+.input-set > p{
+  font-size: 10px;
+  text-align: left;
+  font-weight: 500;
+}
+
 .input{
   width: 300px;
   border: solid rgb(195, 195, 207) 1px;
@@ -83,6 +149,7 @@ img{
 
 .submit {
   width: 300px;
+  max-width: 100%;
   border: solid rgb(195, 195, 207) 1px;
   background: linear-gradient(45deg, black, var(--color-dark_blue)) ;
   color: white;
@@ -91,6 +158,47 @@ img{
   font-weight: 900;
 }
 
+.submit__gold{
+  background: goldenrod;
+}
+
 .submit:hover{
   opacity: 0.9;
+}
+
+.flexed{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-toggler{
+  width: 50px;
+  height: 20px;
+  border-radius: 60px;
+  border: solid 1px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  padding: 3px;
+  cursor: pointer;
+  transition: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.input-toggler__active{
+  background-color: goldenrod;
+  border: unset;
+
+}
+
+.input-toggler span{
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 15px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+  background-color: white;
+}
+
+.input-toggler__active span{
+  transform: translate(28px);
 }

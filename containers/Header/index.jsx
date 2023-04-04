@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { TbHome } from "react-icons/tb"
-import { BiSearch } from "react-icons/bi"
+import { BiSearch, BiPlus } from "react-icons/bi"
 
 import Logo from "@/components/Logo/Logo"
 
@@ -17,9 +17,15 @@ export default function Header() {
         <TbHome />
         <Logo />
       </Link>
-      <div className="btn" onClick={() => setSearching(true)}>
-        <BiSearch />
-        {/* search */}
+      <div className={`flexed ${style.buttons}`} >
+        <div className={style.add}>
+          <BiPlus />
+          <Link href="/projects/new">Ajouter Un projet</Link>
+        </div>
+        <div className="btn" onClick={() => setSearching(true)}>
+          <BiSearch />
+          {/* search */}
+        </div>
       </div>
       {searching &&
         <div className={style.searchResults}>

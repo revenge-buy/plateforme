@@ -25,6 +25,52 @@
   align-items: flex-start;
 }
 
+.add{
+  background-color: goldenrod;
+  color: white;
+  padding: 10px calc(100vw/60);
+  font-weight: bolder;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.add svg{
+  fill: white;
+  font-size: 15px;
+}
+
+@media screen and (max-width: 400px) {
+  /* .header{
+    align-items: flex-end;
+  } */
+
+  .buttons{
+    align-items: flex-start;
+  }
+
+  .add a{
+    display: none;
+  }
+
+  .add{
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .add svg{
+    font-size: 2rem;
+  }
+}
+
 
 /* .header nav ul {
   display: flex;
