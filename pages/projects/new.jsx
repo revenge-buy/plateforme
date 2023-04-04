@@ -8,6 +8,17 @@ import { useState } from "react";
 
 // const user = localStorage.getItem("rb-user");
 
+
+const metas = {
+  title: 'Créer un projet',
+  metas: [
+    {
+      name: "description",
+      content: 'Créez un projet en quelques cliques et gérez facilement vos commandes groupés.'
+    }
+  ]
+}
+
 export default function NewProjects() {
   const [step, setStep] = useState(0)
 
@@ -26,16 +37,6 @@ export default function NewProjects() {
     url: "",
     quantity: NaN
   })
-
-  const metas = {
-    title: 'Créer un projet',
-    metas: [
-      {
-        name: "description",
-        content: 'Créez un projet en quelques cliques et gérez facilement vos commandes groupés.'
-      }
-    ]
-  }
 
   function handleProjectDef(e){
     e.preventDefault();
