@@ -9,7 +9,7 @@ import { useState } from "react";
 // const user = localStorage.getItem("rb-user");
 
 export default function NewProjects() {
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(0)
 
   const [project, setProject] = useState({
     name: "",
