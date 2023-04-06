@@ -15,8 +15,8 @@ export default function Project() {
         <title></title>
         <meta name="description" content="page de compte" />
       </Head>
-      <main className={styles.main}>
-        <h1>projet</h1>
+      <main className={`page ${styles.main}`}>
+        <h1><u>Votre projet</u></h1>
       </main>
     </>
   )

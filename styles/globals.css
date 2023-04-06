@@ -202,3 +202,48 @@ textarea{
 .input-toggler__active span{
   transform: translate(28px);
 }
+
+.popup{
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.521);
+  backdrop-filter: blur(15px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-header{
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.popup-header svg{
+  color: white;
+  font-size: 1.5rem;
+}
+
+.popup-box{
+  padding: 20px;
+  background-color: white;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  max-width: 85%;
+  text-align: center;
+  gap: 15px;
+}
+
+.popup-box p{
+  font-size: 12px;
+  font-weight: 500;
+}
