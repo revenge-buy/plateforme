@@ -18,10 +18,10 @@ export default function Header() {
         <Logo />
       </Link>
       <div className={`flexed ${style.buttons}`} >
-        <div className={style.add}>
+        <Link href="/projects/new" className={style.add}>
           <BiPlus />
-          <Link href="/projects/new">Ajouter Un projet</Link>
-        </div>
+          <p>Ajouter Un projet</p>
+        </Link>
         <div className="btn" onClick={() => setSearching(true)}>
           <BiSearch />
           {/* search */}
