@@ -1,3 +1,5 @@
+import { CgClose } from 'react-icons/cg'
+
 import client from "@/api/client";
 import Metas from "@/components/Metas";
 import AuthBox from "@/containers/Auth/AuthBox";
@@ -20,6 +22,13 @@ const metas = {
 }
 
 export default function NewProjects() {
+  const [fastSignOn, setFastSignOn] = useState(false)
+  const [fastUser, setFastUser] = useState({
+    email: "",
+    password: "",
+    firstName: ""
+  })
+
   const [step, setStep] = useState(0)
 
   const [project, setProject] = useState({
@@ -40,7 +49,21 @@ export default function NewProjects() {
 
   function handleProjectDef(e){
     e.preventDefault();
-    project.name.trim() !== "" ? setStep(1) : alert("Veuillez remplir le nom de votre projet !")
+
+    // checking fields values
+    if(project.name.trim() !== "") {
+      // taking user identity
+      const user = localStorage.getItem("rb-user");
+
+      // checking if user exists
+      if(user) {
+        setStep(1)
+      } else {
+        setFastSignOn(true)
+      }
+    } else {
+      alert("Veuillez remplir le nom de votre projet !");
+    }
   }
 
   function handleChange(e) {
@@ -48,50 +71,148 @@ export default function NewProjects() {
     setProduct((prod) => ({ ...prod, [name]: value }));
   }
 
+  function handleChangeUser(e) {
+    const { name, value } = e.target;
+    setFastUser((prod) => ({ ...prod, [name]: value.trim() }));
+  }
+
+  async function handleFastSign(e) {
+    e.preventDefault();
+
+    try {
+      const resp = await client.create(
+        {
+          _type: "seller",
+          ...fastUser
+        }
+      )
+      if (resp) {
+        let rbUser = {
+          email: resp.email,
+          firstName: resp.firstName
+        } 
+        localStorage.setItem("rb-user", JSON.stringify(rbUser));
+        alert(`Salut ${resp.firstName} !\nCompte créé avec succès`);
+        setFastSignOn(false)
+        setStep(1)
+        // router.push("/projects");
+      }
+    } catch (error) {
+      alert("Une erreur s'est produite lors de la création de votre compte !")
+      console.log({ error })
+    }
+  }
+
+
   async function handleSubmit(e) {
     e.preventDefault()
 
-    // if(
-    //   product.description !== "",
-    //   product.realUnitValue !== NaN &&
-    //   product.projectUnitValue !== NaN &&
-    //   product.url !== "" &&
-    //   product.quantity !== NaN
-    // ) {
-      // try {
-      //   const resp = await client.create(
-      //     {
-      //       _type: "product",
-      //       email: user.email.trim(),
-      //       password: user.password.trim(),
-      //       firstName: user.firstName.trim(),
-      //       lastName: user.lastName.trim(),
-      //       phone: parseInt(user.phone),
-      //       userTag: user.userTag.trim()
-      //     }
-      //   )
-      //   if (resp) {
-      //     let rbUser = {
-      //       email: resp.email,
-      //       firstName: resp.firstName
-      //     } 
-      //     localStorage.setItem("rb-user", JSON.stringify(rbUser));
-      //     router.push("/projects");
-      //   }
-      // } catch (error) {
-      //   alert("Une erreur s'est produite lors de la création de votre compte !")
-      //   console.log({ error })
-      // }
-      alert("Cette fonctinnalité n'est pas encore complète. \nDate maximale prévue de complétion : 06 Avril 2023 !\nMerci d'utiliser Revenge !")
-    // } else {
-    //   alert("Aucun champ ne doit être vide, et les valeurs numériques ne doivent pas être nulles ( > 0  )!")
-    // }
+    const rbUser = JSON.parse(localStorage?.getItem("rb-user"));
+    console.log({product})
+    if(
+      product.description !== "" &&
+      product.realUnitValue !== NaN &&
+      product.projectUnitValue !== NaN &&
+      product.url !== "" &&
+      product.quantity !== NaN
+    ) {
+      try {
+        const user = await client.fetch(
+          `
+            * [_type == "seller" && email == "${rbUser.email}"]{
+              _id
+            }
+          `
+        );
+
+        if(user[0]._id) {
+          console.log(user[0]._id);
+          try {
+            const newProject = await client.create(
+              {
+                _type: "project",
+                creator: {
+                  _type: 'reference',
+                  _ref: user[0]._id
+                },
+                ...project,
+                status: "active"
+              }
+            )
+            if (newProject) {
+              console.log({newProject})
+              try {
+                const newProduct = await client.create(
+                  {
+                    _type: "product",
+                    project: {
+                      _type: 'reference',
+                      _ref: newProject._id
+                    },
+                    title: product.title.trim(),
+                    // image: "",
+                    description: product.description.trim(),
+                    // source: "",
+                    realUnitValue: parseFloat(product.realUnitValue),
+                    projectUnitValue: parseFloat(product.projectUnitValue),
+                    url: product.url.trim(),
+                    quantity: parseInt(product.quantity),
+                    discount: 0
+                  }
+                )
+                if(newProduct) {
+                  console.log({newProduct});
+                  location.replace(`/projects/${newProject._id}`);
+                }
+              } catch (error) {
+                alert("Une erreur est survenue lors de l'ajout du produit.\nVeuillez réessayer plus tard ou vérifier vos informations !");
+                console.log("prod pb")
+              }
+            } else {
+              alert("Une erreur est survenue lors de la création du projet")
+            }
+          } catch (error) {
+            alert("Une erreur s'est produite lors de l'initialisation du projet !")
+            console.log({ error })
+            console.log("proj pb")
+          }
+        }
+
+      } catch(error) {
+        console.log({error});
+        console.log("user pb");
+      }
+
+      // alert("Cette fonctinnalité n'est pas encore complète. \nDate maximale prévue de complétion : 06 Avril 2023 !\nMerci d'utiliser Revenge !")
+    } else {
+      alert("Aucun champ ne doit être vide !")
+    }
   }
 
   return (
     <div className="page">
       <Metas title={metas.title} metas={metas.metas} />
       <main className="section">
+        {
+          fastSignOn && <div className="popup">
+            <div className="popup-header">
+              <CgClose onClick={() => setFastSignOn(false)} />
+            </div>
+            <div className="popup-box">
+              <h4>Vous n'êtes pas connecté !</h4>
+              <p>Créez un compte en 30 secondes et reprenez !</p>
+              <form onSubmit={handleFastSign}>
+                <input type="text" className="input input-set" name="firstName" value={fastUser.firstName} onChange={handleChangeUser} placeholder="Prénom" />
+
+                <input type="text" className="input input-set" name="email" value={fastUser.email} onChange={handleChangeUser} placeholder="Email" />
+
+                <input type="password" className="input input-set" name="password" value={fastUser.password} onChange={handleChangeUser} placeholder="Mot de passe" />
+
+                <button type="submit" className="submit">Valider</button>
+              </form>
+            </div>
+          </div>
+        }
         <AuthBox
           title="Nouveau Projet" text="Créez votre projet de groupage en 5 minutes !"
           component={
@@ -116,7 +237,7 @@ export default function NewProjects() {
                         <div 
                           onClick={() => setProject((proj) => ({ ...proj, private: !proj.private }))} 
                           className={`input-toggler ${project.private && "input-toggler__active"}`}
-                        >
+                          >
                           <span></span>
                         </div>
                       </div>
@@ -144,7 +265,7 @@ export default function NewProjects() {
                         id="title" 
                         className="input" 
                         type="text" 
-                        placeholder="Nommez votre projet"
+                        placeholder="Nommez votre produit"
                         value={product.title}
                         onChange={handleChange}
                       />
@@ -157,10 +278,24 @@ export default function NewProjects() {
                         id="description" 
                         className="input" 
                         type="text" 
-                        placeholder="Décrivez votre projet"
+                        placeholder="Décrivez votre produit"
                         value={product.description}
                         onChange={handleChange}
-                      />
+                        />
+                    </div>
+
+                    <div className="input-set">
+                      <label htmlFor="url">Lien :</label>
+                      <input 
+                        name="url" 
+                        id="url" 
+                        className="input" 
+                        type="url" 
+                        placeholder="Lien du produit"
+                        value={product.url}
+                        onChange={handleChange}
+                        />
+                      <p>Vos clients pourront vérifier les informations de produit.</p>
                     </div>
 
                     <div className="input-set">
@@ -174,7 +309,7 @@ export default function NewProjects() {
                         placeholder="Valeur unitaire réelle"
                         value={product.realUnitValue}
                         onChange={handleChange}
-                      />
+                        />
                     </div>
 
                     <div className="input-set">
