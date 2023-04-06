@@ -199,7 +199,7 @@ export default function NewProjects() {
               <CgClose onClick={() => setFastSignOn(false)} />
             </div>
             <div className="popup-box">
-              <h4>Vous n'êtes pas connecté !</h4>
+              <h4>Vous n&apos;sêtes pas connecté !</h4>
               <p>Créez un compte en 30 secondes et reprenez !</p>
               <form onSubmit={handleFastSign}>
                 <input type="text" className="input input-set" name="firstName" value={fastUser.firstName} onChange={handleChangeUser} placeholder="Prénom" />
