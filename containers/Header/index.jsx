@@ -14,7 +14,7 @@ export default function Header() {
   return (
     <header className={style.header}>
       <Link className={style.headerLogo} href="/">
-        <TbHome />
+        {/* <TbHome /> */}
         <Logo />
       </Link>
       <div className={`flexed ${style.buttons}`} >

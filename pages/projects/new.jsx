@@ -26,7 +26,8 @@ export default function NewProjects() {
   const [fastUser, setFastUser] = useState({
     email: "",
     password: "",
-    firstName: ""
+    firstName: "",
+    lastName: "",
   })
 
   const [step, setStep] = useState(0)
@@ -83,7 +84,7 @@ export default function NewProjects() {
       const resp = await client.create(
         {
           _type: "seller",
-          ...fastUser
+          ...fastUser,
         }
       )
       if (resp) {
@@ -203,6 +204,7 @@ export default function NewProjects() {
               <p>Créez un compte en 30 secondes et reprenez !</p>
               <form onSubmit={handleFastSign}>
                 <input type="text" className="input input-set" name="firstName" value={fastUser.firstName} onChange={handleChangeUser} placeholder="Prénom" />
+                <input type="text" className="input input-set" name="lastName" value={fastUser.lastName} onChange={handleChangeUser} placeholder="Nom" />
 
                 <input type="text" className="input input-set" name="email" value={fastUser.email} onChange={handleChangeUser} placeholder="Email" />
 
