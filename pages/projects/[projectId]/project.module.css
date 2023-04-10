@@ -1,0 +1,86 @@
+.project{
+  position: relative;
+  color: white;
+}
+
+.project .back_image{
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+}
+
+.project .content{
+  width: 100vw;
+  position: relative;
+  z-index: 1;
+  height: 100vh;
+  background-color: rgba(27, 30, 50, 0.6);
+  backdrop-filter: blur(25px);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.project .header{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.project .header h3{
+  color: white;
+  font-size: 24px;
+  text-transform: uppercase;
+  
+}
+
+.project .header .imageSet{
+  width: 320px;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  background: linear-gradient(45deg, red, orange, goldenrod, gold, yellow);
+  /* box-shadow: 5px 5px 10px black; */
+}
+
+.project .header .image{
+  box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.705);
+  width: 300px;
+  height: 300px;
+  border-radius: 100%;
+}
+
+.project .infos{
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.project .infos div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.562); */
+  background-color: rgba(27, 30, 50, 0.384);
+  border-radius: 20px;
+  width: 100px;
+  height: 100px;
+}
+
+.project .infos div h4{
+  font-size: 14px;
+}
+
+.project .infos div p{
+  font-weight: bolder;
+  font-size: 18px;
+}
