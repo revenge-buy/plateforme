@@ -2,6 +2,11 @@ import styles from './project.module.css'
 import Metas from '@/components/Metas';
 import client from '@/api/client';
 import Image from 'next/image';
+
+import { FaSortAmountUp } from 'react-icons/fa'
+import { GiPriceTag } from 'react-icons/gi'
+import { TbDiscountCheckFilled } from 'react-icons/tb'
+import Link from 'next/link';
  
 export default function Project({ projects }) {
   const project = projects[0];
@@ -25,34 +30,43 @@ export default function Project({ projects }) {
           className={styles.back_image}
           width={100}
           height={100}
-          alt={project?.product?.title}
+          alt={project?.product?.title || "Titre du projet"}
           src={project?.productImage || "/favicon.png"}
         />
         <div className={styles.content}>
-          <div className={styles.header}>
-            <div className={styles.imageSet}>
-              <Image
-                className={styles.image}
-                width={800}
-                height={600}
-                alt={project?.product?.title}
-                src={project?.productImage || "/favicon.png"}
-              />
+          <div className={styles.contentBg}></div>
+          <div className={styles.contentWrapper}>
+            <div className={styles.header}>
+              <div className={styles.imageSet}>
+                <Image
+                  className={styles.image}
+                  width={800}
+                  height={600}
+                  alt={project?.product?.title || "Titre du projet"}
+                  src={project?.productImage || "/favicon.png"}
+                />
+              </div>
+              <h3>{project?.name}</h3>
+              <div className={styles.infos}>
+                <div>
+                  <h4><GiPriceTag /></h4>
+                  <p>{project?.product?.projectUnitValue} Fcfa</p>
+                </div>
+                <div>
+                  <h3><TbDiscountCheckFilled /></h3>
+                  <span>- {parseInt(((project?.product?.realUnitValue-project?.product?.projectUnitValue)/project?.product?.realUnitValue)*100)}%</span>
+                </div>
+                <div>
+                  <h4><FaSortAmountUp /></h4>
+                  <p>+ {project?.product?.quantity || "0"}</p>
+                </div>
+              </div>
             </div>
-            <h3>{project?.name}</h3>
-            <div className={styles.infos}>
-              <div>
-                <h4>Lorem</h4>
-                <p>10</p>
-              </div>
-              <div>
-                <h4>Ipsum</h4>
-                <p>5k</p>
-              </div>
-              <div>
-                <h4>Dolor</h4>
-                <p>600</p>
-              </div>
+            <div className='separator1' />
+            <div className={styles.product}>
+              <h4>{project?.product?.title}</h4>
+              <p>{project?.product?.description}</p>
+              <Link target="_blank" href={project?.product?.url}>Voir le produit</Link>
             </div>
           </div>
         </div>

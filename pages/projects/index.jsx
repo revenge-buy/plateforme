@@ -5,6 +5,8 @@ import { List } from '@/containers'
 
 import styles from "./index.module.css"
 import client from '@/api/client'
+import Image from 'next/image'
+import Link from 'next/link'
 
 const metas = {
   title: "Tous les projets actifs d'acfat groupé",
@@ -19,13 +21,26 @@ const metas = {
 export default function Projects({ allProjects }) {
 
   return (
-    <>
+    <div className={styles.projects}>
       <Metas title={metas.title} metas={metas.metas} />
       <main className={`page section ${styles.main}`}>
         <h2>Projets en cours</h2>
-        <List projects={ allProjects } />
+        {
+          allProjects.length === 0 ?
+          <div className={styles.nothing}>
+            <Image
+              width={1000}
+              height={1000}
+              alt={"Aucun projet !"}
+              src={"/no-project.jpg"}
+            />
+            <p>Aucun projet pour le moment</p>
+            <Link href="/projects/new" className="btn">Soyez le premier ;) !</Link>
+          </div>
+          : <List projects={ allProjects } />
+        }
       </main>
-    </>
+    </div>
   )
 }
 

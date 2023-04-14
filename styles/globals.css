@@ -247,3 +247,13 @@ textarea{
   font-size: 12px;
   font-weight: 500;
 }
+
+.separator1{
+  width: 100%;
+  max-width: 90vw;
+  height: 2px;
+  opacity: 0.5;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.199), white, white, white, white, rgba(255, 255, 255, 0.199));
+  margin: 25px 0;
+  border-radius: 50px;
+}

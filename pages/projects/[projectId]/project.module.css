@@ -1,6 +1,7 @@
 .project{
   position: relative;
   color: white;
+  text-align: center;
 }
 
 .project .back_image{
@@ -9,9 +10,19 @@
   position: fixed;
 }
 
-.project .content{
+.project .content, .project .contentWrapper{
   width: 100vw;
   position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.project .contentBg{
+  width: 100vw;
+  position: fixed;
   z-index: 1;
   height: 100vh;
   background-color: rgba(27, 30, 50, 0.6);
@@ -19,7 +30,8 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 20px;
+  top: 0;
+  left: 0;
 }
 
 .project .header{
@@ -28,6 +40,7 @@
   flex-direction: column;
   align-items: center;
   gap: 15px;
+  text-align: center;
 }
 
 .project .header h3{
@@ -59,8 +72,9 @@
   display: flex;
   width: 100%;
   align-items: center;
-  justify-content: space-between;
-  gap: 30px;
+  justify-content: space-evenly;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .project .infos div{
@@ -78,9 +92,23 @@
 
 .project .infos div h4{
   font-size: 14px;
+  color: white;
+  fill: white;
 }
 
-.project .infos div p{
+.project .infos div h4 svg{
+  color: white;
+}
+
+.project .infos div h3 svg{
+  color: goldenrod;
+}
+
+.project .infos div p, .infos span{
+  font-size: 14px;
+}
+
+.project .infos span{
+  color: goldenrod;
   font-weight: bolder;
-  font-size: 18px;
 }

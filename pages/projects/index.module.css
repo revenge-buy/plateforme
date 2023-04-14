@@ -1,0 +1,41 @@
+.projects{
+  text-align: center;
+}
+
+.projects .main{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.nothing{
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+.nothing img{
+  margin: auto;
+  border-radius: 100px;
+  max-width: 100vw;
+  width: 500px;
+  object-fit: cover;
+  height: unset;
+}
+
+.projects .nothing p{
+  color: gray;
+  font-weight: 500;
+}
+
+.projects .nothing a{
+  border-radius: 20px;
+  border: solid 2px var(--color-dark_blue);
+  padding: 10px 20px;  
+  color: white;
+  font-weight:400;
+  background-color: var(--color-dark_blue);
+}
