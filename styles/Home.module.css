@@ -21,8 +21,8 @@
 .hero{
   width: 100%;
   height: calc(100vh);
-  background: linear-gradient(-45deg, white, rgb(230, 230, 230), rgb(199, 199, 199), rgb(161, 161, 161),rgb(124, 124, 124));
-  background-size: 1000% 1000%;
+  background: linear-gradient(-45deg, rgb(32, 218, 187), rgb(134, 32, 218), rgb(32, 218, 178), rgb(32, 44, 218));
+  background-size: 300% 300%;
   animation: gradient 10s ease infinite;
   height: 100vh;
   display: flex;
