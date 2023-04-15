@@ -11,6 +11,10 @@ const metas = {
     {
       name: "description",
       content: 'Revenge-Buy, Économisez en faisant vos achats en groupe'
+    },
+    {
+      property: 'og:image',
+      content:"/favicon.png"
     }
   ]
 }
