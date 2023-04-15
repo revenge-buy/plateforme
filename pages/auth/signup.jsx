@@ -16,20 +16,24 @@ const metas = {
   ]
 }
 
-export default function Login() {
+export default function SignUp() {
   const [user, setUser] = useState({
     email: "",
     password: "",
     confirmPassword: "",
     firstName: "",
     lastName: "",
-    phone: 0,
+    phone: NaN,
     prevUserTag: "",
     userTag: "",
-    tagOk: false,
+    tagOk: NaN,
+    emailOk: NaN,
+    phoneOk: NaN
   })
 
   const router = useRouter()
+
+
   
   function checkTag() {
     setUser((user) => ({ ...user, userTag: user.userTag.trim() }))
@@ -49,19 +53,66 @@ export default function Login() {
           if(resp.length > 0)
             {
               setUser((user) => ({ ...user, tagOk: false }))
-              console.log(resp)
               console.log({ tagTakenError: 'tag taken' });
-              alert("Ce tag est déjà pris")
             } else {
               setUser((user) => ({ ...user, tagOk: true }))
-              console.log("tag available")
             }
         })
         .catch((tegError) => {
           console.log({ tegError })
+        })    
+  }
+
+  function checkFieldUniq(e, fieldChecker, string) {
+    string && handleBlur(e)
+    const {name, value} = e.target
+    console.log({e})
+    console.log({name})
+
+    value && value !== "" && value !== NaN &&
+    client.fetch(
+      `
+        * [_type == "seller" && ${name} == ${string ? `"${value}"` : parseInt(value)}]{
+          ${name}
+        }
+      `
+    )
+      .then((resp) => {
+        console.log(resp, value)
+        if(resp.length > 0)
+          {
+            setUser((user) => ({ ...user, [fieldChecker]: false }))
+          } else {
+            setUser((user) => ({ ...user, [fieldChecker]: true }))
+          }
         })
-    
-    setUser((user) => ({ ...user, prevUserTag: user.userTag }))
+        .catch((error) => {
+          console.log({ error })
+        })
+  }
+
+  function checkEmail(e) {
+    handleBlur(e)
+
+    user.email.trim() !== "" &&
+    client.fetch(
+      `
+        * [_type == "seller" && email == "${user.email}"]{
+          email
+        }
+      `
+    )
+      .then((resp) => {
+          if(resp.length > 0)
+            {
+              setUser((user) => ({ ...user, emailOk: false }))
+            } else {
+              setUser((user) => ({ ...user, emailOk: true }))
+            }
+        })
+        .catch((emailError) => {
+          console.log({ emailError })
+        })
   }
 
   function checkFields(object) {
@@ -76,71 +127,6 @@ export default function Login() {
 
     result === false && alert("Tous les champs sont obligatoires")
     return result
-  }
-
-  async function checkUnics() {
-    var emailOk = null;
-    var phoneOk = null;
-    // checking email uniqueness
-    try {
-      const emailRes = await client.fetch(
-        `
-          * [_type == "seller" && email == "${user.email}"]{
-            email
-          }
-        `
-      )
-      if (emailRes) {
-        if (emailRes.length > 0) {
-          console.log(emailRes)
-          console.log(false)
-          console.log("Email Déjà pris !")
-          emailOk = false
-          return false
-        } else {
-          emailOk = true
-          if (phoneOk !== null && phoneOk == true) {
-            console.log("phone")
-            console.log("email dispo")
-            return true
-          }
-          console.log("email dispo")
-        }
-      }
-    } catch(error) {
-        console.log({ error })
-    }
-    
-    // checking phone uniqueness
-    try {
-      const phoneRes = await client.fetch(
-        `
-          * [_type == "seller" && phone == "${parseInt(user.phone)}"]{
-            phone
-          }
-        `
-      )
-      if (phoneRes) {
-        if (phoneRes.length > 0) {
-          console.log(phoneRes)
-          console.log(false)
-          console.log("Téléphones Déjà pris !")
-          phoneOk = false
-          return false
-        } else {
-          phoneOk = true
-          if (emailOk !== null && emailOk == true) {
-            console.log("phone dispo")
-            console.log("email")
-            return true
-          }
-          console.log("phone dispo")
-        }
-      }
-    } catch (error) {
-      console.log({ error })
-      alert("Une erreur s'est produite lors de la vérification de votre téléphone")
-    }
   }
 
   function checkPasswords() {
@@ -172,8 +158,9 @@ export default function Login() {
     if (
       checkFields(user)
       && checkPasswords()
-      // && checkUnics()
       && user.tagOk
+      && user.emailOk
+      && user.phoneOk
     ) {
       try {
         const resp = await client.create(
@@ -184,7 +171,8 @@ export default function Login() {
             firstName: user.firstName.trim(),
             lastName: user.lastName.trim(),
             phone: parseInt(user.phone),
-            userTag: user.userTag.trim()
+            userTag: user.userTag.trim(),
+            confirmed: false
           }
         )
         if (resp) {
@@ -214,12 +202,36 @@ export default function Login() {
             <form>
               <input onBlur={handleBlur} className='input' name="firstName" type="text" placeholder='Prénom' value={user.firstName} onChange={handleChange} />
               <input onBlur={handleBlur} className='input' name="lastName" type="text" placeholder='Nom' value={user.lastName} onChange={handleChange} />
-              <input className='input' name="userTag" type="text" placeholder={`Entrez un tag : ${"@"+(user.firstName).toLowerCase()}-${(user.lastName).toLowerCase()}`} value={user.userTag} onChange={handleChangeTag} onBlur={checkTag} />
-              <input onBlur={handleBlur} className='input' name="email" type="email" placeholder='Entrez votre email' value={user.email} onChange={handleChange} />
+              <input className='input' name="userTag" type="text" placeholder={`Entrez un identifiant : ${"@"+(user.firstName).toLowerCase()}-${(user.lastName).toLowerCase()}`} value={user.userTag} onChange={handleChangeTag} onBlur={checkTag} />
+              {user.tagOk === false 
+                ? <p className="field-message">
+                    <span className='field-message__wrong'>Déjà pris : </span>
+                    Votre identifiant doit être unique !
+                  </p> 
+                : user.tagOk === true && 
+                  <p className="field-message field-message__right">Identifiant disponible</p>
+              }
+              <input onBlur={(e) => checkEmail(e)} className='input' name="email" type="email" placeholder='Entrez votre email' value={user.email} onChange={handleChange} />
+              {user.emailOk === false 
+                ? <p className="field-message">
+                    <span className='field-message__wrong'>Cet utilisateur existe déjà !</span>
+                  </p> 
+                : user.emailOk === true && 
+                  <p className="field-message field-message__right">Email disponible</p>
+              }
               <input onBlur={handleBlur} className='input' name="password" type="password" placeholder='Entrez votre mot de passe' value={user.password} onChange={handleChange} />
               <input onBlur={handleBlur} className='input' name="confirmPassword" type="password" placeholder='Confirmez votre mot de passe' value={user.confirmPassword} onChange={handleChange} />
-              <input className='input' name="phone" type="number" placeholder="Entrez votre contact whatsapp" value={user.phone} onChange={handleChange} />
+              <input className='input' onBlur={(e) => checkFieldUniq(e, "phoneOk", false)} name="phone" type="number" placeholder="Entrez votre contact whatsapp" value={user.phone} onChange={handleChange} min={600000000} max={699999999} />
+              {user.phoneOk === false 
+                ? <p className="field-message">
+                    <span className='field-message__wrong'>Déjà pris : </span>
+                    Ce numéro est déjà utilisé !
+                  </p> 
+                : user.phoneOk === true && 
+                  <p className="field-message field-message__right">Vous pouvez utiliser ce numéro !</p>
+              }
               <p>{user.message}</p>
+
               <input className='submit' type="submit" value="S'inscrire" onClick={createUser} />
             </form>
           } />

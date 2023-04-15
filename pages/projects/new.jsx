@@ -5,6 +5,7 @@ import Metas from "@/components/Metas";
 import AuthBox from "@/containers/Auth/AuthBox";
 // import Image from "next/image";
 import { useState } from "react";
+import Link from 'next/link';
 // import Link from "next/link";
 // import login from '../../public/login.jpg'
 
@@ -28,6 +29,7 @@ export default function NewProjects() {
     password: "",
     firstName: "",
     lastName: "",
+    userTag: "",
   })
 
   const [step, setStep] = useState(0)
@@ -212,6 +214,7 @@ export default function NewProjects() {
 
                 <button type="submit" className="submit">Valider</button>
               </form>
+              <Link href="/auth">J'ai déjà un compte !</Link>
             </div>
           </div>
         }
