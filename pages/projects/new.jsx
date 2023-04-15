@@ -30,6 +30,7 @@ export default function NewProjects() {
     firstName: "",
     lastName: "",
     userTag: "",
+    emailOk: null,
   })
 
   const [step, setStep] = useState(0)
@@ -79,30 +80,138 @@ export default function NewProjects() {
     setFastUser((prod) => ({ ...prod, [name]: value.trim() }));
   }
 
+  function checkFieldUniq(e, fieldChecker, string) {
+    const {name, value} = e.target
+    console.log({e})
+    console.log({name})
+
+    value && value !== "" && value !== NaN &&
+    client.fetch(
+      `
+        * [_type == "seller" && ${name} == ${string ? `"${value}"` : parseInt(value)}]{
+          ${name}
+        }
+      `
+    )
+      .then((resp) => {
+        console.log(resp, value)
+        if(resp.length > 0)
+          {
+            setFastUser((user) => ({ ...user, [fieldChecker]: false }))
+            return false
+          } else {
+            setFastUser((user) => ({ ...user, [fieldChecker]: true }))
+            return true
+          }
+        })
+        .catch((error) => {
+          console.log({ error })
+        })
+  }
+
+  function checkFields(object) {
+    let entries = Object.entries(object)
+
+    let result = true
+    entries.map((entry) => {
+      if (entry[1] === "") {
+        result = false;
+      }
+    })
+
+    result === false && alert("Tous les champs sont obligatoires")
+    return result
+  }
+
+  function setTag(email){
+    const name = email.split("@")[0]
+    const client = (email.split("@")[1]).split(".")[0];
+    const ext = email.split(".")[1]
+
+    function encryptMail(str){
+      let result = ""
+
+      switch (str) {
+        case "gmail":
+          result = "5ds45s"; 
+          break;
+        case "yahoo":
+          result = "dsf2sdf";
+          break;
+        default:
+          result = client;
+          break;
+      }
+
+      return result
+    }
+
+    function encryptExt(str){
+      let result = ""
+
+      switch (str) {
+        case "com":
+          result = "564sd2"; 
+          break;
+        case "fr":
+          result = "sdf541";
+          break;
+        default:
+          result = ext;
+          break;
+      }
+
+      return result
+    }
+
+    const tag = `@${name}-${encryptExt(ext)}${encryptMail(client)}`;
+    
+    setFastUser((user) => ({ ...user, userTag: tag }))
+
+    return tag;
+  }
+
   async function handleFastSign(e) {
     e.preventDefault();
+    const { firstName, lastName, email, password } = fastUser
 
-    try {
-      const resp = await client.create(
-        {
-          _type: "seller",
-          ...fastUser,
+    if(checkFields({
+      firstName, lastName, email, password
+    })) {
+        if (
+          fastUser.emailOk
+        ) {
+          let tag = setTag(email);
+          try {
+            const resp = await client.create(
+              {
+                _type: "seller",
+                firstName,
+                lastName,
+                email,
+                password,
+                userTag: tag,
+                confirmed: false
+              }
+            )
+            if (resp) {
+              let rbUser = {
+                email: resp.email,
+                firstName: resp.firstName
+              } 
+              localStorage.setItem("rb-user", JSON.stringify(rbUser));
+              alert(`Salut ${resp.firstName} !\nCompte créé avec succès`);
+              setFastSignOn(false)
+              setStep(1)
+              // router.push("/projects");
+            }
+          } catch (error) {
+            alert("Une erreur s'est produite lors de la création de votre compte !")
+            console.log({ error })
+          }
         }
-      )
-      if (resp) {
-        let rbUser = {
-          email: resp.email,
-          firstName: resp.firstName
-        } 
-        localStorage.setItem("rb-user", JSON.stringify(rbUser));
-        alert(`Salut ${resp.firstName} !\nCompte créé avec succès`);
-        setFastSignOn(false)
-        setStep(1)
-        // router.push("/projects");
-      }
-    } catch (error) {
-      alert("Une erreur s'est produite lors de la création de votre compte !")
-      console.log({ error })
+    } else {
+      alert("Veuillez remplir toutes les informations demandées !")
     }
   }
 
@@ -208,7 +317,14 @@ export default function NewProjects() {
                 <input type="text" className="input input-set" name="firstName" value={fastUser.firstName} onChange={handleChangeUser} placeholder="Prénom" />
                 <input type="text" className="input input-set" name="lastName" value={fastUser.lastName} onChange={handleChangeUser} placeholder="Nom" />
 
-                <input type="text" className="input input-set" name="email" value={fastUser.email} onChange={handleChangeUser} placeholder="Email" />
+                <input type="text" onBlur={(e) => checkFieldUniq(e, "emailOk", true)} className="input input-set" name="email" value={fastUser.email} onChange={handleChangeUser} placeholder="Email" />
+                {fastUser.emailOk === false 
+                  ? <p className="field-message">
+                      <span className='field-message__wrong'>Cet utilisateur existe déjà !</span>
+                    </p> 
+                  : fastUser.emailOk === true && 
+                    <p className="field-message field-message__right">Email disponible</p>
+                }
 
                 <input type="password" className="input input-set" name="password" value={fastUser.password} onChange={handleChangeUser} placeholder="Mot de passe" />
 
