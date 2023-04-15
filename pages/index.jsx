@@ -6,7 +6,7 @@ import { Hero, Steps, Partners } from '@/containers/Home'
 import styles from '@/styles/Home.module.css'
 
 const metas = {
-  title: 'Revenge-Buy',
+  title: 'Revenge Buy',
   metas: [
     {
       name: "description",
