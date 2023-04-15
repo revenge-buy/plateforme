@@ -308,11 +308,12 @@ export default function NewProjects() {
         {
           fastSignOn && <div className="popup">
             <div className="popup-header">
+              <div></div>
               <CgClose onClick={() => setFastSignOn(false)} />
             </div>
             <div className="popup-box">
-              <h4>Vous n&apos;sêtes pas connecté !</h4>
-              <p>Créez un compte en 30 secondes et reprenez !</p>
+              <h4>Vous n&apos;êtes pas connecté !</h4>
+              <p>Créez un compte en 30 secondes avant de continuer !</p>
               <form onSubmit={handleFastSign}>
                 <input type="text" className="input input-set" name="firstName" value={fastUser.firstName} onChange={handleChangeUser} placeholder="Prénom" />
                 <input type="text" className="input input-set" name="lastName" value={fastUser.lastName} onChange={handleChangeUser} placeholder="Nom" />
@@ -330,7 +331,7 @@ export default function NewProjects() {
 
                 <button type="submit" className="submit">Valider</button>
               </form>
-              <Link href="/auth">J'ai déjà un compte !</Link>
+              <Link className="popup-box-footer" href="/auth">J'ai déjà un compte !</Link>
             </div>
           </div>
         }

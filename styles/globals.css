@@ -237,14 +237,20 @@ textarea{
 
 .popup-box, .popup-box2{
   padding: 20px;
-  background-color: white;
-  border-radius: 20px;
   display: flex;
   align-items: center;
   flex-direction: column;
   max-width: 85%;
   text-align: center;
   gap: 15px;
+  /* position: relative; */
+}
+
+.popup .popup-box{
+  background-color: white;
+  border-radius: 20px;
+  max-height: calc(100vh - 150px);
+  overflow: auto;
 }
 
 .popup .popup-box2{
@@ -255,6 +261,19 @@ textarea{
 .popup-box p{
   font-size: 12px;
   font-weight: 500;
+}
+
+.popup-box-footer{
+  width: 100%;
+  background-color: var(--color-dark_blue);
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  padding: 15px 0;
+  color: white;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
 }
 
 .separator1{
