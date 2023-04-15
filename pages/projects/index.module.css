@@ -1,12 +1,29 @@
 .projects{
   text-align: center;
+  position: relative
 }
 
 .projects .main{
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 0px;
+}
+
+.projects .main h2{
+  background-color: rgba(27, 30, 50, 0.082);
+  box-shadow: 0 1px 1px rgba(128, 128, 128, 0.205);
+  width: 100vw;
+  font-size: 14px;
+  text-align: left;
+  height: 29px;
+  border-left: solid var(--color-dark_blue) 2px;
+  position: absolute;
+  top: 0px;
+  color: var(--color-dark_blue);
+  display: flex;
+  align-items: center;
+  padding-left: 40px;
 }
 
 .nothing{

@@ -23,7 +23,7 @@ export default function Projects({ allProjects }) {
   return (
     <div className={styles.projects}>
       <Metas title={metas.title} metas={metas.metas} />
-      <main className={`page section ${styles.main}`}>
+      <main className={`page ${styles.main}`}>
         <h2>Projets en cours</h2>
         {
           allProjects.length === 0 ?
@@ -64,6 +64,10 @@ export async function getServerSideProps({ req, res }) {
           },
           name,
           _createdAt,
+          "product": *[_type == "product" && references(^._id)][0]{
+            realUnitValue,
+            projectUnitValue
+          },
           "productImage": *[_type == "product" && references(^._id)][0].image.asset->url
         }
       `

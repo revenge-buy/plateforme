@@ -6,8 +6,8 @@ export default function List({ projects }) {
   return (
     <div className={style.list}>
       {
-        projects.map(({ _id, creator, name, _createdAt, productImage }, index) => 
-          <ProjectPreview  _id={_id} creator={creator} name={name} _createdAt={_createdAt} productImage={productImage}  key={index} />
+        projects.map(({ _id, creator, name, _createdAt, productImage, product }, index) => 
+          <ProjectPreview product={product}  _id={_id} creator={creator} name={name} _createdAt={_createdAt} productImage={productImage}  key={index} />
         )
       }
     </div>

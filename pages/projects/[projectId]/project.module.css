@@ -8,6 +8,41 @@
   width: 100vw;
   height: 100vh;
   position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.project .image_up_wrapper{
+  animation: imagePop 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.project .image_up_wrapper img{
+  width: 100vw;
+  height: unset;
+}
+
+.project .image_up_button{
+  background-color: goldenrod;
+  color: var(--color-dark_blue);
+  padding: 7px 20px;
+  border-radius: 50px;
+  font-size: 14px;
+  letter-spacing: -0.5px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.548);
+  position: absolute;
+  bottom: 30px;
+}
+
+@keyframes imagePop {
+  0%{
+    transform: scale(0);
+  }
+  100%{
+    transform: scale(1);
+  }
 }
 
 .project .content, .project .contentWrapper{
@@ -47,11 +82,19 @@
   color: white;
   font-size: 24px;
   text-transform: uppercase;
-  
+}
+
+.project .header .headerTop{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .project .header .imageSet{
   width: 320px;
+  max-width: 90%;
   height: 320px;
   display: flex;
   align-items: center;
@@ -65,7 +108,24 @@
   box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.705);
   width: 300px;
   height: 300px;
+  max-width: calc(100% - 20px);
   border-radius: 100%;
+}
+
+.project .profile{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 0;
+  border: solid 2px goldenrod;
+}
+
+.project .profile img{
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
 }
 
 .project .infos{
@@ -112,3 +172,83 @@
   color: goldenrod;
   font-weight: bolder;
 }
+
+.project .buttons{
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  margin-bottom: 25px;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.project .buttons button{
+  background-color: var(--color-dark_blue);
+  color: white;
+  backdrop-filter: blur(15px);
+  border-radius: 100px;
+  padding: 10px 0px;
+  width: 150px;
+  max-width: 150px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.548);
+  flex-direction: column;
+  letter-spacing: -0.5px;
+}
+
+.project .buttons button:first-child{
+  background-color: goldenrod;
+  color: var(--color-dark_blue);
+}
+
+.project .buttons button svg{
+  color: white;
+}
+
+.project .buttons button:first-child svg{
+  color: var(--color-dark_blue)
+}
+
+.project .product{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  width: 100vw;
+  background-color: rgba(255, 255, 255, 0.747);
+  color: var(--color-dark_blue);
+  padding: 20px;
+  box-shadow: inset 0 0 20px rgb(78, 78, 78);
+  position: relative;
+}
+
+.product svg{
+  top: -12px;
+  border-radius: 10px;
+  width: 24px;
+  height: 24px;
+}
+
+.product p{
+  font-weight: 500;
+  border-bottom: solid 1px rgba(0, 0, 0, 0.24);
+  padding-bottom: 15px;
+}
+
+.product a{
+  background-color: goldenrod;
+  color: var(--color-dark_blue);
+  padding: 7px 20px;
+  border-radius: 50px;
+  font-size: 14px;
+  letter-spacing: -0.5px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 0 20px rgba(128, 128, 128, 0.548);
+} 

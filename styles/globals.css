@@ -211,19 +211,23 @@ textarea{
   top: 0;
   background-color: rgba(0, 0, 0, 0.521);
   backdrop-filter: blur(15px);
-  z-index: 1000;
+  z-index: 10000;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
 .popup-header{
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   padding: 20px;
   position: absolute;
   top: 0;
   width: 100%;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .popup-header svg{
@@ -231,7 +235,7 @@ textarea{
   font-size: 1.5rem;
 }
 
-.popup-box{
+.popup-box, .popup-box2{
   padding: 20px;
   background-color: white;
   border-radius: 20px;
@@ -241,6 +245,11 @@ textarea{
   max-width: 85%;
   text-align: center;
   gap: 15px;
+}
+
+.popup .popup-box2{
+  background-color: none;
+  padding: 0;
 }
 
 .popup-box p{

@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { TbHome } from "react-icons/tb"
 import { BiSearch, BiPlus } from "react-icons/bi"
 
 import Logo from "@/components/Logo/Logo"

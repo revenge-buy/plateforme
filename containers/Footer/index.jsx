@@ -42,17 +42,6 @@ export default function Footer() {
             {/* menu */}
             <BiMenuAltLeft />
           </Link></li>
-          <li><Link href='/updates'>
-            {/* updates */}
-            <GiShinyPurse />
-          </Link> </li>
-          {/* <li className={style.toggleMenu}>
-            <button>profile</button>
-            <menu>
-              <h4>menu</h4>
-              <div />
-            </menu>
-          </li> */}
           <li className={style.toggleMenu}>
             {/* {
               user ? 
@@ -69,6 +58,17 @@ export default function Footer() {
               {/* </> : <Link className={style.loginBtn} href="/auth">Connexion</Link>
             } */}
           </li>
+          <li><Link href='/updates'>
+            {/* updates */}
+            <GiShinyPurse />
+          </Link> </li>
+          {/* <li className={style.toggleMenu}>
+            <button>profile</button>
+            <menu>
+              <h4>menu</h4>
+              <div />
+            </menu>
+          </li> */}
         </ul>
       </nav>
     </footer>

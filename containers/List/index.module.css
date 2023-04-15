@@ -1,9 +1,10 @@
 .list{
   margin-top: 30px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 30px;
+  gap: 5px;
+  background-color: rgba(27, 30, 50, 0.082);
+  width: 100vw;
 }

@@ -4,7 +4,18 @@ import { RiUserFollowFill } from 'react-icons/ri'
 import { MdJoinInner } from 'react-icons/md'
 import Link from "next/link"
 
-export default function ProjectPreview({ _id, creator, name, _createdAt, productImage }) {
+export default function ProjectPreview({ _id, creator, name, _createdAt, productImage, product }) {
+
+  if(product === null) {
+    product = {
+      realUnitValue: 0,
+      projectUnitValue: 0
+    }
+  }
+
+  const { realUnitValue, projectUnitValue } = product;
+
+  const benef = parseInt(((realUnitValue - projectUnitValue)/realUnitValue)*100)
 
   return (
     <div className={styles.project}>
@@ -22,7 +33,7 @@ export default function ProjectPreview({ _id, creator, name, _createdAt, product
           </div>
         </div>
         <div className={styles.suppInfos}>
-          <span>70%</span>
+          <span>- {benef || 0}%</span>
         </div>
       </header>
       <section>

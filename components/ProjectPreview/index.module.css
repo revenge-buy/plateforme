@@ -1,16 +1,15 @@
 .project{
   width: 100%;
-  max-width: 400px;
   display: flex;
   flex-direction: column;
-  border-radius: 10px;
+  background-color: white;
   overflow: hidden;
-  border: solid 2px rgba(27, 30, 50, 0.089);
+  border-top: solid 2px rgba(27, 30, 50, 0.089);
+  border-bottom: solid 2px rgba(27, 30, 50, 0.089);
 }
 
 .project header{
-  padding: 10px 5px;
-  margin-bottom: 10px;
+  padding: 10px 25px;
   display: flex;
   justify-content: space-between;
 }
@@ -18,13 +17,19 @@
 .infos{
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 10px;
   font-size: 12px;
 }
 
 .infos img{
   border-radius: 50%;
   border: solid goldenrod 2px;
+}
+
+.infos div{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .infos h4:hover{
@@ -37,15 +42,18 @@
 }
 
 .suppInfos span{
-  color: goldenrod;
-  font-size: 12px;
+  color: var(--color-dark_blue);
+  font-size: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 35px;
-  height: 35px;
-  border: solid 0.5px;
-  border-radius: 50%;
+  padding: 0 15px;
+  height: 40px;
+  max-height: 40px;
+  border: solid 2px;
+  border-radius: 20px;
+  font-weight: bolder;
+  letter-spacing: -0.7px;
 }
 
 .project section{
@@ -56,6 +64,7 @@
 
 .project section img{
   width: 100%;
+  max-width: 500px;
   transform: scale(1.1);
   object-fit: cover;
 }
