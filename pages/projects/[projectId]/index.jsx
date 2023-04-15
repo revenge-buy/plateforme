@@ -23,6 +23,10 @@ export default function Project({ projects }) {
       {
         name: "description",
         content: project?.product?.description || ""
+      },
+      {
+        property: 'og:image',
+        content: project?.product?.productImage || "/favicon.png"
       }
     ]
   }
