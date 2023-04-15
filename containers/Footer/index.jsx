@@ -2,12 +2,24 @@ import Link from "next/link"
 // import { useState } from "react";
 import { GiShinyPurse } from "react-icons/gi"
 import { BiMenuAltLeft, BiUser } from "react-icons/bi"
-import { CiSettings } from 'react-icons/ci'
+// import { CiSettings } from 'react-icons/ci'
 
 import style from './index.module.css'
-import { useState } from "react";
+import { useRouter } from "next/router"
 
 export default function Footer() {
+
+  const router = useRouter()
+
+  function Go(){
+    const user = JSON.parse(localStorage.getItem('rb-user'));
+
+    if(user !== null) {
+      router.push("/account");
+    } else {
+      router.push("/auth");
+    }
+  }
 
    // checking if code is from client or server side
   // let WINDOW = {};
@@ -46,15 +58,15 @@ export default function Footer() {
             {/* {
               user ? 
               <> */}
-                <button>
+                <button onClick={Go}>
                   {/* compte */}
                   <BiUser />
                 </button>
-                <menu>
-                  <Link href='/account'><CiSettings /> Paramètres</Link>
-                  <Link href='/account'><BiUser />Profile</Link>
+                {/* <menu>
+                  <Link onClick={() => Go("account")} href='#'><CiSettings /> Paramètres</Link>
+                  <Link onClick={() => Go("profile")} href='#'><BiUser />Profile</Link>
                   <div />
-                </menu>
+                </menu> */}
               {/* </> : <Link className={style.loginBtn} href="/auth">Connexion</Link>
             } */}
           </li>

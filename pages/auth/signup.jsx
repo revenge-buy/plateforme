@@ -178,7 +178,8 @@ export default function SignUp() {
         if (resp) {
           let rbUser = {
             email: resp.email,
-            firstName: resp.firstName
+            firstName: resp.firstName,
+            userTag: resp.userTag
           } 
           localStorage.setItem("rb-user", JSON.stringify(rbUser));
           router.push("/projects");

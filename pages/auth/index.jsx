@@ -36,6 +36,7 @@ export default function Login() {
         * [_type == "seller" && email == "${user.email}"]{
           password,
           firstName,
+          userTag,
         }
       `
     )
