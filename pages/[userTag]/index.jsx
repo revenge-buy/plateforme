@@ -7,6 +7,8 @@ import { RiVipCrown2Fill, RiGroupFill } from 'react-icons/ri'
 import { SlArrowDown } from 'react-icons/sl'
 import { RiUserFollowFill } from 'react-icons/ri'
 import { BsActivity } from 'react-icons/bs'
+import { MdJoinInner } from 'react-icons/md'
+
 
 
 import styles from './index.module.css'
@@ -127,7 +129,7 @@ export default function Account() {
         <div className={`${styles.body}`}>
           <section>
             <div className={styles.sectionTop}>
-              <h3><RiGroupFill /> Groupages</h3>
+              <h3><RiGroupFill /> A créé</h3>
               <p><SlArrowDown /></p>
             </div>
             <div className={styles.sectionContent}>
@@ -154,24 +156,33 @@ export default function Account() {
               }
             </div>
           </section>
-          {/* <section>
+          <section>
             <div className={styles.sectionTop}>
-              <h3><RiUserFollowFill /> Vous les suivez</h3>
+              <h3><MdJoinInner /> A rejoint</h3>
               <p><SlArrowDown /></p>
             </div>
             <div className={styles.sectionContent}>
               <p className={styles.nothingText}>Rien pour le moment !</p>
             </div>
-          </section> */}
-          {/* <section>
+          </section>
+          <section>
             <div className={styles.sectionTop}>
-              <h3>Ils vous suivent</h3>
+              <h3><RiUserFollowFill /> Suit</h3>
               <p><SlArrowDown /></p>
             </div>
             <div className={styles.sectionContent}>
               <p className={styles.nothingText}>Rien pour le moment !</p>
             </div>
-          </section> */}
+          </section>
+          <section>
+            <div className={styles.sectionTop}>
+              <h3><RiUserFollowFill /> Est suivi par</h3>
+              <p><SlArrowDown /></p>
+            </div>
+            <div className={styles.sectionContent}>
+              <p className={styles.nothingText}>Rien pour le moment !</p>
+            </div>
+          </section>
           {/* <section>
             <div className={styles.sectionTop}>
               <h3><BsActivity /> Activité récente</h3>

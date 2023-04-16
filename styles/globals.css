@@ -334,6 +334,16 @@ textarea{
   border-radius: 10px;
   padding: 3px;
   background-color: #efefef3b;
+  width: 100%;
+}
+
+.box2-red{
+  border-color: rgba(255, 0, 0, 0.411);
+  background-color: rgba(255, 0, 0, 0.068);
+}
+
+.box2-red svg{
+  color: rgba(255, 0, 0, 0.87);
 }
 
 .box2 img{
@@ -356,4 +366,15 @@ textarea{
   font-size: 12px;
   font-weight: bold;
   color: var(--color-gray)
+}
+
+.box2-red div p{
+  color: rgba(255, 0, 0, 0.411);
+}
+
+.p1{
+  padding: 5px 10px;
+}
+.p2{
+  padding: 10px 25px;
 }
