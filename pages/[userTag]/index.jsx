@@ -23,7 +23,7 @@ export default function Account() {
   const [projects, setProjects] = useState([])
 
   function logout(){
-    localStorage.clear('rb-user');
+    localStorage.clear('revenge-user');
     SetUser(null);
     router.push("/")
   }

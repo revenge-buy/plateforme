@@ -184,7 +184,7 @@ export default function SignUp() {
             firstName: resp.firstName,
             userTag: resp.userTag
           } 
-          localStorage.setItem("rb-user", JSON.stringify(rbUser));
+          localStorage.setItem("revenge-user", JSON.stringify(rbUser));
           SetUser(rbUser)
           router.push("/projects");
         }

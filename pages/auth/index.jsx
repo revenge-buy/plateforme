@@ -51,7 +51,7 @@ export default function Login() {
             email: user.email,
             userTag: resp[0]?.userTag
           }
-          localStorage.setItem("rb-user", JSON.stringify(rbUser));
+          localStorage.setItem("revenge-user", JSON.stringify(rbUser));
           SetUser(rbUser)
           router.push("/projects");
         } else {

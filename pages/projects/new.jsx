@@ -9,7 +9,7 @@ import Link from 'next/link';
 // import Link from "next/link";
 // import login from '../../public/login.jpg'
 
-// const user = localStorage.getItem("rb-user");
+// const user = localStorage.getItem("revenge-user");
 
 
 const metas = {
@@ -57,7 +57,7 @@ export default function NewProjects() {
     // checking fields values
     if(project.name.trim() !== "") {
       // taking user identity
-      const user = localStorage.getItem("rb-user");
+      const user = localStorage.getItem("revenge-user");
 
       // checking if user exists
       if(user) {
@@ -199,7 +199,7 @@ export default function NewProjects() {
                 email: resp.email,
                 firstName: resp.firstName
               } 
-              localStorage.setItem("rb-user", JSON.stringify(rbUser));
+              localStorage.setItem("revenge-user", JSON.stringify(rbUser));
               alert(`Salut ${resp.firstName} !\nCompte créé avec succès`);
               setFastSignOn(false)
               setStep(1)
@@ -219,7 +219,7 @@ export default function NewProjects() {
   async function handleSubmit(e) {
     e.preventDefault()
 
-    const rbUser = JSON.parse(localStorage?.getItem("rb-user"));
+    const rbUser = JSON.parse(localStorage?.getItem("revenge-user"));
     console.log({product})
     if(
       product.description !== "" &&

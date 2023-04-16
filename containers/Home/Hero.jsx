@@ -8,7 +8,7 @@ export default function Hero() {
   const { SetUser } = useContext(AuthContext)
 
   function Go() {
-    const user = localStorage.getItem('rb-user');
+    const user = localStorage.getItem('revenge-user');
     if(!user) {
       location.replace("/auth")
     } else {

@@ -15,7 +15,7 @@ export default function Footer() {
   const { SetUser } = useContext(AuthContext)
 
   function Go(){
-    const user = JSON.parse(localStorage.getItem('rb-user'));
+    const user = JSON.parse(localStorage.getItem('revenge-user'));
 
     if(user !== null) {
       SetUser(user);
@@ -47,7 +47,7 @@ export default function Footer() {
   //   };
   // }
 
-  // const [user, setUser] = useState(WINDOW.localStorage.getItem('rb-user'))
+  // const [user, setUser] = useState(WINDOW.localStorage.getItem('revenge-user'))
   // console.log(user)
 
   return (
