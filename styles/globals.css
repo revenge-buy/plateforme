@@ -4,6 +4,7 @@
 
 :root{
   --color-dark_blue: rgb(27, 30, 50);
+  --color-gray_blue: rgba(27, 30, 50, 0.082);
   --color-gray: rgb(195, 195, 207);
   --color-golf: goldenrod;
 }
@@ -63,7 +64,7 @@ img{
 
 .page{
   margin-top: 70px;
-  margin-bottom: 70px;
+  padding-bottom: 70px;
   box-sizing: border-box;
 }
 
@@ -300,4 +301,59 @@ textarea{
 
 .field-message__wrong{
   color: red;
+}
+
+.insert-box{
+  background-color: rgba(27, 30, 50, 0.082);
+  box-shadow: 0 1px 1px rgba(128, 128, 128, 0.205);
+  width: 100vw;
+  padding: 40px 40px;  
+}
+
+.oblic-line{
+  width: calc(100% + 15px);
+  /* width: 100%; */
+  position: absolute;
+  height: 3px;
+  background-color: white;
+  /* top: 2px; */
+  transform: rotate(45deg);
+}
+
+.offIcon svg{
+  color: rgba(128, 128, 128, 0.342);
+}
+
+
+/* box 2 design */
+.box2{
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+  border: solid var(--color-gray_blue) 1.5px;
+  border-radius: 10px;
+  padding: 3px;
+  background-color: #efefef3b;
+}
+
+.box2 img{
+  border-radius: 10px;
+}
+
+.box2 div{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  letter-spacing: -0.5px;
+  justify-content: space-evenly;
+}
+
+.box2 div h4{
+  font-size: 14px;
+}
+
+.box2 div p{
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--color-gray)
 }

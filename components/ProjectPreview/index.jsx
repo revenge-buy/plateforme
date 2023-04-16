@@ -25,7 +25,7 @@ export default function ProjectPreview({ _id, creator, name, _createdAt, product
             width={40}
             height={40}
             alt={ name }
-            src={creator?.picture ? creator?.picture : "/favicon.png"}
+            src={creator?.picture ? creator?.picture : "/profile.png"}
           />
           <div>
             <h4>{creator && <Link href={`/${creator.userTag}`}>{`${creator?.firstName} ${creator?.lastName}`}</Link>}</h4>
@@ -41,7 +41,7 @@ export default function ProjectPreview({ _id, creator, name, _createdAt, product
           width={400}
           height={300}
           alt={ name }
-          src={productImage ? productImage : "/favicon.png"}
+          src={productImage ? productImage : "/product.jpg"}
         />
         <Link href={`/projects/${_id ? _id : "nothing"}`}>
           <div>

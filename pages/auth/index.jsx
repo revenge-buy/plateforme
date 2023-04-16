@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
+import { AuthContext } from '@/context/auth'
 import client from '@/api/client'
 import Metas from '@/components/Metas'
 import AuthBox from '@/containers/Auth/AuthBox'
 import styles from '@/styles/Auth.module.css'
-import Link from 'next/link'
 
 const metas = {
   title: 'Connexion',
@@ -26,6 +27,7 @@ export default function Login() {
   })
 
   const router = useRouter()
+  const { SetUser } = useContext(AuthContext)
   
   function getUser(e) {
     e.preventDefault();
@@ -47,8 +49,10 @@ export default function Login() {
           let rbUser = {
             firstName: resp[0]?.firstName,
             email: user.email,
+            userTag: resp[0]?.userTag
           }
           localStorage.setItem("rb-user", JSON.stringify(rbUser));
+          SetUser(rbUser)
           router.push("/projects");
         } else {
           setUser((user) => ({ ...user, message: 'Mot de passe incorrecte' }))

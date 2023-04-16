@@ -1,8 +1,11 @@
 import style from "@/styles/Home.module.css"
 import Link from "next/link"
-import { useState } from "react";
+import { useContext } from "react";
+import { AuthContext } from "@/context/auth";
 
 export default function Hero() {
+
+  const { SetUser } = useContext(AuthContext)
 
   function Go() {
     const user = localStorage.getItem('rb-user');
@@ -10,6 +13,7 @@ export default function Hero() {
       location.replace("/auth")
     } else {
       location.replace("/projects/new")
+      SetUser(JSON.parse(user))
     }
   }
 

@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import client from '@/api/client'
 import Metas from '@/components/Metas'
 import AuthBox from '@/containers/Auth/AuthBox'
 import styles from '@/styles/Auth.module.css'
+import { AuthContext } from '@/context/auth'
 
 const metas = {
   title: 'Sign Up',
@@ -30,6 +31,8 @@ export default function SignUp() {
     emailOk: NaN,
     phoneOk: NaN
   })
+
+  const { SetUser } = useContext(AuthContext)
 
   const router = useRouter()
 
@@ -182,6 +185,7 @@ export default function SignUp() {
             userTag: resp.userTag
           } 
           localStorage.setItem("rb-user", JSON.stringify(rbUser));
+          SetUser(rbUser)
           router.push("/projects");
         }
       } catch (error) {

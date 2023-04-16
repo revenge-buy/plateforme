@@ -1,4 +1,6 @@
 import Link from "next/link"
+import { useContext } from "react"
+import { AuthContext } from "@/context/auth"
 // import { useState } from "react";
 import { GiShinyPurse } from "react-icons/gi"
 import { BiMenuAltLeft, BiUser } from "react-icons/bi"
@@ -10,12 +12,14 @@ import { useRouter } from "next/router"
 export default function Footer() {
 
   const router = useRouter()
+  const { SetUser } = useContext(AuthContext)
 
   function Go(){
     const user = JSON.parse(localStorage.getItem('rb-user'));
 
     if(user !== null) {
-      router.push("/account");
+      SetUser(user);
+      router.push(`/account?tag=${user.userTag}`);
     } else {
       router.push("/auth");
     }

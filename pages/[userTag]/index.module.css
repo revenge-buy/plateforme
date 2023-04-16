@@ -1,0 +1,214 @@
+.main{
+  background-color: var(--color-gray_blue);
+}
+
+.main, .main header, .main .top{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.main header{
+  height: 200px;
+  z-index: 1;
+}
+
+.main header div{
+  width: 100vw;
+  height: 100%;
+  background-color: rgb(0, 0, 0);
+  filter:brightness(0.5);
+}
+
+.main header > img{
+  border-radius: 40px;
+  position: absolute;
+  bottom: -20px;
+  border: solid white 2px;
+}
+
+.main header div img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.main .top{
+ gap: 25px;
+ background-color: white;
+ padding: 15px 0;
+ width: 100%;
+}
+
+.main .topInfos{
+  display: flex;
+  margin-top: 10px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.main .topInfos h2{
+  color: var(--color-dark_blue);
+}
+
+.main .topInfos p{
+  letter-spacing: -0.5px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgb(145, 144, 144);
+}
+
+.main .topInfos span{
+  font-size: 13px;
+  margin-top: 15px;
+}
+
+.main .contactInfos{
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.main .contactInfos svg{
+  width: 18px;
+  height: 18px;
+  font-size: 1.2rem;
+}
+
+.main .contactInfos p{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  letter-spacing: -0.5px;
+  font-size: 12px;
+  opacity: 0.8;
+  border: solid 1px var(--color-dark_blue);
+  padding: 5px 15px;
+  border-radius: 5px;
+  width: 150px;
+}
+
+.main .topButtons{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 0 40px;
+  align-items: center;
+  justify-content: center;
+}
+
+.main .topButtons .buttonSet{
+  display: flex;
+  justify-content: space-between;
+  width: 230px;
+  gap: 10px;
+}
+
+.main .topButtons .button, .main .topButtons .miniButton{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: var(--color-dark_blue);
+  padding: 10px 15px;
+  background-color: rgba(27, 30, 50, 0.082);
+  border-radius: 8px;
+  font-weight: bolder;
+  /* font-size: 16px; */
+  /* letter-spacing: -0.5px; */
+}
+
+.main .topButtons .button:last-child{
+  background-color: var(--color-dark_blue);
+  color: white;
+  width: 230px;
+}
+
+.main .topButtons .button:last-child svg{
+  color: white;
+}
+
+.main .buttonSet .button{
+  width: 100%;
+}
+
+.main .topButtons .miniButton{
+  padding: 10px 0px;
+  max-width: 50px;
+  min-width: 50px;
+  position: relative;
+}
+
+/* .main .topButtons .miniButton svg{
+  font-size: 1em
+} */
+
+.main .body{
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.main .body section{
+  width: 100vw;
+  background-color: white;
+  padding: 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.main .body .sectionTop{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: var(--color-dark_blue)
+}
+
+.main .body .sectionTop h3{
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.main .body .sectionTop svg{
+  font-size: 12px;
+}
+
+.main .body .sectionContent{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* .main .body .sectionContent .items{
+  width: 100%;
+  border: solid;
+} */
+
+.main .body .sectionContent .nothingText{
+  color: var(--color-gray_blue)
+}
+
+.main footer{
+  padding: 20px 0;
+}
+
+.main footer button{
+  border: solid var(--color-dark_blue) 2px;
+  color: var(--color-dark_blue);
+  padding: 10px 25px;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}

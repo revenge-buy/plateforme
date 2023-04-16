@@ -26,7 +26,7 @@ export default function Project({ projects }) {
       },
       {
         property: 'og:image',
-        content: project?.product?.productImage || "/favicon.png"
+        content: project?.product?.productImage || "/product.jpg"
       }
     ]
   }
@@ -40,7 +40,7 @@ export default function Project({ projects }) {
           width={100}
           height={100}
           alt={project?.product?.title || "Titre du projet"}
-          src={project?.productImage || "/favicon.png"}
+          src={project?.productImage || "/product.jpg"}
         />
         {imageUp && 
           <div className={`popup ${styles.image_up_wrapper}`}>
@@ -54,7 +54,7 @@ export default function Project({ projects }) {
                 width={800}
                 height={600}
                 alt={project?.product?.title || "Titre du projet"}
-                src={project?.productImage || "/favicon.png"}
+                src={project?.productImage || "/product.jpg"}
               />
               <Link target="_blank" className={styles.image_up_button} href={project?.product?.url}>
                 Voir le produit
@@ -74,7 +74,7 @@ export default function Project({ projects }) {
                     width={800}
                     height={600}
                     alt={project?.product?.title || "Titre du projet"}
-                    src={project?.productImage || "/favicon.png"}
+                    src={project?.productImage || "/product.jpg"}
                   />
                 </div>
                 <Link href={`/${project?.creator?.userTag}`} className={styles.profile}>
@@ -83,7 +83,7 @@ export default function Project({ projects }) {
                     height={200}
                     alt={project?.creator?.firstName || "Titre du projet"}
                     title={project?.creator?.firstName || "Titre du projet"}
-                    src={project?.creator?.picture  || "/favicon.png"}
+                    src={project?.creator?.picture  || "/profile.png"}
                   />
                 </Link>
               </div>
