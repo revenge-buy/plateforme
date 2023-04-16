@@ -331,7 +331,7 @@ export default function NewProjects() {
 
                 <button type="submit" className="submit">Valider</button>
               </form>
-              <Link className="popup-box-footer" href="/auth">J'ai déjà un compte !</Link>
+              <Link className="popup-box-footer" href="/auth">J&apos;ai déjà un compte !</Link>
             </div>
           </div>
         }
