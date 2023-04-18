@@ -342,14 +342,15 @@ textarea{
 
 .box2-blue{
   padding: 0;
+  min-width: 200px;
 }
 
 .box2-blue a{
   color: var(--color-dark_blue);
   display: flex;
-  padding: 5px;
+  padding: 10px;
   justify-content: center;
-  gap: 5px;
+  gap: 15px;
   align-items: center;
   width: 100%;
 }

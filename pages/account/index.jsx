@@ -103,7 +103,7 @@ export default function Account() {
             <h2>{account?.name || ""}</h2>
             <p className='box2 box2-blue'><Link href={`/${account?.userTag || "#"}`}>
               {account?.userTag || "@"}
-              <CgEye />
+              <BsEyeFill />
             </Link></p>
           </div>
           <div className={styles.topButtons}>
@@ -134,13 +134,13 @@ export default function Account() {
                 <div className='box2 p2'>
                   <BsWhatsapp />
                   <div>
-                    <p>{account?.phone}</p>
+                    <p>{account?.phone || "Donnée absente !"}</p>
                   </div>
                 </div>
                 <div className='box2 p2'>
                   <MdOutlineEmail />
                   <div>
-                    <p>{account?.email}</p>
+                    <p>{account?.email || "Donnée absente !"}</p>
                   </div>
                 </div>
               </div>
