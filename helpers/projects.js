@@ -1,41 +1,31 @@
 import client from "@/api/client";
 
-export async function joinProject(userId, projectId, offer){
-  
-  try{
-    const res = client.fetch(`
-      *[_type == "ProjectMembership" && Project._ref == "${projectId}" &&  seller._ref == "${userId}"][0]{
-        _id
+export async function joinProject(userId, projectId, offer, userIsMember){
+    if(!userIsMember){
+      try{
+        const resp = await client.create(
+          {
+            _type: "ProjectMembership",
+            Project: {
+              _type: 'reference',
+              _ref: projectId
+            },
+            seller: {
+              _type: "reference",
+              _ref: userId
+            },
+            offer: parseInt(offer)
+          }
+        )
+      
+        location.replace("/projects/"+projectId)
+        return resp
+      } catch(error) {
+        console.log({ error })
       }
-    `)
-    if (!res){
-      const resp = await client.create(
-        {
-          _type: "ProjectMembership",
-          Project: {
-            _type: 'reference',
-            _ref: projectId
-          },
-          seller: {
-            _type: "reference",
-            _ref: userId
-          },
-          offer: parseInt(offer)
-        }
-      )
-    
-      location.replace("/projects/"+projectId)
-      return resp
     } else {
-      const wantToQuit = prompt("Vous avez déjà rejoint ce groupage !\n Souhaitez vous en sortir ?");
-      if(wantToQuit){
-        deleteMembership(res._id)
-      }
+      alert("Vous êtes déjà membre")
     }
-  } catch(error) {
-    console.log({ error })
-    return null
-  }
 }
 
 export async function updateMembership(_id, quantity){

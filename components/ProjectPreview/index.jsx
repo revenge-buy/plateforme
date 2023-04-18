@@ -81,18 +81,33 @@ export default function ProjectPreview({ _id, creator, name, _createdAt, product
       setJoining(_id);
       if(userIsMember){
         client.fetch(`
-          *[_type == "seller" && email == "${userEmail}"]{
+          *[_type == "project" && _id == "${_id}"][0]{
             _id,
-            "membership": *[_type == "ProjectMembership" && references(^._id)][0]{
+            "memberships": *[_type == "ProjectMembership" && references(^._id)]{
+              seller->{
+                email,
+                userTag,
+                _id
+              },
               _id,
               offer
             } 
-          }[0]
+          }
         `)
         .then(function(resp){
-          setQuantity(resp?.membership?.offer);
-          setMembershipId(resp?.membership?._id);
+          console.log({resp1: resp})
+          resp?.memberships?.map(function(ms){
+            if(ms.seller.email === userEmail){
+              setQuantity(ms?.offer);
+              setMembershipId(ms?._id);
+            }
+          })
         })
+        .catch(function(error){
+          console.log({error1: error})
+        })
+      } else {
+        console.log("user not a member")
       }
     } else {
       location.replace(`/projects/${_id}?edit=true`)
@@ -113,7 +128,7 @@ export default function ProjectPreview({ _id, creator, name, _createdAt, product
           `)
           .then((resp) => {
             userId = resp._id;
-            joinProject(userId, _id, quantity);
+            joinProject(userId, _id, quantity, userIsMember);
           })
           .catch(function(error){
             console.log(error)

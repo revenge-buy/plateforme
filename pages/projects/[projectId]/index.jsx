@@ -100,27 +100,57 @@ export default function Project({ projects }) {
     .catch(function(recallingMembersError){
       console.log({recallingMembersError})
     })
-  }, [userIsMember])
+  }, [userIsMember, userEmail])
   
 
   // run this when user clicks on join button
   function handleOpenJoin(){
     if(!userIsCreator){
       setJoining(true);
+      // if(userIsMember){
+      //   client.fetch(`
+      //     *[_type == "seller" && email == "${userEmail}"]{
+      //       _id,
+      //       "membership": *[_type == "ProjectMembership" && references(^._id)][0]{
+      //         _id,
+      //         offer
+      //       } 
+      //     }[0]
+      //   `)
+      //   .then(function(resp){
+      //     setQuantity(resp?.membership?.offer);
+      //     setMembershipId(resp?.membership?._id);
+      //   })
+      // }
       if(userIsMember){
         client.fetch(`
-          *[_type == "seller" && email == "${userEmail}"]{
+          *[_type == "project" && _id == "${project?._id}"][0]{
             _id,
-            "membership": *[_type == "ProjectMembership" && references(^._id)][0]{
+            "memberships": *[_type == "ProjectMembership" && references(^._id)]{
+              seller->{
+                email,
+                userTag,
+                _id
+              },
               _id,
               offer
             } 
-          }[0]
+          }
         `)
         .then(function(resp){
-          setQuantity(resp?.membership?.offer);
-          setMembershipId(resp?.membership?._id);
+          console.log({resp1: resp})
+          resp?.memberships?.map(function(ms){
+            if(ms.seller.email === userEmail){
+              setQuantity(ms?.offer);
+              setMembershipId(ms?._id);
+            }
+          })
         })
+        .catch(function(error){
+          console.log({error1: error})
+        })
+      } else {
+        console.log("user not a member")
       }
     } else {
       router.push(`/projects/${project?._id}?edit=true`)
@@ -141,7 +171,7 @@ export default function Project({ projects }) {
           `)
           .then((resp) => {
             userId = resp._id;
-            joinProject(userId, project?._id, quantity);
+            joinProject(userId, project?._id, quantity, userIsMember);
             setJoining(false)
           })
           .catch(function(error){
