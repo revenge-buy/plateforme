@@ -34,7 +34,7 @@ export default function Account() {
     async function getAccount(){
       try{
         const resp = await client.fetch(`
-          * [_type == "seller" && userTag == "${tag}"]{
+          *[_type == "seller" && userTag == "${tag}"]{
             "name": firstName+" "+lastName,
             userTag,
             email,
@@ -85,7 +85,7 @@ export default function Account() {
         <header>
           <div>
             <Image
-              src={account?.cover || "/cover.png"}
+              src={account?.cover || "/cover.jpg"}
               width={500}
               height={500}
               alt="mon alt"
@@ -101,7 +101,7 @@ export default function Account() {
         <div className={styles.top}>
           <div className={styles.topInfos}>
             <h2>{account?.name || ""}</h2>
-            <p>{account?.userTag || "@"}</p>
+            <p className='box2'><Link href={`/${account?.userTag || "#"}`}>{account?.userTag || "@"}</Link></p>
           </div>
           <div className={styles.topButtons}>
             <div className={styles.buttonSet}>
