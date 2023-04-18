@@ -32,6 +32,7 @@ export async function updateMembership(_id, quantity){
   try {
     const updated = client.patch(_id).set({offer: quantity}).commit()
     console.log({updated})
+    location.reload;
     return updated;
   } catch (error) {
     console.log({ error })

@@ -340,6 +340,24 @@ textarea{
   width: 100%;
 }
 
+.box2-blue{
+  padding: 0;
+}
+
+.box2-blue a{
+  color: var(--color-dark_blue);
+  display: flex;
+  padding: 5px;
+  justify-content: center;
+  gap: 5px;
+  align-items: center;
+  width: 100%;
+}
+
+.box2-blue svg{
+  font-size: 1rem;
+}
+
 .box2-red{
   border-color: rgba(255, 0, 0, 0.411);
   background-color: rgba(255, 0, 0, 0.068);

@@ -6,7 +6,7 @@ import { BiPlus } from 'react-icons/bi'
 import { RiVipCrown2Fill, RiGroupFill, RiAlertFill } from 'react-icons/ri'
 import { SlArrowDown } from 'react-icons/sl'
 import { RiUserFollowFill } from 'react-icons/ri'
-import { BsActivity, BsWhatsapp } from 'react-icons/bs'
+import { BsActivity, BsEye, BsEyeFill, BsEyeSlashFill, BsWhatsapp } from 'react-icons/bs'
 
 
 import styles from './index.module.css'
@@ -15,7 +15,7 @@ import client from '@/api/client'
 import Link from 'next/link'
 import { MdContactPage, MdContacts, MdDangerous, MdDelete, MdEmail, MdOutlineDangerous, MdOutlineEmail, MdSecurity } from 'react-icons/md'
 import { GiSilence } from 'react-icons/gi'
-import { CgDanger } from 'react-icons/cg'
+import { CgDanger, CgEye } from 'react-icons/cg'
 
 export default function Account() {
 
@@ -101,7 +101,10 @@ export default function Account() {
         <div className={styles.top}>
           <div className={styles.topInfos}>
             <h2>{account?.name || ""}</h2>
-            <p className='box2'><Link href={`/${account?.userTag || "#"}`}>{account?.userTag || "@"}</Link></p>
+            <p className='box2 box2-blue'><Link href={`/${account?.userTag || "#"}`}>
+              {account?.userTag || "@"}
+              <CgEye />
+            </Link></p>
           </div>
           <div className={styles.topButtons}>
             <div className={styles.buttonSet}>
@@ -114,10 +117,10 @@ export default function Account() {
                 <div className='oblic-line'></div>
               </button>
             </div>
-            <button className={styles.button}>
+            <Link href="/projects/new" className={styles.button}>
               Ajouter un groupage !
               <BiPlus />
-            </button>
+            </Link>
           </div>
         </div>
         <div className={`${styles.body}`}>

@@ -7,7 +7,7 @@ import { RiVipCrown2Fill, RiGroupFill } from 'react-icons/ri'
 import { SlArrowDown } from 'react-icons/sl'
 import { RiUserFollowFill } from 'react-icons/ri'
 import { BsActivity } from 'react-icons/bs'
-import { MdJoinInner } from 'react-icons/md'
+import { MdJoinInner, MdSettings } from 'react-icons/md'
 
 
 
@@ -22,6 +22,7 @@ export default function Account() {
   const tag = router.query.userTag;
   
   const [account, setAccount] = useState({})
+  const [accIsUser, setAccIsUser] = useState(false)
   const [projects, setProjects] = useState([])
   const [joinedProjects, setJoinedProjects] = useState([])
 
@@ -66,6 +67,13 @@ export default function Account() {
             picture: resp?.picture,
             cover: resp?.cover,
           }})
+          const user = JSON.parse(localStorage.getItem('revenge-user'))
+
+          if(user && user.userTag === resp?.userTag){
+            setAccIsUser(true)
+          } else {
+            setAccIsUser(false)
+          }
 
           setProjects(resp?.projects)
           setJoinedProjects(resp?.joinedProjects)
@@ -122,9 +130,14 @@ export default function Account() {
                 <div className='oblic-line'></div>
               </button>
             </div> */}
-            <button className={styles.button}>
-              Suivre {account?.name?.split(" ")[0]}
-            </button>
+            {!accIsUser
+              ?<button className={styles.button}>
+                Suivre {account?.name?.split(" ")[0]}
+              </button>
+              : <Link className={styles.button} href={`/account?tag=${account.userTag}`}>
+                <MdSettings /> paramètres
+              </Link>
+            }
           </div>
           {/* <div className={`insert-box ${styles.contactInfos}`}>
             <p>

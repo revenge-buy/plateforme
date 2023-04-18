@@ -186,7 +186,7 @@ export default function SignUp() {
           } 
           localStorage.setItem("revenge-user", JSON.stringify(rbUser));
           SetUser(rbUser)
-          router.push("/projects");
+          router.push(`/account?tag=${resp.userTag}`);
         }
       } catch (error) {
         alert("Une erreur s'est produite lors de la création de votre compte !")
