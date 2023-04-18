@@ -23,6 +23,7 @@ export default function Account() {
   
   const [account, setAccount] = useState({})
   const [projects, setProjects] = useState([])
+  const [joinedProjects, setJoinedProjects] = useState([])
 
   function logout(){
     localStorage.clear('revenge-user');
@@ -45,6 +46,14 @@ export default function Account() {
               "description": *[_type == "product" && references(^._id)][0].description,
               "image": *[_type == "product" && references(^._id)][0].image.asset->url
             }[0...3],
+            "joinedProjects": *[_type == "ProjectMembership" && references(^._id)][0...3]{
+              Project->{
+                _id,
+                name,
+                "description": *[_type == "product" && references(^._id)][0].description,
+                "image": *[_type == "product" && references(^._id)][0].image.asset->url
+              }
+            }.Project
           }[0]
         `)
 
@@ -59,6 +68,8 @@ export default function Account() {
           }})
 
           setProjects(resp?.projects)
+          setJoinedProjects(resp?.joinedProjects)
+          console.log({ joinedProjects })
         }
       } catch (error) {
         console.log({ error })
@@ -162,7 +173,27 @@ export default function Account() {
               <p><SlArrowDown /></p>
             </div>
             <div className={styles.sectionContent}>
-              <p className={styles.nothingText}>Rien pour le moment !</p>
+              {joinedProjects.length > 0 ?
+                <div className={styles.items}>
+                  {joinedProjects.map(function(project, index){
+                    return (
+                      <Link className='box2' href={`/projects/${project._id || ""}`} key={index}>
+                        <Image 
+                          width={80}
+                          height={80}
+                          src={project?.image || "/product.jpg"}
+                          alt="mon alt"
+                        />
+                        <div>
+                          <h4>{project.name || ""}</h4>
+                          <p>{project.description || ""}</p>
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
+                :<p className={styles.nothingText}>Rien pour le moment !</p>
+              }
             </div>
           </section>
           <section>

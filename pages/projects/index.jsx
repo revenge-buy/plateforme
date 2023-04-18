@@ -68,7 +68,7 @@ export async function getServerSideProps({ req, res }) {
             realUnitValue,
             projectUnitValue
           },
-          "productImage": *[_type == "product" && references(^._id)][0].image.asset->url
+          "productImage": *[_type == "product" && references(^._id)][0].image.asset->url,
         }
       `
     );

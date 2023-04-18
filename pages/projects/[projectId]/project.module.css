@@ -251,4 +251,102 @@
   align-items: center;
   gap: 10px;
   box-shadow: 0 0 20px rgba(128, 128, 128, 0.548);
-} 
+}
+
+.pageBottom{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+  width: 100%;
+}
+
+.knownMembers{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  align-items: flex-start;
+}
+
+.knownMembers > h4{
+  border: solid 2px white;
+  padding: 5px 10px;
+  border-radius: 50px;
+}
+
+.knownMembers > h4 span{
+  background-color: white;
+  color: var(--color-dark_blue);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50px;
+  height: 20px;
+  min-width: 20px;
+  width: max-content;
+  line-height: 20px;
+}
+
+.knownMembers .members{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px;
+  align-items: center;
+}
+
+.members > div{
+  position:relative;
+  align-items: center;
+}
+
+.memberOffer{
+  letter-spacing: -0.5px;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  font-size: 14px;
+  color: goldenrod
+}
+
+.memberOffer svg{
+  color: goldenrod;
+  font-size: 0.8rem;
+}
+
+.memberTrash{
+  position: absolute;
+  right: 20px;
+}
+
+.memberTrash p.myMemberOffer{
+  color: goldenrod;
+  font-size: 14px;
+  border: solid goldenrod 2px;
+  padding: 5px 10px;
+  border-radius: 50px;
+}
+
+.anonymeMembers{
+  color: rgb(165, 165, 165);
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.anonymeMembers button{
+  background-color:var(--color-dark_blue) ;
+  color:goldenrod ;
+  padding: 10px 20px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.anonymeMembers button svg{
+  color: goldenrod
+}

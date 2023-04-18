@@ -130,12 +130,14 @@ textarea{
   font-weight: bolder;
   font-size: 14px;
   /* color:#666; */
+  color: var(--color-dark_blue)
 }
 
 .input-set > p{
   font-size: 10px;
   text-align: left;
   font-weight: 500;
+  color: var(--color-dark_blue)
 }
 
 .input{
@@ -229,6 +231,7 @@ textarea{
   width: 100%;
   z-index: 1;
   background-color: rgba(0, 0, 0, 0.5);
+  color: white;
 }
 
 .popup-header svg{
@@ -346,8 +349,9 @@ textarea{
   color: rgba(255, 0, 0, 0.87);
 }
 
-.box2 img{
+.box2 img, .box2 .image{
   border-radius: 10px;
+  display: block;
 }
 
 .box2 div{
@@ -377,4 +381,43 @@ textarea{
 }
 .p2{
   padding: 10px 25px;
+}
+
+.btn-share{
+  background: linear-gradient(-30deg, var(--color-dark_blue), goldenrod);
+  /* background-size: 200% 200%; */
+  /* animation: gradient 10s ease infinite; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  gap: 20px;
+  padding: 10px 30px;
+  font-weight: bolder;
+  font-size: 16px;
+  text-transform: uppercase;
+  border-radius: 50px;
+  box-shadow: 5px 5px 5px black;
+  font-family: Poppins;
+}
+
+.btn-share svg{
+  color: white;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+    transform: rotateX(-20deg);
+    color: white;
+  }
+
+  100% {
+    background-position: 0% 100%;
+  }
 }

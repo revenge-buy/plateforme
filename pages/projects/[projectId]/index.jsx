@@ -3,17 +3,168 @@ import Metas from '@/components/Metas';
 import client from '@/api/client';
 import Image from 'next/image';
 
-import { FaSortAmountUp } from 'react-icons/fa'
-import { GiPriceTag } from 'react-icons/gi'
+import { FaFirstOrder, FaSortAmountDownAlt, FaSortAmountUp } from 'react-icons/fa'
+import { GiConsoleController, GiPodiumWinner, GiPriceTag, GiPrivateFirstClass } from 'react-icons/gi'
 import { TbDiscountCheckFilled, TbInfoSquareRoundedFilled, TbOutbound } from 'react-icons/tb'
 import { RiUserFollowFill, RiCloseLine } from 'react-icons/ri'
-import { MdJoinInner } from 'react-icons/md'
+import { MdJoinInner, MdOutlineProductionQuantityLimits } from 'react-icons/md'
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { CgClose, CgRowFirst } from 'react-icons/cg';
+import { deleteMembership, joinProject, updateMembership } from '@/helpers/projects';
+import { BiFirstAid, BiFirstPage, BiShare, BiTrash } from 'react-icons/bi';
+import { BsShare } from 'react-icons/bs';
  
 export default function Project({ projects }) {
   const project = projects[0];
-  console.log({ project })
+  const [joining, setJoining] = useState(false)
+  const [quantity, setQuantity] = useState(NaN)
+  const [userEmail, setUserEmail] = useState("")
+  const [members, setMembers] = useState([])
+  const [fullMembers, setFullMembers] = useState([])
+  const [userIsMember, setUserIsMember] = useState(false)
+  const [userIsCreator, setUserIsCreator] = useState(false)
+  const [membershipId, setMembershipId] = useState("") 
+  
+  const router = useRouter()
+
+  // run this to update membership status when the page loads for the firs time
+  useEffect(() => {
+    client.fetch(`
+    *[_type == "project" && _id == "${project?._id}"][0]{
+      _id,
+      "members": *[_type == "ProjectMembership" && references(^._id)]{
+        seller->{
+          email
+        }
+      }
+    }
+    `)
+    .then(function(resp){
+      console.log({ resp })
+      setMembers(resp?.members)
+      console.log({members})
+    })
+    .catch(function(error){
+      console.log({ error })
+    })
+  }, [router])
+
+  // Run this after we've found the members list of the project, in other to determine if the current user is part of them
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('revenge-user'))
+
+    if(user){
+      if(user.userTag !== project?.creator?.userTag){
+        setUserEmail(user.email)
+        console.log({ userEmail })
+        const filteredMembers = members?.filter(function(member){ return member?.seller?.email === user.email });
+        console.log({filteredMembers})
+    
+        if(filteredMembers.length > 0){
+          setUserIsMember(true)
+          console.log({userIsMember})
+        }
+      } else {
+        setUserIsCreator(true)
+       }
+    } 
+    
+  }, [members])
+
+  // run this if user is project member
+  useEffect(() => {
+    client.fetch(`
+      *[_type == "project" && _id == "${project?._id}"][0]{
+        _id,
+        "memberships": *[_type == "ProjectMembership" && references(^._id)]{
+          seller->{
+            userTag,
+            email,
+            "name": firstName + " " + lastName,
+            "picture": profilPicture.asset->url
+          },
+          _createdAt,
+          offer,
+          _id
+        }
+      }
+    `)
+    .then(function(resp){
+      console.log({fullMembers: resp})
+      setFullMembers(resp?.memberships)
+      console.log({fullStateMembers: fullMembers})
+    })
+    .catch(function(recallingMembersError){
+      console.log({recallingMembersError})
+    })
+  }, [userIsMember])
+  
+
+  // run this when user clicks on join button
+  function handleOpenJoin(){
+    if(!userIsCreator){
+      setJoining(true);
+      if(userIsMember){
+        client.fetch(`
+          *[_type == "seller" && email == "${userEmail}"]{
+            _id,
+            "membership": *[_type == "ProjectMembership" && references(^._id)][0]{
+              _id,
+              offer
+            } 
+          }[0]
+        `)
+        .then(function(resp){
+          setQuantity(resp?.membership?.offer);
+          setMembershipId(resp?.membership?._id);
+        })
+      }
+    } else {
+      router.push(`/projects/${project?._id}?edit=true`)
+    }
+  }
+
+  function handleJoin(){
+    const user = JSON.parse(localStorage.getItem("revenge-user"))
+    let userId = ""
+
+    if (quantity > 1) {
+      if(user?.email){
+        if(!userIsMember){
+          client.fetch(`
+            *[_type == "seller" && email == "${user?.email}"]{
+              _id
+            }[0]
+          `)
+          .then((resp) => {
+            userId = resp._id;
+            joinProject(userId, project?._id, quantity);
+            setJoining(false)
+          })
+          .catch(function(error){
+            console.log(error)
+          })
+        } else {
+          updateMembership(membershipId, quantity);
+          setJoining(false)
+        }
+      }
+    } else {
+      alert("Vous devez acheter au minimum 1e unité pour rejoindre ce projet !")
+    }
+
+  }
+
+  function handleLeaveProject(){
+    deleteMembership(membershipId);
+    setJoining(false)
+    setUserIsMember(false)
+
+  }
+
 
   const [imageUp, setImageUp] = useState(false)
 
@@ -63,6 +214,29 @@ export default function Project({ projects }) {
             </div>
           </div>
         }
+        {joining &&
+          <div className="popup">
+            <div className="popup-header" onClick={function(){setJoining(false)}}>
+                <h4>Combien en voulez vous ?</h4>
+              <CgClose />
+            </div>
+            <div className="popup-box">
+              <form action="">
+                <div className="input-set">
+                  <label htmlFor="">Quantité</label>
+                  <input className="input-set input" type="number" value={quantity} onChange={function(e){setQuantity(parseInt(e.target.value))}} placeholder="Combien en voulez vous ?" />
+                  <p>Cela vous fera : {project?.product?.projectUnitValue * parseInt(quantity) || "0"} XAF</p>
+                </div>
+                <div className="input-set">
+                  <div className="submit" onClick={handleJoin}>{userIsMember ? "Modifier" : "Rejoindre"}</div>
+                </div>
+              </form>
+            </div>
+            {userIsMember && <div className="popup-box-footer" onClick={handleLeaveProject}>
+              Quitter le projet
+            </div>}
+          </div>
+        }
         <div className={styles.content}>
           <div className={styles.contentBg}></div>
           <div className={styles.contentWrapper}>
@@ -106,9 +280,9 @@ export default function Project({ projects }) {
             </div>
             <div className='separator1' />
             <div className={styles.buttons}>
-              <button>
+              <button onClick={handleOpenJoin}>
                 <MdJoinInner />
-                Rejoindre
+                {userIsMember ? "Mon offre" : userIsCreator ? "Éditer" : "Rejoindre"}
               </button>
               <button>
                 <RiUserFollowFill />
@@ -122,6 +296,54 @@ export default function Project({ projects }) {
                 Voir le produit
                 <TbOutbound /> 
               </Link>
+            </div>
+            <div className='separator1'/>
+            <div className={styles.pageBottom}>
+              {userIsMember || userIsCreator ?
+              <div className={styles.knownMembers}>
+                <h4><span>{members.length}</span> Participant{members.length>1 && "s"}</h4>
+                <div className={styles.members}>
+                  {fullMembers.map(function({ seller, _createdAt, offer, _id }, index){
+                    return(
+                      <div className="box2" key={index} onClick={seller?.email === userEmail && handleOpenJoin}>
+                        <Link href={`/${seller?.userTag}`} className="image">
+                          <Image 
+                            width={80}
+                            height={80}
+                            alt="membre"
+                            src={seller?.picture || "/profile.png"}
+                          />
+                        </Link>
+                        <div>
+                          <h4>{seller?.name || ""}</h4>
+                          <p>{_createdAt || ""}</p>
+                          {userIsCreator &&
+                            <span className={styles.memberOffer}>
+                              <MdOutlineProductionQuantityLimits />
+                              {offer}
+                            </span>
+                          }
+                        </div>
+                        {
+                          userIsCreator ? 
+                          <div className={`box2-red ${styles.memberTrash}`} onClick={function(){deleteMembership(_id)}}>
+                            <BiTrash />
+                          </div> :
+                          seller?.email === userEmail && <div className={styles.memberTrash}>
+                            <p className={styles.myMemberOffer}>{offer}</p>
+                          </div>
+                        }
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+              : <p className={styles.anonymeMembers}>
+                  {members.length === 0 ? "Aucun" : members.length} participants
+                  {members.length === 0 && <button onClick={handleOpenJoin}><GiPodiumWinner /> Soyez le premier</button>}
+                </p>
+              }
+              <button className="btn-share"><BsShare /> Partager</button>
             </div>
           </div>
         </div>
