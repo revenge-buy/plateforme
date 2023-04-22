@@ -3,17 +3,17 @@ import Metas from '@/components/Metas';
 import client from '@/api/client';
 import Image from 'next/image';
 
-import { FaFirstOrder, FaSortAmountDownAlt, FaSortAmountUp } from 'react-icons/fa'
-import { GiConsoleController, GiPodiumWinner, GiPriceTag, GiPrivateFirstClass } from 'react-icons/gi'
+import { FaSortAmountUp } from 'react-icons/fa'
+import { GiPodiumWinner, GiPriceTag } from 'react-icons/gi'
 import { TbDiscountCheckFilled, TbInfoSquareRoundedFilled, TbOutbound } from 'react-icons/tb'
 import { RiUserFollowFill, RiCloseLine } from 'react-icons/ri'
 import { MdJoinInner, MdOutlineProductionQuantityLimits } from 'react-icons/md'
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { CgClose, CgRowFirst } from 'react-icons/cg';
+import { CgClose } from 'react-icons/cg';
 import { deleteMembership, joinProject, updateMembership } from '@/helpers/projects';
-import { BiFirstAid, BiFirstPage, BiShare, BiTrash } from 'react-icons/bi';
+import { BiTrash } from 'react-icons/bi';
 import { BsShare } from 'react-icons/bs';
  
 export default function Project({ projects }) {
@@ -29,7 +29,7 @@ export default function Project({ projects }) {
   
   const router = useRouter()
 
-  // run this to update membership status when the page loads for the firs time
+  // run this to update membership status when the page loads for the 
   useEffect(() => {
     client.fetch(`
     *[_type == "project" && _id == "${project?._id}"][0]{
@@ -76,7 +76,7 @@ export default function Project({ projects }) {
 
   // run this if user is project member
   useEffect(() => {
-    client.fetch(`
+    userIsMember && client.fetch(`
       *[_type == "project" && _id == "${project?._id}"][0]{
         _id,
         "memberships": *[_type == "ProjectMembership" && references(^._id)]{
@@ -105,55 +105,49 @@ export default function Project({ projects }) {
 
   // run this when user clicks on join button
   function handleOpenJoin(){
-    if(!userIsCreator){
-      setJoining(true);
-      // if(userIsMember){
-      //   client.fetch(`
-      //     *[_type == "seller" && email == "${userEmail}"]{
-      //       _id,
-      //       "membership": *[_type == "ProjectMembership" && references(^._id)][0]{
-      //         _id,
-      //         offer
-      //       } 
-      //     }[0]
-      //   `)
-      //   .then(function(resp){
-      //     setQuantity(resp?.membership?.offer);
-      //     setMembershipId(resp?.membership?._id);
-      //   })
-      // }
-      if(userIsMember){
-        client.fetch(`
-          *[_type == "project" && _id == "${project?._id}"][0]{
-            _id,
-            "memberships": *[_type == "ProjectMembership" && references(^._id)]{
-              seller->{
-                email,
-                userTag,
-                _id
-              },
+    // checking if user is logged in
+    if(userEmail !== ""){
+      // if user is project autor, do this :
+      if(!userIsCreator){
+        setJoining(true);
+        if(userIsMember){
+          client.fetch(`
+            *[_type == "project" && _id == "${project?._id}"][0]{
               _id,
-              offer
-            } 
-          }
-        `)
-        .then(function(resp){
-          console.log({resp1: resp})
-          resp?.memberships?.map(function(ms){
-            if(ms.seller.email === userEmail){
-              setQuantity(ms?.offer);
-              setMembershipId(ms?._id);
+              "memberships": *[_type == "ProjectMembership" && references(^._id)]{
+                seller->{
+                  email,
+                  userTag,
+                  _id
+                },
+                _id,
+                offer
+              } 
             }
+          `)
+          .then(function(resp){
+            console.log({resp1: resp})
+            resp?.memberships?.map(function(ms){
+              if(ms.seller.email === userEmail){
+                setQuantity(ms?.offer);
+                setMembershipId(ms?._id);
+              }
+            })
           })
-        })
-        .catch(function(error){
-          console.log({error1: error})
-        })
+          .catch(function(error){
+            console.log({error1: error})
+          })
+        } else {
+          console.log("user not a member")
+        }
       } else {
-        console.log("user not a member")
+        router.push(`/projects/${project?._id}?edit=true`)
       }
     } else {
-      router.push(`/projects/${project?._id}?edit=true`)
+      // if user is not logged in go to log in page
+      alert("Vous n'êtes pas connecté !")
+      router.push("/auth");
+
     }
   }
 

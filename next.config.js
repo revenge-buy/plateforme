@@ -27,6 +27,7 @@ const nextConfig = {
         pathname: '/images/v9fy5pyd/**',
       },
     ],
+    domains: ['cdn.sanity.io']
   },
 }
 

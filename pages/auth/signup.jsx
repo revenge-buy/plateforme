@@ -25,7 +25,6 @@ export default function SignUp() {
     firstName: "",
     lastName: "",
     phone: NaN,
-    prevUserTag: "",
     userTag: "",
     tagOk: NaN,
     emailOk: NaN,
@@ -43,7 +42,7 @@ export default function SignUp() {
 
     user.userTag !== "" &&
     user.userTag !== "@" &&
-    user.userTag !== user.prevUserTag &&
+    !user.tagOk &&
     client.fetch(
       `
         * [_type == "seller" && userTag == "${user.userTag}"]{
@@ -158,8 +157,18 @@ export default function SignUp() {
   async function createUser(e) {
     e.preventDefault();
 
+    let _user = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      password: user.password,
+      confirmPassword: user.confirmPassword,
+      uesrTag: user.userTag,
+      phone: user.phone,
+      email: user.email
+    }
+
     if (
-      checkFields(user)
+      checkFields(_user)
       && checkPasswords()
       && user.tagOk
       && user.emailOk
