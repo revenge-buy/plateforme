@@ -24,6 +24,7 @@ export default function Account() {
   const [editor, setEditor] = useState(null)
   const [file, setFile] = useState(null);
   const [fileDataURL, setFileDataURL] = useState(null);
+  // used in pupup, in case if fileDataURL is null
   const [popImage, setPopImage] = useState(null)
 
   function logout(){

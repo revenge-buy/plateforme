@@ -6,6 +6,7 @@ import AuthBox from "@/containers/Auth/AuthBox";
 // import Image from "next/image";
 import { useState } from "react";
 import Link from 'next/link';
+import DragAndDrop from '@/components/DragAndDrop/DragAndDrop';
 // import Link from "next/link";
 // import login from '../../public/login.jpg'
 
@@ -33,6 +34,8 @@ export default function NewProjects() {
     emailOk: null,
   })
 
+  const [file, setFile] = useState(null);
+
   const [step, setStep] = useState(0)
 
   const [project, setProject] = useState({
@@ -42,7 +45,6 @@ export default function NewProjects() {
 
   const [product, setProduct] = useState({
     title: "",
-    // image: "",
     description: "",
     // source: "",
     realUnitValue: NaN,
@@ -253,33 +255,45 @@ export default function NewProjects() {
             )
             if (newProject) {
               console.log({newProject})
-              try {
-                const newProduct = await client.create(
-                  {
-                    _type: "product",
-                    project: {
-                      _type: 'reference',
-                      _ref: newProject._id
-                    },
-                    title: product.title.trim(),
-                    // image: "",
-                    description: product.description.trim(),
-                    // source: "",
-                    realUnitValue: parseFloat(product.realUnitValue),
-                    projectUnitValue: parseFloat(product.projectUnitValue),
-                    url: product.url.trim(),
-                    quantity: parseInt(product.quantity),
-                    discount: 0
+              client.assets
+              .upload('image', file, {
+                contentType: file.type,
+                filename: file.name
+              })
+              .then(async function(imageAsset){
+                try {
+                  const newProduct = await client.create(
+                    {
+                      _type: "product",
+                      project: {
+                        _type: 'reference',
+                        _ref: newProject._id
+                      },
+                      title: product.title.trim(),
+                      description: product.description.trim(),
+                      realUnitValue: parseFloat(product.realUnitValue),
+                      projectUnitValue: parseFloat(product.projectUnitValue),
+                      url: product.url.trim(),
+                      quantity: parseInt(product.quantity),
+                      discount: 0,
+                      image: {
+                        _type: 'image',
+                        asset: {
+                          _type: "reference",
+                          _ref: imageAsset?._id
+                        }
+                      }
+                    }
+                  )
+                  if(newProduct) {
+                    console.log({newProduct});
+                    location.replace(`/projects/${newProject._id}`);
                   }
-                )
-                if(newProduct) {
-                  console.log({newProduct});
-                  location.replace(`/projects/${newProject._id}`);
+                } catch (error) {
+                  alert("Une erreur est survenue lors de l'ajout du produit.\nVeuillez réessayer plus tard ou vérifier vos informations !");
+                  console.log("prod pb")
                 }
-              } catch (error) {
-                alert("Une erreur est survenue lors de l'ajout du produit.\nVeuillez réessayer plus tard ou vérifier vos informations !");
-                console.log("prod pb")
-              }
+              })
             } else {
               alert("Une erreur est survenue lors de la création du projet")
             }
@@ -390,6 +404,15 @@ export default function NewProjects() {
                         placeholder="Nommez votre produit"
                         value={product.title}
                         onChange={handleChange}
+                      />
+                    </div>
+
+                    <div className="input-set">
+                      <DragAndDrop
+                        file={file}
+                        setFile={setFile}
+                        title="Photo de produit"
+                        text="En choisissant cette image, vous assumez qu'il s'agit bien de celle de votre produit, soit que vous détenez, soit que vous avez repéré sur une plateforme de vente populaire !"
                       />
                     </div>
 

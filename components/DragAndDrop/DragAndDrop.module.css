@@ -1,0 +1,64 @@
+.dragBox{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.dragBox .dragBoxContent{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+  width: 300px;
+  height: 300px;
+  justify-content: center;
+  box-shadow: 0 0 5px gray;
+  background-color: rgb(235, 235, 235);
+  border: solid white 5px;
+  border-radius: 100%;
+}
+
+.dragBox .dragBoxContent input,
+.dragBox .dragBoxContent img{
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.dragBox .dragBoxContent input{
+  opacity: 0;
+  z-index: 10;
+}
+
+.dragBox .dragBoxContent .dragButton{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-evenly;
+  letter-spacing: -0.5px;
+  background-color: black;
+  padding: 10px 15px;
+  border-radius: 5px;
+  color: white;
+  position: relative;
+  z-index: 1;
+}
+
+.dragBox .dragBoxContent .dragButton2{
+  position: absolute;
+  bottom: 85%;
+  right: 30px;
+  display: flex;
+  width: 50px;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 0 5px gray;
+  border-radius: 50px;
+  padding: 5px;
+}
