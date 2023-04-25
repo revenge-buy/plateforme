@@ -58,7 +58,7 @@ const DragAndDrop = ({ file, setFile, title, text }) => {
             !fileDataUrl
             ? <div>
                 <h4>Attention</h4>
-                <p>Une erreur s'est produite lors du chargement de votre image</p>
+                <p>Une erreur s&apos;est produite lors du chargement de votre image</p>
                 <span className={`${styles.dragButton}`}>
                   <input type="file" accept='image/*' name="cover" multiple={false} onChange={setPicture} />
                   <p>Recommencer !</p>
