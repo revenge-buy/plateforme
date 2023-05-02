@@ -8,18 +8,34 @@
   color: white;
 }
 
+.exploder:hover span{
+}
+
 .exploder:hover .span1{
+  animation: spinner 20ms 20;
   transform: rotate(-15deg);
 }
 
 .exploder:hover .span2{
+  animation: spinner 30ms 20;
   transform: rotate(25deg) translate(0, 7px);
 }
 
 .exploder:hover .span3{
+  animation: spinner 40ms 20;
   transform: rotate(10deg) translate(0, 2px);
 }
 
 .exploder:hover .span0{
+  animation: spinner 50ms 20;
   transform: rotate(-5deg) translate(0, -4px);
+}
+
+@keyframes spinner {
+  0%{
+    transform: rotate(0)
+  }
+  100%{
+    transform: rotate(360deg);
+  }
 }

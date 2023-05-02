@@ -1,4 +1,11 @@
 .advantages{
   gap: 35px;
   flex-direction: column;
+  align-items: center;
+}
+
+.advantages .advantage{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

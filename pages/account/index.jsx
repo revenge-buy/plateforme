@@ -269,7 +269,7 @@ export default function Account() {
               </button>
             </div>
             <Link href="/projects/new" className={styles.button}>
-              Ajouter un groupage !
+              Ajouter un groupage
               <BiPlus />
             </Link>
           </div>

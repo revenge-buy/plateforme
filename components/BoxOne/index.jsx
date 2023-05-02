@@ -1,18 +1,30 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
-import { BiGroup, BiTime } from 'react-icons/bi'
+import { useRouter } from 'next/router'
+import React, { useContext } from 'react'
+import { BiGroup, BiPhone, BiTime } from 'react-icons/bi'
 import { GiPriceTag } from 'react-icons/gi'
-import Logo from '../Logo/Logo'
+
 import style from './style.module.css'
+import Logo from '../Logo/Logo'
+import { BsPhone, BsPhoneFill } from 'react-icons/bs'
+import { AuthContext } from '@/context/auth'
 
 const BoxOne = ({title, text, type, button, dark}) => {
+  const router = useRouter()
+
+  const { SetUser } = useContext(AuthContext)
+  const click = () => {
+    return button?.onClick(router, SetUser)
+  }
+
   return (
     <div className={`${dark && style.boxOneDark} ${style.boxOne}`}>
       {
         type === "price" ? <GiPriceTag /> :
         type === "group" ? <BiGroup /> :
         type === "time" ? <BiTime /> :
+        type === "phone" ? <BsPhone /> :
         <Logo />
       }
       <h5>{title}</h5>
@@ -20,7 +32,7 @@ const BoxOne = ({title, text, type, button, dark}) => {
       {button.type === "action" ?
         <button
           className={style.boxOneButton}
-          onClick={function(){button?.onClick} || null}
+          onClick={click || null}
         >
           {button?.text || "cliquez !"}
         </button> :

@@ -1,0 +1,4 @@
+.stepsList{
+  gap: 40px;
+  flex-direction: column;
+}

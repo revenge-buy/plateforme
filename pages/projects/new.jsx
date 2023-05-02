@@ -350,7 +350,7 @@ export default function NewProjects() {
           </div>
         }
         <AuthBox
-          title="Nouveau Projet" text="Créez votre projet de groupage en 5 minutes !"
+          title="Nouveau Groupage" text="Créez votre groupage en 5 minutes !"
           component={
             <form>
               {
@@ -358,7 +358,7 @@ export default function NewProjects() {
                 <section>
                   <div className="form-step-header">
                     <h3><p>01</p><span>(1 min)</span></h3>
-                    <p>Définissez votre Projet</p>
+                    <p>Définissez votre groupage</p>
                   </div>
 
                   <div>
