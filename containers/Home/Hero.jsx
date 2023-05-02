@@ -45,8 +45,8 @@ export default function Hero() {
             </Link>
           </button>
           <button>
-            <Link href="#advantage">
-              Je comprend pas bien !
+            <Link href="#advantages">
+              C'est quoi l'avantage ?
               <BiInfoSquare />
             </Link>
           </button>

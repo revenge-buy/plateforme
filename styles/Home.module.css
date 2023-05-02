@@ -143,11 +143,11 @@
 } */
 
 .home .homeContent{
-  margin-top: 30px;
+  margin-top: 0;
   margin-bottom: 70px;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 0px;
 }
 
 .home .homeContent h4{

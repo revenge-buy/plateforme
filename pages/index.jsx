@@ -1,7 +1,7 @@
 import Image from 'next/image'
 
 import Metas from '@/components/Metas'
-import { Hero, Steps, Advantage } from '@/containers/Home'
+import { Hero, Steps, Advantages } from '@/containers/Home'
 
 import styles from '@/styles/Home.module.css'
 
@@ -27,8 +27,10 @@ export default function Home() {
         <Hero />
         {/* <Steps />
         <Partners /> */}
+        <div className="section-gap" id="advantages"></div>
         <div className={`section page ${styles.homeContent}`}>
-          <Advantage />
+          <Advantages />
+          <div className="section-gap" id="steps"></div>
           <Steps />
         </div>
       </main>

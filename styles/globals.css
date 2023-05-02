@@ -63,6 +63,14 @@ img{
   object-fit: cover;
 }
 
+.flexed{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
 .page{
   margin-top: 70px;
   padding-bottom: 70px;
@@ -424,6 +432,11 @@ textarea{
 
 .btn-share svg{
   color: white;
+}
+
+.section-gap{
+  width: 5px;
+  height: 70px;
 }
 
 @keyframes gradient {
