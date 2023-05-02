@@ -5,26 +5,26 @@
   max-height: 100vh;
   border: none;
   margin: 0;
+  font-family: poppins;
 }
 
 .main{
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 0px;
   text-align: center;
   width: 100%;
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
 }
 
 .hero{
   width: 100%;
-  height: calc(100vh);
+  height: 100vh;
   background: linear-gradient(-45deg, rgb(32, 218, 187), rgb(134, 32, 218), rgb(32, 218, 178), rgb(32, 44, 218));
   background-size: 300% 300%;
   animation: gradient 10s ease infinite;
-  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,44 +34,131 @@
   gap: 20px;
 }
 
-.hero h2{
-  font-size: 36px;
+.heroContent{
+  width: 100%;
+  animation: stretch 10s ease infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: var(--color-dark_blue);
   text-align: center;
+  gap: 20px;
 }
 
-.hero p{
+.heroContent .heroMessages{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 25px;
+}
+
+.heroMessages h2{
+  font-size: 24px;
+}
+
+.heroMessages p{
+  font-size: 13px;
   font-weight: 500;
 }
 
-.hero div {
+.heroMessages p b{
+  font-weight: 600;
+  letter-spacing: 3px;
+  background-color: rgba(255, 255, 255, 0.541);
+  color: black;
+  display: block;
+  transform: rotate(5deg);
+  margin-bottom: -12px;
+  padding: 0 5px;
+}
+
+.heroMessages .heroBoxes{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 25px;
+  margin: 30px 0;
+}
+
+.heroMessages .heroBoxes div{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 20px;
+}
+
+.heroMessages .heroBoxes div p{
+  font-weight: 500;
+  font-size: 12px;
+  background: linear-gradient(45deg, white, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.555), rgba(255, 255, 255, 0.26));
+  border-radius: 5px;
+  padding: 10px 15px;
+  color: rgb(5, 50, 71);
+}
+
+.hero .heroButtons {
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
 
-.hero div button{
+.hero .heroButtons button{
   /* border: solid goldenrod 2px; */
-  padding: 10px 25px;
-  border-radius: 5px;
+  border-radius: 4px;
   /* color: goldenrod; */
   color: white;
+  font-size: 12px;
   font-weight: bold;
   background-color: var(--color-dark_blue);
+  width: 250px;
+  font-family: inherit
 }
 
-.hero div button:last-child{
+.hero .heroButtons button:last-child{
   background-color: white;
   color: var(--color-dark_blue)
 }
 
-.hero div button:hover{
+.hero .heroButtons button:hover{
   box-shadow: 5px 5px 10px var(--color-dark_blue);
 }
+
+.hero .heroButtons button a{
+  display: flex;
+  padding: 10px 25px;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
 /* body {
   background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
   background-size: 400% 400%;
   animation: gradient 15s ease infinite;
   height: 100vh;
 } */
+
+.home .homeContent{
+  margin-top: 30px;
+  margin-bottom: 70px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.home .homeContent h4{
+  font-weight: 200;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.home .homeContent h4 b:last-child{
+  color: orange;
+}
 
 @keyframes gradient {
   0% {
@@ -80,7 +167,21 @@
 
   50% {
     background-position: 100% 50%;
-    transform: rotateX(-20deg);
+    color: white;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes stretch {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    transform: rotateX(-5deg);
     color: white;
   }
 
