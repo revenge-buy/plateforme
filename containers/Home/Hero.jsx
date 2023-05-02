@@ -1,8 +1,10 @@
-import style from "@/styles/Home.module.css"
 import Link from "next/link"
 import { useContext } from "react";
+import { BiGroup, BiInfoSquare } from "react-icons/bi";
+
+import style from "@/styles/Home.module.css"
+import Exploder from "@/components/Exploder";
 import { AuthContext } from "@/context/auth";
-import { BiGroup, BiInfoSquare, BiPlus } from "react-icons/bi";
 
 export default function Hero() {
 
@@ -23,19 +25,7 @@ export default function Hero() {
       <div className={`${style.heroContent}`}>
         <div className={`${style.heroMessages}`}>
           <h2>SIMPLIFIES TES GROUPAGES !</h2>
-          <p>FAIT <br /> <b>EXPLOSER TES VENTES</b> <br /> avec des groupages automatisés !</p>
-          {/* <div className={style.heroBoxes}>
-            <div>
-              <h3>Plus de clients</h3>
-              <p>Nous faisons <b>Gratuitement</b> la promotion de vos produits !</p>
-            </div>
-            <div>
-              <h3>Plus de</h3>
-              <p>Lancez et gérez plusieurs groupages à la fois !</p>
-            </div>
-          </div> */}
-          {/* <h3>Obtenez plus de clients</h3>
-          <h3>Gérez plus de groupages</h3> */}
+          <p>FAIT <br /> <b><Exploder text="EXPLOSER" /></b> <br /> TES VENTES !</p>
         </div>
         <div className={style.heroButtons} id="explanations">
           <button>

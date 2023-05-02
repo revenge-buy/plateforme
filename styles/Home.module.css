@@ -60,18 +60,21 @@
 
 .heroMessages p{
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .heroMessages p b{
-  font-weight: 600;
+  font-weight: 900;
   letter-spacing: 3px;
   background-color: rgba(255, 255, 255, 0.541);
   color: black;
   display: block;
   transform: rotate(5deg);
   margin-bottom: -12px;
-  padding: 0 5px;
+  padding: 10px 25px;
+  font-size: 18px;
+  max-width: fit-content;
+  cursor: pointer;
 }
 
 .heroMessages .heroBoxes{
