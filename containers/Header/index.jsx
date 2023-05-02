@@ -45,7 +45,7 @@ export default function Header() {
             </div>
           ) : (
               <div>
-                <h2>Recherchez un projet</h2>
+                <h2>Recherchez un groupage</h2>
               </div>
             )
           }
