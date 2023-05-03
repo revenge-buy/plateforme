@@ -39,6 +39,8 @@ export default function Login() {
           password,
           firstName,
           userTag,
+          verified,
+          confirmed
         }
       `
     )
@@ -49,7 +51,9 @@ export default function Login() {
           let rbUser = {
             firstName: resp[0]?.firstName,
             email: user.email,
-            userTag: resp[0]?.userTag
+            userTag: resp[0]?.userTag,
+            verified: resp[0]?.verified,
+            confirmed: resp[0]?.confirmed
           }
           localStorage.setItem("revenge-user", JSON.stringify(rbUser));
           SetUser(rbUser)

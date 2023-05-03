@@ -192,7 +192,9 @@ export default function SignUp() {
           let rbUser = {
             email: resp.email,
             firstName: resp.firstName,
-            userTag: resp.userTag
+            userTag: resp.userTag,
+            verified: resp.verified,
+            confirmed: resp.confirmed
           } 
           localStorage.setItem("revenge-user", JSON.stringify(rbUser));
           SetUser(rbUser)

@@ -193,13 +193,17 @@ export default function NewProjects() {
                 email,
                 password,
                 userTag: tag,
-                confirmed: false
+                confirmed: false,
+                verified: false
               }
             )
             if (resp) {
               let rbUser = {
                 email: resp.email,
-                firstName: resp.firstName
+                firstName: resp.firstName,
+                confirmed: resp.confirmed,
+                verified: resp.verified,
+                userTag: resp.userTag,
               } 
               localStorage.setItem("revenge-user", JSON.stringify(rbUser));
               alert(`Salut ${resp.firstName} !\nCompte créé avec succès`);
