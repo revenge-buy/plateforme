@@ -3,14 +3,9 @@ import { CgClose } from 'react-icons/cg'
 import client from "@/api/client";
 import Metas from "@/components/Metas";
 import AuthBox from "@/containers/Auth/AuthBox";
-// import Image from "next/image";
 import { useState } from "react";
 import Link from 'next/link';
 import DragAndDrop from '@/components/DragAndDrop/DragAndDrop';
-// import Link from "next/link";
-// import login from '../../public/login.jpg'
-
-// const user = localStorage.getItem("revenge-user");
 
 
 const metas = {

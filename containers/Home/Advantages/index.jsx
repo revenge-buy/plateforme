@@ -16,7 +16,7 @@ const Advantages = () => {
       <div className={style.advantage}>
         <h4><b>A/</b> Gagnes <b>tous les clients</b> sur le marché avec les meilleurs prix ! <br /><b>Lo miel 🤤 ... </b></h4>
         <BoxOne
-          text={`Tes petites commandes éparpillées sont rassemblées en grosses commandes 📦, réduisant tes frais de port 👇🏾, ainsi que tes prix 👇🏾. Ce qui signifie que tu devient plus intéressant pour les clients 🛍️.`}
+          text={`Tes petites commandes éparpillées sont rassemblées en grosses commandes 📦 afin de réduire tes frais et d'élargir ta marge 👇🏾, Ce qui signifie que tu peux offrir à tes clients des prix concurrentiels 🛍️.`}
           type="price"
           button={button}
         />
@@ -24,7 +24,7 @@ const Advantages = () => {
       <div className={style.advantage}>
         <h4><b>B/</b> Économises <b>la moitié de ton temps</b> en automatisant tes groupages !<b></b></h4>
         <BoxOne
-          text={`Lances 2 ... 3 ... N groupages à la fois et laisses tes clients les rejoindre par eux même (après leur avoir partagé les liens 🔗), afin que tu  puisse utiliser ton temps pour les autres choses importantes de ton quotidien 😊!!`}
+          text={`Lances 2 ... 3 ... N groupages à la fois, pour pouvoir élargir tes gains sans travailler plus, ce qui t'offrira plus de temps et d'énergie pour les autres choses importantes de ton business et de ton quotidien 😊!!`}
           type="time"
           button={button}
           dark
