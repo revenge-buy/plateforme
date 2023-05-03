@@ -21,7 +21,7 @@ export default function Hero() {
   }
 
   return (
-    <div className={`section ${style.hero}`}>
+    <div id="hero" className={`section ${style.hero}`}>
       <div className={`${style.heroContent}`}>
         <div className={`${style.heroMessages}`}>
           <h2>SIMPLIFIES TES GROUPAGES !</h2>

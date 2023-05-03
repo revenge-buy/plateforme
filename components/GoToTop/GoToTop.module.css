@@ -1,0 +1,37 @@
+.goToTop{
+  display: flex;
+  flex-direction: column;
+}
+
+.goToTop a{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  max-width: fit-content;
+  margin: auto;
+  padding: 10px 25px;
+}
+
+.goToTop a svg{
+  box-shadow: 0 0 25px rgba(128, 128, 128, 0.644);
+  padding: 10px;
+  font-size: 2.5rem;
+  border-radius: 50px;
+}
+
+.goToTop a p{
+  font-weight: 5000;
+  letter-spacing: -0.9px;
+}
+
+.goToTop a:hover{
+  box-shadow: 0 0 25px rgba(128, 128, 128, 0.644);
+  border-radius: 15px;
+}
+
+.goToTop a:hover svg{
+  box-shadow: none;
+  background-color: black;
+  color: white;
+}

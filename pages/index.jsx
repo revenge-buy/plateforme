@@ -1,5 +1,4 @@
-import Image from 'next/image'
-
+import GoToTop from '@/components/GoToTop'
 import Metas from '@/components/Metas'
 import { Hero, Steps, Advantages } from '@/containers/Home'
 
@@ -32,6 +31,7 @@ export default function Home() {
           <Advantages />
           <div className="section-gap" id="steps"></div>
           <Steps />
+          <GoToTop tag="hero" />
         </div>
       </main>
     </div>

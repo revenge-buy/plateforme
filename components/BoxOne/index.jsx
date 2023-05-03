@@ -7,7 +7,7 @@ import { GiPriceTag } from 'react-icons/gi'
 
 import style from './style.module.css'
 import Logo from '../Logo/Logo'
-import { BsPhone, BsPhoneFill } from 'react-icons/bs'
+import { BsPhone } from 'react-icons/bs'
 import { AuthContext } from '@/context/auth'
 
 const BoxOne = ({title, text, type, button, dark}) => {

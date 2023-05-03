@@ -1,41 +1,37 @@
 .exploder{
   display: inline-flex;
   gap: 5px;
-}
-
-.exploder:hover{
-  transform: scale(1.3);
   color: white;
 }
 
-.exploder:hover span{
-}
-
-.exploder:hover .span1{
-  animation: spinner 20ms 20;
+.exploder .span1{
+  animation: spinner 500ms infinite ease-in-out;
   transform: rotate(-15deg);
 }
 
-.exploder:hover .span2{
-  animation: spinner 30ms 20;
+.exploder .span2{
+  animation: spinner 500ms infinite ease-in-out;
   transform: rotate(25deg) translate(0, 7px);
 }
 
-.exploder:hover .span3{
-  animation: spinner 40ms 20;
+.exploder .span3{
+  animation: spinner 500ms infinite ease-in-out;
   transform: rotate(10deg) translate(0, 2px);
 }
 
-.exploder:hover .span0{
-  animation: spinner 50ms 20;
+.exploder .span0{
+  animation: spinner 500ms infinite ease-in-out;
   transform: rotate(-5deg) translate(0, -4px);
 }
 
-@keyframes spinner {
+/* @keyframes spinner {
   0%{
-    transform: rotate(0)
+    transform: scale(1.3);
+    color: white;
   }
-  100%{
-    transform: rotate(360deg);
+  50%{
+    transform: scale(2) rotate(20deg);
+    color: white;
+    font-size: 12px;
   }
-}
+} */

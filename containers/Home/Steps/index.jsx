@@ -37,21 +37,21 @@ export default function Steps() {
       <div className={`flexed ${style.stepsList}`}>
         <BoxOne 
           title="Inscrit toi !"
-          text="Une fois ton compte créé, tu seras contacté, et peut être admis à créer des groupages. Si tu es un commerçant de confiance, ce sera un honneur pour nous de collaborer avec toi !"
+          text="Une fois ton compte créé, tu seras contacté, et peut être  admis à créer des groupages. Si tu es un commerçant de confiance 💂🏾‍♀️, ce sera un honneur pour nous de collaborer avec toi 🤝🏾!"
           button={buttons[0]}
         />
 
         <BoxOne 
           title="Lance des groupages !"
           type="group"
-          text="Crée un groupage en quelques minutes. Notes bien que tes groupages ne seront publiées que si ton compte est confirmé. Ceci pour la sécurité des clients de la plateforme !"
+          text="Crée un groupage en quelques minutes 🕐. Notes bien que tes groupages ne seront publiées que si ton compte est confirmé. Ceci pour la sécurité des clients de la plateforme 🔐!"
           button={buttons[1]}
         />
 
         <BoxOne 
           title="Rencontre tes clients !"
           type="phone"
-          text="Maintenant tu sais qui souhaites rejoindre ton groupage, et tu détient également leurs contacts ! À toi de jouer "
+          text="Maintenant tu sais qui souhaites rejoindre ton groupage, et tu détient également leurs contacts 🤳🏾 ! À toi de jouer 💪🏾!!"
           button={buttons[2]}
         />
       </div>

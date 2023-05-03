@@ -223,6 +223,9 @@ export default function NewProjects() {
 
     const rbUser = JSON.parse(localStorage?.getItem("revenge-user"));
     console.log({product})
+
+    const confirmed = rbUser.confirmed ? true : false
+
     if(
       product.description !== "" &&
       product.realUnitValue !== NaN &&
@@ -250,6 +253,7 @@ export default function NewProjects() {
                   _ref: user[0]._id
                 },
                 ...project,
+                accepted: confirmed,
                 status: "active"
               }
             )

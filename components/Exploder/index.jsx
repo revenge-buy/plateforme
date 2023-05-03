@@ -9,7 +9,6 @@ const Exploder = ({text}) => {
   return (
     <div className={style.exploder}>
       {letters.map((letter, index) => {
-
         return (
           <span key={index} className={`${style[`span${(index+1)%4}`]}`}>{letter}</span>
         )

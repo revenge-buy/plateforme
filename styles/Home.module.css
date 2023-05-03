@@ -59,8 +59,9 @@
 }
 
 .heroMessages p{
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: bold;
+  color: white;
 }
 
 .heroMessages p b{
