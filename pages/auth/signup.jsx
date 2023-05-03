@@ -184,7 +184,8 @@ export default function SignUp() {
             lastName: user.lastName.trim(),
             phone: parseInt(user.phone),
             userTag: user.userTag.trim(),
-            confirmed: false
+            confirmed: false,
+            verified: false
           }
         )
         if (resp) {
