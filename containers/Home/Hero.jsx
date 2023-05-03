@@ -24,8 +24,8 @@ export default function Hero() {
     <div id="hero" className={`section ${style.hero}`}>
       <div className={`${style.heroContent}`}>
         <div className={`${style.heroMessages}`}>
-          <h2>SIMPLIFIES TES GROUPAGES !</h2>
-          <p>FAIT <br /> <b><Exploder text="EXPLOSER" /></b> <br /> TES VENTES !</p>
+          <h2>SIMPLIFIEZ VOS GROUPAGES !</h2>
+          <p>FAITES <br /> <b><Exploder text="EXPLOSER" /></b> <br /> VOS VENTES !</p>
         </div>
         <div className={style.heroButtons} id="explanations">
           <button>
