@@ -7,13 +7,13 @@ const Exploder = ({text}) => {
   const letters = text.split("")
 
   return (
-    <div className={style.exploder}>
+    <span className={style.exploder}>
       {letters.map((letter, index) => {
         return (
           <span key={index} className={`${style[`span${(index+1)%4}`]}`}>{letter}</span>
         )
       })}
-    </div>
+    </span>
   )
 }
 

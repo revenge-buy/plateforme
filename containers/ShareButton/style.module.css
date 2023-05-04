@@ -48,10 +48,13 @@
   cursor: pointer;
   padding: 7px;
   font-size: 2rem;
+  background-color: black;
+  color: white;
 }
 
 .shareButton .openedShareOptions .copyToClipboard{
   display: flex;
+  position: relative;
   align-items: flex-start;
   flex-direction: column;
   gap: 5px;
@@ -89,6 +92,26 @@
   max-width: 100px;
   overflow: hidden;
   /* justify-content: flex-end; */
+}
+
+.shareButton .openedShareOptions .copyToClipboard .copied{
+  position: absolute;
+  left: calc(100%  + 15px);
+  top: 30%;
+  display: flex;
+  align-items: center;
+  font-style: italic;
+  color: rgb(48, 48, 48);
+  animation: pop 50ms 1 ease-in-out;
+}
+
+@keyframes pop {
+  0%{
+    transform: scale(0);
+  }
+  100%{
+    transform: scale(1);
+  }
 }
 
 .shareButton .openedShareOptions .shareOptionsContent{

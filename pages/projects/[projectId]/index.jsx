@@ -21,17 +21,23 @@ export default function Project({ projects }) {
   const project = projects[0];
   const [joining, setJoining] = useState(false)
   const [quantity, setQuantity] = useState(NaN)
-  const [userEmail, setUserEmail] = useState("")
+  const [userEmail, setUserEmail] = useState()
   const [members, setMembers] = useState([])
   const [fullMembers, setFullMembers] = useState([])
   const [userIsMember, setUserIsMember] = useState(false)
   const [userIsCreator, setUserIsCreator] = useState(false)
-  const [membershipId, setMembershipId] = useState("") 
+  const [membershipId, setMembershipId] = useState("")
   
   const router = useRouter()
 
   // run this to update membership status when the page loads for the 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('revenge-user'))
+
+    if(user && user?.email){
+      setUserEmail(user.email)
+    }
+
     client.fetch(`
     *[_type == "project" && _id == "${project?._id}"][0]{
       _id,
@@ -59,25 +65,21 @@ export default function Project({ projects }) {
 
     if(user){
       if(user.userTag !== project?.creator?.userTag){
-        setUserEmail(user.email)
-        console.log({ userEmail })
         const filteredMembers = members?.filter(function(member){ return member?.seller?.email === user.email });
-        console.log({filteredMembers})
     
         if(filteredMembers.length > 0){
           setUserIsMember(true)
-          console.log({userIsMember})
         }
       } else {
         setUserIsCreator(true)
        }
     } 
     
-  }, [members])
+  }, [members, userEmail])
 
-  // run this if user is project member
+  // run this if user is project member or creator, to reset full  members value
   useEffect(() => {
-    userIsMember && client.fetch(`
+    (userIsMember || userIsCreator) && client.fetch(`
       *[_type == "project" && _id == "${project?._id}"][0]{
         _id,
         "memberships": *[_type == "ProjectMembership" && references(^._id)]{
@@ -101,13 +103,13 @@ export default function Project({ projects }) {
     .catch(function(recallingMembersError){
       console.log({recallingMembersError})
     })
-  }, [userIsMember, userEmail])
+  }, [userIsMember, userIsCreator, userEmail])
   
 
   // run this when user clicks on join button
   function handleOpenJoin(){
     // checking if user is logged in
-    if(userEmail !== ""){
+    if(userEmail){
       // if user is project autor, do this :
       if(!userIsCreator){
         setJoining(true);
@@ -324,13 +326,13 @@ export default function Project({ projects }) {
             </div>
             <div className='separator1'/>
             <div className={styles.pageBottom}>
-              {userIsMember || userIsCreator ?
+              {(userIsCreator === true || userIsMember) ?
               <div className={styles.knownMembers}>
                 <h4><span>{members.length}</span> Participant{members.length>1 && "s"}</h4>
                 <div className={styles.members}>
                   {fullMembers.map(function({ seller, _createdAt, offer, _id }, index){
                     return(
-                      <div className="box2" key={index} onClick={seller?.email === userEmail && handleOpenJoin}>
+                      <div className="box2" key={index}>
                         <Link href={`/${seller?.userTag}`} className="image">
                           <Image 
                             width={80}

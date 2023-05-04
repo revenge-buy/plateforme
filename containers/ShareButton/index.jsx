@@ -25,10 +25,12 @@ import {
 
 import style from './style.module.css'
 import { copyText } from '@/helpers';
+import { BiCheck } from 'react-icons/bi';
   
 export default function ShareButton({title, link}) {
 
   const [open, setOpen] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   return (
     <div className={style.shareButton}>
@@ -50,11 +52,15 @@ export default function ShareButton({title, link}) {
         </header>
 
         <div className={style.copyToClipboard}>
-          <div onClick={() => copyText(link)}>
+          <div onClick={() => {
+            copyText(link);
+            setCopied(true)
+          }}>
             <img src="/clipboard.svg" alt="" />
             <p>Copier le lien</p>
           </div>
           <span className={`box2 box2-fit ${style.link}`}>{link}</span>
+          {copied && <p className={style.copied}>copié <BiCheck /></p>}
         </div>
 
         <div className="separator1"></div>
