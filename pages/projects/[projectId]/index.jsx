@@ -1,20 +1,21 @@
-import styles from './project.module.css'
-import Metas from '@/components/Metas';
-import client from '@/api/client';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import Image from 'next/image';
-
+import Link from 'next/link';
 import { FaSortAmountUp } from 'react-icons/fa'
 import { GiPodiumWinner, GiPriceTag } from 'react-icons/gi'
 import { TbDiscountCheckFilled, TbInfoSquareRoundedFilled, TbOutbound } from 'react-icons/tb'
 import { RiUserFollowFill, RiCloseLine } from 'react-icons/ri'
 import { MdJoinInner, MdOutlineProductionQuantityLimits } from 'react-icons/md'
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { CgClose } from 'react-icons/cg';
-import { deleteMembership, joinProject, updateMembership } from '@/helpers/projects';
 import { BiTrash } from 'react-icons/bi';
-import { BsShare } from 'react-icons/bs';
+import { CgClose } from 'react-icons/cg';
+
+import Metas from '@/components/Metas';
+import client from '@/api/client';
+import { deleteMembership, joinProject, updateMembership } from '@/helpers/projects';
+
+import styles from './project.module.css'
+import ShareButton from '@/containers/ShareButton';
  
 export default function Project({ projects }) {
   const project = projects[0];
@@ -201,7 +202,7 @@ export default function Project({ projects }) {
       },
       {
         property: 'og:image',
-        content: project?.product?.productImage || "/product.jpg"
+        content: project?.productImage || "/product.jpg"
       }
     ]
   }
@@ -367,7 +368,7 @@ export default function Project({ projects }) {
                   {members.length === 0 && <button onClick={handleOpenJoin}><GiPodiumWinner /> Soyez le premier</button>}
                 </p>
               }
-              <button className="btn-share"><BsShare /> Partager</button>
+              <ShareButton link={`https://revengebuy.vercel.app/projects/${project?._id}`} />
             </div>
           </div>
         </div>

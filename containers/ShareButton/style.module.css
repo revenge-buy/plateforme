@@ -1,0 +1,105 @@
+.shareButton{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.shareButton .shareOptions{
+  height: 0;
+  max-height: 0;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.76);
+  backdrop-filter: blur(15px);
+  width: 100%;
+  color: black;
+  overflow: hiddene;
+}
+
+.shareButton .openedShareOptions{
+  padding: 15px;
+  padding-bottom: 100px;
+  padding-top: 15px;
+  height: unset;
+  max-height: calc(100vh - 70px);
+  gap: 10px;
+  overflow: auto;
+}
+
+.shareButton .shareOptions header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* gap: 15px; */
+}
+
+.shareButton .shareOptions header h4{
+  text-decoration: underline;
+  text-align: left;
+  max-width: calc(100% - 50px);
+}
+
+.shareButton .shareOptions header svg{
+  border: solid black 1px;
+  border-radius: 50px;
+  cursor: pointer;
+  padding: 7px;
+  font-size: 2rem;
+}
+
+.shareButton .openedShareOptions .copyToClipboard{
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 5px;
+  box-shadow: 0 0 5px rgba(128, 128, 128, 0.274);
+  padding: 5px;
+  max-width: fit-content;
+  border-radius: 10px;
+  /* color: gray; */
+  font-size: 12px;
+  letter-spacing: -0.6px;
+  cursor: pointer;
+  background-color: white;
+}
+
+.shareButton .openedShareOptions .copyToClipboard img{
+  height: 24px;
+  /* opacity: 0.4; */
+}
+
+.shareButton .openedShareOptions .copyToClipboard div{
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  justify-content: center;
+  width: 100%;
+}
+
+.shareButton .openedShareOptions .copyToClipboard .link{
+  margin: 0;
+  color: rgba(128, 128, 128, 0.637);
+  font-size: 13px;
+  font-style: italic;
+  font-weight: 250;
+  padding: 3px;
+  max-width: 100px;
+  overflow: hidden;
+  /* justify-content: flex-end; */
+}
+
+.shareButton .openedShareOptions .shareOptionsContent{
+  display: flex;
+  width: 100%;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.shareButton .openedShareOptions .shareOptionsContent svg{
+  border-radius: 10px;
+}

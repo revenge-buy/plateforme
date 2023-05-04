@@ -354,6 +354,11 @@ textarea{
   min-width: 200px;
 }
 
+.box2-fit{
+  min-width: unset;
+  max-width: fit-content;
+}
+
 .box2-blue a{
   color: var(--color-dark_blue);
   display: flex;
