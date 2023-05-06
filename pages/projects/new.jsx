@@ -492,7 +492,7 @@ export default function NewProjects() {
                         {urlOk === false 
                           ? <p className="field-message">
                               <span className='field-message__wrong'>Url non valide : </span>
-                              Doit être de type "http ou https://blabla.exemple/bla"
+                              Doit être de type &quo;http ou https://blabla.exemple/bla&quote;
                             </p> 
                           : null
                         }
@@ -527,7 +527,7 @@ export default function NewProjects() {
                       {projectValueOk === false 
                         ? <p className="field-message">
                             <span className='field-message__wrong'>Valeur non valide : </span>
-                            Le prix du projet doit être inférieur au prix réél, c'est là tout l'avantage du groupage. Merci !
+                            Le prix du projet doit être inférieur au prix réél, c&apos;est là tout l&apos;avantage du groupage. Merci !
                           </p> 
                         : null
                       }
