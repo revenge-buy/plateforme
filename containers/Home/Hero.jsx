@@ -5,17 +5,18 @@ import { BiGroup, BiInfoSquare } from "react-icons/bi";
 import style from "@/styles/Home.module.css"
 import Exploder from "@/components/Exploder";
 import { AuthContext } from "@/context/auth";
+import { useRouter } from "next/router";
 
 export default function Hero() {
 
   const { SetUser } = useContext(AuthContext)
-
+  const router = useRouter()
   function Go() {
     const user = localStorage.getItem('revenge-user');
     if(!user) {
-      location.replace("/auth")
+      router.push("/auth")
     } else {
-      location.replace("/projects/new")
+      router.push("/projects/new")
       SetUser(JSON.parse(user))
     }
   }

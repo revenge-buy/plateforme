@@ -8,6 +8,7 @@ import Link from 'next/link';
 import DragAndDrop from '@/components/DragAndDrop/DragAndDrop';
 import { isValidURL, somethingLoading } from '@/helpers';
 import ButtonContent from '@/components/ButtonContent';
+import { useRouter } from 'next/router';
 
 
 const metas = {
@@ -21,6 +22,8 @@ const metas = {
 }
 
 export default function NewProjects() {
+
+  const router = useRouter()
 
   const [fastSignOn, setFastSignOn] = useState(false)
   const [fastUser, setFastUser] = useState({
@@ -312,7 +315,7 @@ export default function NewProjects() {
                       if(newProduct) {
                         console.log({newProduct});
                         setProcess({ loading: false, status: "succeed" })
-                        location.replace(`/projects/${newProject._id}`);
+                        router.push(`/projects/${newProject._id}`);
                       }
                     } catch (error) {
                       setProcess({ loading: false, status: "failed" })

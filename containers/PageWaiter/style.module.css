@@ -1,0 +1,91 @@
+.pageWaiter{
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+	background: white;
+  flex-direction: column;
+}
+
+.content1 {
+	width: 650px;
+  max-width: calc(100vw - 50px);
+  margin-top: 25px;
+}
+
+.contant1 h1 {
+  line-height: 1.5;
+  color: black;
+  font-weight: 300;
+  text-align: center;
+  font-size: 3rem;
+}
+
+.logo{
+  transform: scale(5);
+  opacity: 0.2;
+}
+
+/* PRELOADER CSS */
+.pageLoader{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.spaceLoader .txt{
+  color: #666;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.3rem;
+  font-weight: bold;
+  line-height: 1.5;
+}
+
+/* SPINNER ANIMATION */
+.spinner {
+  width: 100vh;
+  height: 100vh;
+  background-color: black;
+  position: absolute;
+  top: 0;
+  border-radius: 100%;  
+  -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
+  animation: sk-scaleout 1.0s infinite ease-in-out;
+}
+
+@keyframes logoMove {
+  0%{
+    translate: 0px;
+  }
+  50%{
+    translate: 100px;
+  }
+  100%{
+    translate: 0px;
+  }
+}
+
+@-webkit-keyframes sk-scaleout {
+  0% { -webkit-transform: scale(0) }
+  100% {
+    -webkit-transform: scale(1.0);
+    opacity: 0;
+  }
+}
+
+@keyframes sk-scaleout {
+  0% { 
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  } 100% {
+    -webkit-transform: scale(1.0);
+    transform: scale(1.0);
+    opacity: 0;
+  }
+}

@@ -8,6 +8,8 @@ import { deleteMembership, joinProject, updateMembership } from "@/helpers/proje
 import { useEffect, useState } from "react"
 import { CgClose } from "react-icons/cg"
 import { useRouter } from "next/router"
+import ButtonContent from "../ButtonContent"
+import getUser from "@/helpers/getUser"
 
 export default function ProjectPreview({ _id, creator, name, _createdAt, productImage, product }) {
 
@@ -18,6 +20,14 @@ export default function ProjectPreview({ _id, creator, name, _createdAt, product
   const [userIsMember, setUserIsMember] = useState(false)
   const [membershipId, setMembershipId] = useState("")
   const [userIsCreator, setUserIsCreator] = useState(false)
+  const [fetchingProcess, setFetchingProcess] = useState({
+    loading: false,
+    status: ""
+  })
+  const [definingProcess, setDefiningProcess] = useState({
+    loading: false,
+    status: ""
+  })
 
   const router = useRouter()
 
@@ -77,47 +87,55 @@ export default function ProjectPreview({ _id, creator, name, _createdAt, product
   const benef = parseInt(((realUnitValue - projectUnitValue)/realUnitValue)*100)
 
   function handleOpenJoin(){
-    if(!userIsCreator){
-      setJoining(_id);
-      if(userIsMember){
-        client.fetch(`
-          *[_type == "project" && _id == "${_id}"][0]{
-            _id,
-            "memberships": *[_type == "ProjectMembership" && references(^._id)]{
-              seller->{
-                email,
-                userTag,
-                _id
-              },
+    const localUser = getUser()
+
+    if(localUser){
+      if(!userIsCreator){
+        setJoining(_id);
+        if(userIsMember){
+          setFetchingProcess({loading: true, status: "pending"})
+          client.fetch(`
+            *[_type == "project" && _id == "${_id}"][0]{
               _id,
-              offer
-            } 
-          }
-        `)
-        .then(function(resp){
-          console.log({resp1: resp})
-          resp?.memberships?.map(function(ms){
-            if(ms.seller.email === userEmail){
-              setQuantity(ms?.offer);
-              setMembershipId(ms?._id);
+              "memberships": *[_type == "ProjectMembership" && references(^._id)]{
+                seller->{
+                  email,
+                  userTag,
+                  _id
+                },
+                _id,
+                offer
+              } 
             }
+          `)
+          .then(function(resp){
+            console.log({resp1: resp})
+            resp?.memberships?.map(function(ms){
+              if(ms.seller.email === userEmail){
+                setQuantity(ms?.offer);
+                setMembershipId(ms?._id);
+              }
+            })
+            setFetchingProcess({loading: false, status: "succeed"})
           })
-        })
-        .catch(function(error){
-          console.log({error1: error})
-        })
+          .catch(function(error){
+            console.log({error1: error})
+            setFetchingProcess({loading: false, status: "failed"})
+          })
+        } else {
+          console.log("user not a member")
+        }
       } else {
-        console.log("user not a member")
+        router.push(`/projects/${_id}?edit=true`)
       }
     } else {
-      location.replace(`/projects/${_id}?edit=true`)
+      router.push("/auth")
     }
   }
 
   function handleJoin(){
     const user = JSON.parse(localStorage.getItem("revenge-user"))
     let userId = ""
-
     if (quantity > 1) {
       if(user?.email){
         if(!userIsMember){
@@ -128,7 +146,7 @@ export default function ProjectPreview({ _id, creator, name, _createdAt, product
           `)
           .then((resp) => {
             userId = resp._id;
-            joinProject(userId, _id, quantity, userIsMember);
+            joinProject(userId, _id, quantity, userIsMember, setDefiningProcess, router);
           })
           .catch(function(error){
             console.log(error)
@@ -166,7 +184,13 @@ export default function ProjectPreview({ _id, creator, name, _createdAt, product
                 <p>Cela vous fera : {product?.projectUnitValue * parseInt(quantity) || "0"} XAF</p>
               </div>
               <div className="input-set">
-                <div className="submit" onClick={handleJoin}>{userIsMember ? "Modifier" : "Rejoindre"}</div>
+                <div className="submit" onClick={handleJoin}>
+                  <ButtonContent
+                    loading={definingProcess.loading}
+                    status={definingProcess.status}
+                    originalText={userIsMember ? "Modifier" : "Rejoindre"}
+                  />
+                </div>
               </div>
             </form>
           </div>

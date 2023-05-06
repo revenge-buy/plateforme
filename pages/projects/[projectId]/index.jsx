@@ -16,6 +16,7 @@ import { deleteMembership, joinProject, updateMembership } from '@/helpers/proje
 
 import styles from './project.module.css'
 import ShareButton from '@/containers/ShareButton';
+import ButtonContent from '@/components/ButtonContent';
  
 export default function Project({ projects }) {
   const project = projects[0];
@@ -27,6 +28,10 @@ export default function Project({ projects }) {
   const [userIsMember, setUserIsMember] = useState(false)
   const [userIsCreator, setUserIsCreator] = useState(false)
   const [membershipId, setMembershipId] = useState("")
+  const [joiningProcess, setJoiningProcess] = useState({
+    loading: false,
+    status: ""
+  })
   
   const router = useRouter()
 
@@ -168,15 +173,14 @@ export default function Project({ projects }) {
           `)
           .then((resp) => {
             userId = resp._id;
-            joinProject(userId, project?._id, quantity, userIsMember);
+            joinProject(userId, project?._id, quantity, userIsMember, setJoiningProcess, router);
             setJoining(false)
           })
           .catch(function(error){
             console.log(error)
           })
         } else {
-          updateMembership(membershipId, quantity);
-          setJoining(false)
+          updateMembership(project?._id, membershipId, quantity, setJoiningProcess, router);
         }
       }
     } else {
@@ -255,7 +259,13 @@ export default function Project({ projects }) {
                   <p>Cela vous fera : {project?.product?.projectUnitValue * parseInt(quantity) || "0"} XAF</p>
                 </div>
                 <div className="input-set">
-                  <div className="submit" onClick={handleJoin}>{userIsMember ? "Modifier" : "Rejoindre"}</div>
+                  <div className="submit" onClick={handleJoin}>
+                    <ButtonContent
+                      loading={joiningProcess.loading}
+                      status={joiningProcess.status}
+                      originalText={userIsMember ? "Modifier" : "Rejoindre"}
+                    />
+                  </div>
                 </div>
               </form>
             </div>

@@ -1,7 +1,8 @@
 import client from "@/api/client";
 
-export async function joinProject(userId, projectId, offer, userIsMember){
+export async function joinProject(userId, projectId, offer, userIsMember, setProcess, router){
     if(!userIsMember){
+      setProcess({ loading: true, status: "pending" })
       try{
         const resp = await client.create(
           {
@@ -17,24 +18,39 @@ export async function joinProject(userId, projectId, offer, userIsMember){
             offer: parseInt(offer)
           }
         )
-      
-        location.replace("/projects/"+projectId)
-        return resp
+        if(resp){
+          setProcess({ loading: false, status: "succeed"})
+          router ? router.push("/projects/"+projectId) :location.replace("/projects/"+projectId)
+          return resp
+        } else {
+          setProcess({ loading: false, status: "failed"})
+        }
       } catch(error) {
+        setProcess({ loading: false, status: "failed"})
         console.log({ error })
       }
     } else {
       alert("Vous êtes déjà membre")
+      setProcess({ loading: false, status: "failed"})
     }
 }
 
-export async function updateMembership(_id, quantity){
+export async function updateMembership(projectId, _id, quantity, setProcess, router){
   try {
-    const updated = client.patch(_id).set({offer: quantity}).commit()
-    console.log({updated})
-    location.reload;
-    return updated;
+    setProcess({ loading: true, status: "pending" })
+    const updated = await client.patch(_id).set({offer: quantity}).commit()
+
+    if(updated){
+      console.log({updated})
+      setProcess({ loading: false, status: "succeed" })
+      router.push(`/projects/${projectId}`);
+      return updated;
+    } else {
+      setProcess({ loading: false, status: "failed" })
+      return null
+    }
   } catch (error) {
+    setProcess({ loading: false, status: "failed" })
     console.log({ error })
     return null
   }

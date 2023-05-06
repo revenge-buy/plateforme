@@ -1,3 +1,9 @@
 export default function () {
-  return ( JSON.parse(localStorage.getItem("revenge-user")) );
+  let user = JSON.parse(localStorage.getItem("revenge-user"))
+
+  if(user){
+    return user
+  } else {
+    return false
+  }
 }
