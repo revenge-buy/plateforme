@@ -1,0 +1,17 @@
+Comment prendre en main le loading ? tout d'abord, il y a 2 loading à prendre en compte.
+1. Celui qui se produit lorsqu'on va charger une page contenant potentiellement longue à charger.
+2 Celui qui survient lorsqu'un processus est en cours, sans nécessiter une rechargement de page.
+
+Voici qu'elqu'en soit le cas, les notions à prendre en compte lors du chargement de dononées ou d'une page :
+- la non possibilité pour l'utilisateur de relancer une action déjà en cours.
+- la marque visuelle lorsqu'un élément est en cours.
+
+Quelques remarques générales :
+1. les pages en chargement lent sont les pages rendu en ssr, avec des données à extraire du serveur de datas.
+2. Les pages en chargement rapide sont les pages rendu en ssr, sans donnée à extraire du serveur de datas.
+
+En conclusion, on peut penser aux solutions suivantes :
+- Les opérations simples font appel à un élément spinner et un tracking du status de l'opération afin d'empêcher des lancements simmultanés de la même opération.
+- Pour le chargement des pages lourdes, le spinner sera aussi de mise sur les boutons sensés lier à ces pages
+- Pour le chargement des pages en ssr, le spinner sera alors en cours d'exécution lors de la création de la page.
+- Pour les opérations de requêtes de données simoles, le spinner sera de mise sur le bouton sensé déclancher l'opération !

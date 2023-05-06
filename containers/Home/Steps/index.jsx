@@ -32,7 +32,7 @@ export default function Steps() {
   return (
     <div id="steps" className={style.steps}>
       <h3>Les étapes</h3>
-      <h4>Gagnez <b>plus de clients</b> et <b>plus de temps</b> en <b>3 petites étapes</b> !</h4>
+      <h4>Gagnes <b>plus de clients</b> et <b>plus de temps</b> en <b>3 petites étapes</b> !</h4>
 
       <div className={`flexed ${style.stepsList}`}>
         <BoxOne 
@@ -49,7 +49,7 @@ export default function Steps() {
         />
 
         <BoxOne 
-          title="Rencontre tes clients !"
+          title="Regroupe tes clients !"
           type="phone"
           text="Maintenant tu sais qui souhaites rejoindre ton groupage, et tu détient également leurs contacts 🤳🏾 ! À toi de jouer 💪🏾!!"
           button={buttons[2]}

@@ -14,7 +14,7 @@ const Advantages = () => {
     <div className={`flexed ${style.advantages}`}>
       <h3>Avantages</h3>
       <div className={style.advantage}>
-        <h4><b>A/</b> Gagnes <b>tous les clients</b> sur le marché avec les meilleurs prix ! <br /><b>Lo miel 🤤 ... </b></h4>
+        <h4><b>A/</b> Gagnes <b>tous les clients</b> sur le marché avec <b>les meilleurs prix 🤤!</b></h4>
         <BoxOne
           text={`Tes petites commandes éparpillées sont rassemblées en grosses commandes 📦 afin de réduire tes frais et d'élargir ta marge 👇🏾, Ce qui signifie que tu peux offrir à tes clients des prix concurrentiels 🛍️.`}
           type="price"
