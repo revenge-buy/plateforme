@@ -6,6 +6,8 @@ import AuthBox from "@/containers/Auth/AuthBox";
 import { useState } from "react";
 import Link from 'next/link';
 import DragAndDrop from '@/components/DragAndDrop/DragAndDrop';
+import { isValidURL, somethingLoading } from '@/helpers';
+import ButtonContent from '@/components/ButtonContent';
 
 
 const metas = {
@@ -19,6 +21,7 @@ const metas = {
 }
 
 export default function NewProjects() {
+
   const [fastSignOn, setFastSignOn] = useState(false)
   const [fastUser, setFastUser] = useState({
     email: "",
@@ -27,12 +30,16 @@ export default function NewProjects() {
     lastName: "",
     userTag: "",
     emailOk: null,
+    loading: false,
+    status: ""
   })
-
+  
+  const [process, setProcess] = useState({
+    loading: false,
+    status: ""
+  })
   const [file, setFile] = useState(null);
-
   const [step, setStep] = useState(0)
-
   const [project, setProject] = useState({
     name: "",
     private: false
@@ -47,6 +54,8 @@ export default function NewProjects() {
     url: "",
     quantity: NaN
   })
+  const [urlOk, setUrlOk] = useState(null)
+  const [projectValueOk, setProjectValueOk] = useState(null)
 
   function handleProjectDef(e){
     e.preventDefault();
@@ -162,159 +171,184 @@ export default function NewProjects() {
     }
 
     const tag = `@${name}-${encryptExt(ext)}${encryptMail(client)}`;
-    
     setFastUser((user) => ({ ...user, userTag: tag }))
-
     return tag;
   }
 
   async function handleFastSign(e) {
     e.preventDefault();
-    const { firstName, lastName, email, password } = fastUser
-
-    if(checkFields({
-      firstName, lastName, email, password
-    })) {
-        if (
-          fastUser.emailOk
-        ) {
-          let tag = setTag(email);
-          try {
-            const resp = await client.create(
-              {
-                _type: "seller",
-                firstName,
-                lastName,
-                email,
-                password,
-                userTag: tag,
-                confirmed: false,
-                verified: false
+    if(!fastUser.loading){
+      setFastUser((user) => ({ ...user, loading: true, status: "pending" }))
+      const { firstName, lastName, email, password } = fastUser
+  
+      if(checkFields({
+        firstName, lastName, email, password
+      })) {
+          if (
+            fastUser.emailOk
+          ) {
+            let tag = setTag(email);
+            try {
+              const resp = await client.create(
+                {
+                  _type: "seller",
+                  firstName,
+                  lastName,
+                  email,
+                  password,
+                  userTag: tag,
+                  confirmed: false,
+                  verified: false
+                }
+              )
+              if (resp) {
+                let rbUser = {
+                  email: resp.email,
+                  firstName: resp.firstName,
+                  confirmed: resp.confirmed,
+                  verified: resp.verified,
+                  userTag: resp.userTag,
+                }
+                localStorage.setItem("revenge-user", JSON.stringify(rbUser));
+                alert(`Salut ${resp.firstName} !\nCompte créé avec succès`);
+                setFastUser((user) => ({ ...user, choseloading: false, status: "succeed" }))
+                setFastSignOn(false)
+                setStep(1)
               }
-            )
-            if (resp) {
-              let rbUser = {
-                email: resp.email,
-                firstName: resp.firstName,
-                confirmed: resp.confirmed,
-                verified: resp.verified,
-                userTag: resp.userTag,
-              } 
-              localStorage.setItem("revenge-user", JSON.stringify(rbUser));
-              alert(`Salut ${resp.firstName} !\nCompte créé avec succès`);
-              setFastSignOn(false)
-              setStep(1)
-              // router.push("/projects");
+            } catch (error) {
+              setFastUser((user) => ({ ...user, loading: false, status: "failed" }))
+              alert("Une erreur s'est produite lors de la création de votre compte !")
+              console.log({ error })
             }
-          } catch (error) {
-            alert("Une erreur s'est produite lors de la création de votre compte !")
-            console.log({ error })
           }
-        }
+      } else {
+        setFastUser((user) => ({ ...user, loading: false, status: "failed" }))
+        alert("Veuillez remplir toutes les informations demandées !")
+      }
     } else {
-      alert("Veuillez remplir toutes les informations demandées !")
+      alert("Enregistrement en cours, merci de patienter !")
     }
   }
 
+  function checkProjectValue(){
+    const result = product.realUnitValue > product.projectUnitValue
+    setProjectValueOk(result)
+    return result
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
-
-    const rbUser = JSON.parse(localStorage?.getItem("revenge-user"));
-    console.log({product})
-
-    const confirmed = rbUser.confirmed ? true : false
-
-    if(
-      product.description !== "" &&
-      product.realUnitValue !== NaN &&
-      product.projectUnitValue !== NaN &&
-      product.url !== "" &&
-      product.quantity !== NaN
-    ) {
-      try {
-        const user = await client.fetch(
-          `
-            * [_type == "seller" && email == "${rbUser.email}"]{
-              _id
-            }
-          `
-        );
-
-        if(user[0]._id) {
-          console.log(user[0]._id);
-          try {
-            const newProject = await client.create(
-              {
-                _type: "project",
-                creator: {
-                  _type: 'reference',
-                  _ref: user[0]._id
-                },
-                ...project,
-                accepted: confirmed,
-                status: "active"
+    if(!process.loading){
+      setProcess({ loading: true, status: "pending" })
+      const rbUser = JSON.parse(localStorage?.getItem("revenge-user"));
+      console.log({product})
+  
+      const confirmed = rbUser.confirmed ? true : false
+  
+      if(
+        product.description !== "" &&
+        product.realUnitValue !== NaN &&
+        product.projectUnitValue !== NaN &&
+        product.quantity !== NaN &&
+        checkProjectValue()
+      ){
+        try {
+          const user = await client.fetch(
+            `
+              * [_type == "seller" && email == "${rbUser.email}"]{
+                _id
               }
-            )
-            if (newProject) {
-              console.log({newProject})
-              client.assets
-              .upload('image', file, {
-                contentType: file.type,
-                filename: file.name
-              })
-              .then(async function(imageAsset){
-                try {
-                  const newProduct = await client.create(
-                    {
-                      _type: "product",
-                      project: {
-                        _type: 'reference',
-                        _ref: newProject._id
-                      },
-                      title: product.title.trim(),
-                      description: product.description.trim(),
-                      realUnitValue: parseFloat(product.realUnitValue),
-                      projectUnitValue: parseFloat(product.projectUnitValue),
-                      url: product.url.trim(),
-                      quantity: parseInt(product.quantity),
-                      discount: 0,
-                      image: {
-                        _type: 'image',
-                        asset: {
-                          _type: "reference",
-                          _ref: imageAsset?._id
-                        }
-                      }
-                    }
-                  )
-                  if(newProduct) {
-                    console.log({newProduct});
-                    location.replace(`/projects/${newProject._id}`);
-                  }
-                } catch (error) {
-                  alert("Une erreur est survenue lors de l'ajout du produit.\nVeuillez réessayer plus tard ou vérifier vos informations !");
-                  console.log("prod pb")
+            `
+          );
+  
+          if(user[0]._id) {
+            console.log(user[0]._id);
+            try {
+              const newProject = await client.create(
+                {
+                  _type: "project",
+                  creator: {
+                    _type: 'reference',
+                    _ref: user[0]._id
+                  },
+                  ...project,
+                  accepted: confirmed,
+                  status: "active"
                 }
-              })
-            } else {
-              alert("Une erreur est survenue lors de la création du projet")
+              )
+              if (newProject) {
+                console.log({newProject})
+                if(file){
+                  client.assets
+                  .upload('image', file, {
+                    contentType: file.type,
+                    filename: file.name
+                  })
+                  .then(async function(imageAsset){
+                    try {
+                      const newProduct = await client.create(
+                        {
+                          _type: "product",
+                          project: {
+                            _type: 'reference',
+                            _ref: newProject._id
+                          },
+                          title: product.title.trim(),
+                          description: product.description.trim(),
+                          realUnitValue: parseFloat(product.realUnitValue),
+                          projectUnitValue: parseFloat(product.projectUnitValue),
+                          url: product.url.trim(),
+                          quantity: parseInt(product.quantity),
+                          discount: 0,
+                          image: {
+                            _type: 'image',
+                            asset: {
+                              _type: "reference",
+                              _ref: imageAsset?._id
+                            }
+                          }
+                        }
+                      )
+                      if(newProduct) {
+                        console.log({newProduct});
+                        setProcess({ loading: false, status: "succeed" })
+                        location.replace(`/projects/${newProject._id}`);
+                      }
+                    } catch (error) {
+                      setProcess({ loading: false, status: "failed" })
+                      alert("Une erreur est survenue lors de l'ajout du produit.\nVeuillez réessayer plus tard ou vérifier vos informations !");
+                      console.log("prod pb")
+                    }
+                  })
+                } else {
+                  setProcess({ loading: false, status: "failed" })
+                  alert("L'image est obligatoire !")
+                }
+              } else {
+                setProcess({ loading: false, status: "failed" })
+                alert("Une erreur est survenue lors de la création du projet")
+              }
+            } catch (error) {
+              setProcess({ loading: false, status: "failed" })
+              alert("Une erreur s'est produite lors de l'initialisation du projet !")
+              console.log({ error })
+              console.log("proj pb")
             }
-          } catch (error) {
-            alert("Une erreur s'est produite lors de l'initialisation du projet !")
-            console.log({ error })
-            console.log("proj pb")
           }
+  
+        } catch(error) {
+          setProcess({ loading: false, status: "failed" })
+          console.log({error});
+          console.log("user pb");
         }
-
-      } catch(error) {
-        console.log({error});
-        console.log("user pb");
+  
+        // alert("Cette fonctinnalité n'est pas encore complète. \nDate maximale prévue de complétion : 06 Avril 2023 !\nMerci d'utiliser Revenge !")
+      } else {
+        setProcess({ loading: false, status: "failed" })
+        alert("Aucun champ ne doit être vide !")
       }
-
-      // alert("Cette fonctinnalité n'est pas encore complète. \nDate maximale prévue de complétion : 06 Avril 2023 !\nMerci d'utiliser Revenge !")
     } else {
-      alert("Aucun champ ne doit être vide !")
+      somethingLoading();
     }
   }
 
@@ -346,7 +380,13 @@ export default function NewProjects() {
 
                 <input type="password" className="input input-set" name="password" value={fastUser.password} onChange={handleChangeUser} placeholder="Mot de passe" />
 
-                <button type="submit" className="submit">Valider</button>
+                <button type="submit" className="submit">
+                  <ButtonContent
+                    loading={fastUser.loading}
+                    status={fastUser.status}
+                    originalText="Valider"
+                  />
+                </button>
               </form>
               <Link className="popup-box-footer" href="/auth">J&apos;ai déjà un compte !</Link>
             </div>
@@ -370,7 +410,7 @@ export default function NewProjects() {
                       <input value={project.name} onChange={(e) => setProject((proj) => ({ ...proj, name: e.target.value }))} id="name" className="input" type="text" placeholder="Nommez votre projet" />
                     </div>
 
-                    <div className="input-set">
+                    {/* <div className="input-set">
                       <div className="flexed">
                         <label htmlFor="">Privé</label>
                         <div 
@@ -381,7 +421,7 @@ export default function NewProjects() {
                         </div>
                       </div>
                       <p>En mode privé, seuls ceux que vous décidez verront votre projet.</p>
-                    </div>
+                    </div> */}
 
                     <button onClick={handleProjectDef} className="submit">Suivant</button>
                   </div>
@@ -433,17 +473,29 @@ export default function NewProjects() {
                     </div>
 
                     <div className="input-set">
-                      <label htmlFor="url">Lien :</label>
+                      <label htmlFor="url">Lien du produit : <span className='optional'>(facultatif)</span></label>
+                      <p>Vos clients pourront vérifier les informations de produit.</p>
                       <input 
                         name="url" 
                         id="url" 
                         className="input" 
                         type="url" 
-                        placeholder="Lien du produit"
+                        placeholder="https://..."
                         value={product.url}
                         onChange={handleChange}
+                        onBlur={(e) => {
+                          setUrlOk(() => {
+                            e.target.value !== "" ? isValidURL(e.target.value) : null
+                          })
+                        }}
                         />
-                      <p>Vos clients pourront vérifier les informations de produit.</p>
+                        {urlOk === false 
+                          ? <p className="field-message">
+                              <span className='field-message__wrong'>Url non valide : </span>
+                              Doit être de type "http ou https://blabla.exemple/bla"
+                            </p> 
+                          : null
+                        }
                     </div>
 
                     <div className="input-set">
@@ -472,6 +524,13 @@ export default function NewProjects() {
                         value={product.projectUnitValue}
                         onChange={handleChange}
                       />
+                      {projectValueOk === false 
+                        ? <p className="field-message">
+                            <span className='field-message__wrong'>Valeur non valide : </span>
+                            Le prix du projet doit être inférieur au prix réél, c'est là tout l'avantage du groupage. Merci !
+                          </p> 
+                        : null
+                      }
                     </div>
 
                     <div className="input-set">
@@ -490,7 +549,13 @@ export default function NewProjects() {
 
                     <div>
                       <button onClick={() => setStep(0)} className="submit">Retour</button>
-                      <button onClick={handleSubmit} className="submit submit__gold">Terminer</button>
+                      <button onClick={handleSubmit} className="submit submit__gold">
+                        <ButtonContent
+                          loading={process?.loading}
+                          status={process?.status}
+                          originalText="Terminer"
+                        />
+                      </button>
                     </div>
                   </div>
                 </section>

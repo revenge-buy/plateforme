@@ -7,6 +7,7 @@ import client from '@/api/client'
 import Metas from '@/components/Metas'
 import AuthBox from '@/containers/Auth/AuthBox'
 import styles from '@/styles/Auth.module.css'
+import ButtonContent from '@/components/ButtonContent'
 
 const metas = {
   title: 'Connexion',
@@ -23,7 +24,11 @@ export default function Login() {
     email: "",
     password: "",
     message: "",
-    // loading: "false"
+  })
+
+  const [loadingStatus, setLoadingStatus] = useState({
+    loading: false,
+    status: ""
   })
 
   const router = useRouter()
@@ -31,52 +36,48 @@ export default function Login() {
   
   function getUser(e) {
     e.preventDefault();
-
-    // setUser((user) => ({ ...user, loading: true }))
-    client.fetch(
-      `
-        * [_type == "seller" && email == "${user.email}"]{
-          password,
-          firstName,
-          userTag,
-          verified,
-          confirmed
-        }
-      `
-    )
-      .then((resp) => {
-        console.log(resp)
-        
-        if (resp[0]?.password == user.password) {
-          let rbUser = {
-            firstName: resp[0]?.firstName,
-            email: user.email,
-            userTag: resp[0]?.userTag,
-            verified: resp[0]?.verified,
-            confirmed: resp[0]?.confirmed
+    if(!loadingStatus.loading){
+      setLoadingStatus((ls) => ({ ...ls, loading: true, status: "pending" }))
+      client.fetch(
+        `
+          * [_type == "seller" && email == "${user.email}"]{
+            password,
+            firstName,
+            userTag,
+            verified,
+            confirmed
           }
-          localStorage.setItem("revenge-user", JSON.stringify(rbUser));
-          SetUser(rbUser)
-          router.push("/projects");
-        } else {
-          setUser((user) => ({ ...user, message: 'Mot de passe incorrecte' }))
-          alert(user.message)
-        }
-        // return {
-        //   props: {
-        //     user: resp?.data?.userTag
-        //   }
-        // }
-      })
-      .catch((error) => {
-        console.log({ error })
-        // return {
-        //   props: {
-        //     user: ""
-        //   }
-        // }
-        setUser("no user")
-      }) 
+        `
+      )
+        .then((resp) => {
+          console.log(resp)
+          
+          if (resp[0]?.password == user.password) {
+            let rbUser = {
+              firstName: resp[0]?.firstName,
+              email: user.email,
+              userTag: resp[0]?.userTag,
+              verified: resp[0]?.verified,
+              confirmed: resp[0]?.confirmed
+            }
+            localStorage.setItem("revenge-user", JSON.stringify(rbUser));
+            SetUser(rbUser)
+            setLoadingStatus((ls) => ({ ...ls, loading: false, status: "succeed" }))
+            router.push("/projects");
+          } else {
+            setUser((user) => ({ ...user, message: 'Mot de passe incorrecte' }))
+            setLoadingStatus((ls) => ({ ...ls, loading: false, status: "failed" }))
+            alert(user.message)
+          }
+        })
+        .catch((error) => {
+          console.log({ error })
+          setUser("no user")
+          setLoadingStatus((ls) => ({ ...ls, loading: false, status: "failed" }))
+        })
+    } else {
+      alert("Connexion en cours, Veuillez patienter svp !")
+    }
   }
     
   function handleChange(e) {
@@ -96,7 +97,13 @@ export default function Login() {
               <input className='input' name="password" type="password" placeholder='Entrez votre mot de passe' value={user.password} onChange={handleChange} />
               {user.message !== "" && <p>{user.message}</p>}
 
-              <input className='submit' type="submit" value="Connexion" onClick={getUser} />
+              <button className='submit' type="submit" value="Connexion" onClick={getUser}>
+                <ButtonContent
+                  loading={loadingStatus.loading}
+                  status={loadingStatus.status}
+                  originalText="Connexion"
+                />
+              </button>
               <Link href='/auth/signup'>Créer un compte</Link>
             </form>
           } />
@@ -104,28 +111,3 @@ export default function Login() {
     </div>
   )
 }
-
-// export async function getStaticProps() {
-//   try {
-//     const user = await client.fetch(
-//       `
-//         * [_type == "seller" && email="temgoua484@gmail.com"]{
-//           userTag
-//         }
-//       `
-//     );
-
-//     return {
-//       props: {
-//         user
-//       }
-//     }
-//   } catch (error) {
-//     console.log({ error })
-//     return {
-//       props: {
-//         user: ""
-//       }
-//     }
-//   }
-// }

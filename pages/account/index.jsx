@@ -13,6 +13,7 @@ import { CgClose } from 'react-icons/cg'
 
 import styles from './index.module.css'
 import client from '@/api/client'
+import Loader from '@/components/Loader'
 
 export default function Account() {
 
@@ -26,6 +27,11 @@ export default function Account() {
   const [fileDataURL, setFileDataURL] = useState(null);
   // used in pupup, in case if fileDataURL is null
   const [popImage, setPopImage] = useState(null)
+
+  const [process, setProcess] = useState({
+    loading: false,
+    status: ""
+  })
 
   function logout(){
     localStorage.clear('revenge-user');
@@ -84,33 +90,41 @@ export default function Account() {
   }
 
   function updatePicture(imageType){
-    client.assets
-      .upload('image', file, {
-        contentType: file.type,
-        filename: file.name
-      })
-      .then(async function(imageAsset){
-        try {
-          const resp = await client.patch(account._id)
-            .set({
-              [imageType]: {
-                _type: 'image',
-                asset: {
-                  _type: "reference",
-                  _ref: imageAsset?._id
+    if(!process.loading){
+      setProcess({ loading: true, status: "pending" })
+      client.assets
+        .upload('image', file, {
+          contentType: file.type,
+          filename: file.name
+        })
+        .then(async function(imageAsset){
+          try {
+            const resp = await client.patch(account._id)
+              .set({
+                [imageType]: {
+                  _type: 'image',
+                  asset: {
+                    _type: "reference",
+                    _ref: imageAsset?._id
+                  }
                 }
-              }
-            })
-            .commit()
-          console.log({ changeCoverResp: resp })
-          router.reload()
-        } catch (updateError) {
-          console.log({ updateError })
-        }
-      })
-      .catch(function(assetError){
-        console.log({ assetError })
-      })
+              })
+              .commit()
+            setProcess({ loading: false, status: "succeed" })
+            console.log({ changeCoverResp: resp })
+            router.reload()
+          } catch (updateError) {
+            setProcess({ loading: false, status: "failed" })
+            console.log({ updateError })
+          }
+        })
+        .catch(function(assetError){
+          setProcess({ loading: false, status: "failed" })
+          console.log({ assetError })
+        })
+    } else {
+      alert("Modification en cours, veuillez patienter !")
+    }
   }
 
   useEffect(() => {
@@ -205,7 +219,10 @@ export default function Account() {
                 }
                   <div className={styles.editorBoxButtons}>
                     {fileDataURL && <div className={`box2 ${styles.editorBoxButton}`}>
-                      <BiCheck onClick={function(){updatePicture(editor === "cover" ? "coverPicture" : "profilPicture")}} />
+                      {!process.loading
+                        ? <BiCheck onClick={function(){updatePicture(editor === "cover" ? "coverPicture" : "profilPicture")}} />
+                        : <Loader />
+                      }
                     </div>}
                     <div className={`box2 ${styles.editorBoxButton}`}>
                       <MdChangeCircle />

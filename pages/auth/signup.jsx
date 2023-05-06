@@ -6,6 +6,7 @@ import Metas from '@/components/Metas'
 import AuthBox from '@/containers/Auth/AuthBox'
 import styles from '@/styles/Auth.module.css'
 import { AuthContext } from '@/context/auth'
+import ButtonContent from '@/components/ButtonContent'
 
 const metas = {
   title: 'Sign Up',
@@ -29,6 +30,11 @@ export default function SignUp() {
     tagOk: NaN,
     emailOk: NaN,
     phoneOk: NaN
+  })
+
+  const [process, setProcess] = useState({
+    loading: false,
+    status: ""
   })
 
   const { SetUser } = useContext(AuthContext)
@@ -156,57 +162,76 @@ export default function SignUp() {
 
   async function createUser(e) {
     e.preventDefault();
-
-    let _user = {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      password: user.password,
-      confirmPassword: user.confirmPassword,
-      uesrTag: user.userTag,
-      phone: user.phone,
-      email: user.email
-    }
-
-    if (
-      checkFields(_user)
-      && checkPasswords()
-      && user.tagOk
-      && user.emailOk
-      && user.phoneOk
-    ) {
-      try {
-        const resp = await client.create(
-          {
-            _type: "seller",
-            email: user.email.trim(),
-            password: user.password.trim(),
-            firstName: user.firstName.trim(),
-            lastName: user.lastName.trim(),
-            phone: parseInt(user.phone),
-            userTag: user.userTag.trim(),
-            confirmed: false,
-            verified: false
+    if(!process.loading){
+      setProcess(function(process){
+        ({ ...process, loading: true, status: "pending" })
+      })
+      let _user = {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        password: user.password,
+        confirmPassword: user.confirmPassword,
+        uesrTag: user.userTag,
+        phone: user.phone,
+        email: user.email
+      }
+  
+      if (
+        checkFields(_user)
+        && checkPasswords()
+        && user.tagOk
+        && user.emailOk
+        && user.phoneOk
+      ) {
+        try {
+          const resp = await client.create(
+            {
+              _type: "seller",
+              email: user.email.trim(),
+              password: user.password.trim(),
+              firstName: user.firstName.trim(),
+              lastName: user.lastName.trim(),
+              phone: parseInt(user.phone),
+              userTag: user.userTag.trim(),
+              confirmed: false,
+              verified: false
+            }
+          )
+          if (resp) {
+            let rbUser = {
+              email: resp.email,
+              firstName: resp.firstName,
+              userTag: resp.userTag,
+              verified: resp.verified,
+              confirmed: resp.confirmed
+            }
+            localStorage.setItem("revenge-user", JSON.stringify(rbUser));
+            SetUser(rbUser)
+            setProcess((process) => ({
+              ...process,
+              loading: false, status: "succeed"
+            }))
+            router.push(`/account?tag=${resp.userTag}`);
           }
-        )
-        if (resp) {
-          let rbUser = {
-            email: resp.email,
-            firstName: resp.firstName,
-            userTag: resp.userTag,
-            verified: resp.verified,
-            confirmed: resp.confirmed
-          } 
-          localStorage.setItem("revenge-user", JSON.stringify(rbUser));
-          SetUser(rbUser)
-          router.push(`/account?tag=${resp.userTag}`);
+        } catch (error) {
+          alert("Une erreur s'est produite lors de la création de votre compte !")
+          setProcess((process) => ({
+            ...process,
+            loading: false, status: "failed"
+          }))
+          console.log({ error })
         }
-      } catch (error) {
-        alert("Une erreur s'est produite lors de la création de votre compte !")
-        console.log({ error })
+      } else {
+        alert("Veuillez Vérifier vos informations !")
+        setProcess((process) => ({
+          ...process,
+          loading: false, status: "failed"
+        }))
       }
     } else {
-      alert("Veuillez Vérifier vos informations !")
+      alert("Création de compte en cours, Veuillez patienter")
     }
+
   }
 
   return (
@@ -249,7 +274,13 @@ export default function SignUp() {
               }
               <p>{user.message}</p>
 
-              <input className='submit' type="submit" value="S'inscrire" onClick={createUser} />
+              <button className='submit' type="submit"  onClick={createUser}>
+                <ButtonContent
+                  loading={process?.loading}
+                  status={process?.status}
+                  originalText={"S'inscrire"}
+                />
+              </button>
             </form>
           } />
       </main>

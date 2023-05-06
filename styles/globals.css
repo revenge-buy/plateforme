@@ -142,6 +142,11 @@ textarea{
   color: var(--color-dark_blue)
 }
 
+.input-set .optional{
+  color: #777;
+  font-style: italic
+}
+
 .input-set > p{
   font-size: 10px;
   text-align: left;
@@ -301,7 +306,7 @@ textarea{
 
 .field-message{
   font-size: 12px;
-  margin-top: -20px;
+  /* margin-top: -10px; */
   text-align: start;
   font-weight: bold;
   letter-spacing: -0.3px;
