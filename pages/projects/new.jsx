@@ -487,9 +487,9 @@ export default function NewProjects() {
                         value={product.url}
                         onChange={handleChange}
                         onBlur={(e) => {
-                          setUrlOk(() => {
-                            e.target.value !== "" ? isValidURL(e.target.value) : null
-                          })
+                          e.target.value.trim() !== ""
+                          ? setUrlOk(isValidURL(e.target.value))
+                          : setUrlOk(null)
                         }}
                         />
                         {urlOk === false 

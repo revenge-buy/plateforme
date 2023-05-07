@@ -51,9 +51,11 @@
 .spinner {
   width: 100vh;
   height: 100vh;
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0.815);
+  backdrop-filter: blur(15px);
   position: absolute;
   top: 0;
+  z-index: 10;
   border-radius: 100%;  
   -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
   animation: sk-scaleout 1.0s infinite ease-in-out;
