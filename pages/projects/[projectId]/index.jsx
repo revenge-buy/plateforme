@@ -91,6 +91,7 @@ export default function Project({ projects }) {
           seller->{
             userTag,
             email,
+            phone,
             "name": firstName + " " + lastName,
             "picture": profilPicture.asset->url
           },
@@ -126,11 +127,11 @@ export default function Project({ projects }) {
                 seller->{
                   email,
                   userTag,
-                  _id
+                  _id,
                 },
                 _id,
                 offer
-              } 
+              }
             }
           `)
           .then(function(resp){
@@ -353,7 +354,8 @@ export default function Project({ projects }) {
                         </Link>
                         <div>
                           <h4>{seller?.name || ""}</h4>
-                          <p>{_createdAt || ""}</p>
+                          {/* <p>{_createdAt || ""}</p> */}
+                          <p>{seller?.phone || ""}</p>
                           {userIsCreator &&
                             <span className={styles.memberOffer}>
                               <MdOutlineProductionQuantityLimits />
