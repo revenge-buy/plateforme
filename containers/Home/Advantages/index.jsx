@@ -16,7 +16,7 @@ const Advantages = () => {
       <div className={style.advantage}>
         <h4><b>A/</b> Gagnes <b>tous les clients</b> sur le marché avec <b>les meilleurs prix 🤤!</b></h4>
         <BoxOne
-          text={`Tes petites commandes éparpillées sont rassemblées en grosses commandes 📦 afin de réduire tes frais et d'élargir ta marge 👇🏾, Ce qui signifie que tu peux offrir à tes clients des prix concurrentiels 🛍️.`}
+          text={`Traites de plus grosses commandes 📦, obtient de plus grosses marges, et offre à tes clients des prix imbatables 🛍️ !`}
           type="price"
           button={button}
         />
