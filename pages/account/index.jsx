@@ -17,6 +17,7 @@ import Loader from '@/components/Loader'
 import DarkLoader from '@/components/DarkLoader'
 import ButtonContent from '@/components/ButtonContent'
 import GoToTop from '@/components/GoToTop'
+import InputViewer from '@/components/InputViewer'
 
 export default function Account() {
 
@@ -59,8 +60,9 @@ export default function Account() {
   }
 
   function viewPicture(type){
+    // set pop image and open editor with a type value
     setFileDataURL(null)
-    setPopImage(function(image) {
+    setPopImage(function() {
       return (
         type === "cover"
         ? (account?.cover || "/cover.jpg")
@@ -71,42 +73,11 @@ export default function Account() {
   }
 
   function setPicture(e){
+    // Defines file and editor type values
     const _file = e.target.files[0];
     setFile(_file);
     setEditor(e.target.name);
     console.log(editor)
-  }
-
-  function changeCover(){
-    console.log({file})
-    console.log({fileDataURL})
-    client.assets
-      .upload('image', file, {
-        contentType: file.type,
-        filename: file.name
-      })
-      .then(async function(imageAsset){
-        try {
-          const resp = await client.patch(account._id)
-            .set({
-              coverPicture: {
-                _type: 'image',
-                asset: {
-                  _type: "reference",
-                  _ref: imageAsset?._id
-                }
-              }
-            })
-            .commit()
-          console.log({ changeCoverResp: resp })
-          router.reload()
-        } catch (updateError) {
-          console.log({ updateError })
-        }
-      })
-      .catch(function(assetError){
-        console.log({ assetError })
-      })
   }
 
   function updatePicture(imageType){
@@ -242,7 +213,7 @@ export default function Account() {
   }
 
   function handleEdit(type){
-    setEditing((e) => ({ 
+    !editing.loading && setEditing((e) => ({ 
       ...e,
       type,
       loading: false,
@@ -250,40 +221,51 @@ export default function Account() {
     }))
   }
 
-  function handleUpdate(type, value){
-    if(!editing.loading){
-      setEditing((e) => ({
-        ...e,
-        loading: true,
-        status: "pending"
-      }))
-      client
-        .patch(account?._id)
-        .set({[type]: value})
-        .commit()
-        .then(function(resp){
-          setEditing((e) => ({
-            ...e,
-            loading: false,
-            status: "succeed",
-            type: ""
-          }))
+  async function handleUpdate(type, value){
+    if(account[type] !== value){
+      if(!editing.loading){
+        setEditing((e) => ({
+          ...e,
+          loading: true,
+          status: "pending"
+        }))
+        try{
+          const resp = await client
+            .patch(account?._id)
+            .set({[type]: value})
+            .commit()
 
-          setAccount(function(acc){return { 
-            ...acc,
-            [type]: value
-          }})
-          return {resp}
-        })
-        .catch(function(error){
+          if(resp){
+            setEditing((e) => ({
+              ...e,
+              loading: false,
+              status: "succeed",
+              type: ""
+            }))
+  
+            setAccount(function(acc){return { 
+              ...acc,
+              [type]: value
+            }})
+            return {resp}
+          } else {
+            setEditing((e) => ({
+              ...e,
+              loading: false,
+              status: "failed",
+            }))
+          }
+        } catch(error){
           setEditing((e) => ({
             ...e,
             loading: false,
             status: "failed"
           }))
-
           return {error}
-        })
+        }
+      }
+    } else {
+      alert("valeur non modifiée.")
     }
   }
 
@@ -341,7 +323,7 @@ export default function Account() {
                     </div>}
                     <div className={`box2 ${styles.editorBoxButton}`}>
                       <MdChangeCircle />
-                      <input type="file" accept='image/*' name="cover" multiple={false} onChange={setPicture} />
+                      <input type="file" accept='image/*' name={editor} multiple={false} onChange={setPicture} />
                     </div>
                   </div>
                 </div>
@@ -513,34 +495,15 @@ export default function Account() {
                   } 
                 </div>
 
-                <div className='box2 p2'>
-                  <MdOutlineEmail />
-                  <div className={styles.itemValue}>
-                    {editing.type !== "email"
-                      ? <p>{account?.email || "Donnée absente !"}</p>
-                      : <input
-                      onBlur={function(){
-                        setEditing(function(ed){
-                          return {
-                            ...ed,
-                            type: ""
-                          }
-                        })
-                      }} type="email" value={editing.email} onChange={function(e){setEditing(function(ed){
-                        return {
-                          ...ed,
-                          email: e.target.value
-                        }
-                      })}} />
-                    }
-                  </div>
-                  {editing.type !== "email"
-                    ? <HiPencil onClick={function(){handleEdit("email")}} />
-                    : editing.loading 
-                      ? <DarkLoader />
-                      : <BiCheck onClick={function(){handleUpdate("email", editing.email)}} />
-                  } 
-                </div>
+                <InputViewer
+                  value={account?.email}
+                  editing={editing}
+                  setEditing={setEditing}
+                  handleEdit={handleEdit}
+                  handleUpdate={handleUpdate}
+                  inputType="email"
+                  valueType="email"
+                />
               </div>
             </div>
           </section>
@@ -642,12 +605,12 @@ export default function Account() {
             </div>
             <div className={styles.sectionContent}>
               <div className={styles.items}>
-                <p className='box2 p2 box2-red'>
+                <div className='box2 p2 box2-red'>
                   <MdDelete />
                   <div>
                   <p>Supprimer mon compte</p>
                   </div>
-                </p>
+                </div>
               </div>
             </div>
           </section>

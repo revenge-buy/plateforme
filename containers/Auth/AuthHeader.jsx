@@ -8,7 +8,7 @@ export default function AuthHeader({ title, text }){
 
     <div>
       <p className={styles.authHeaderText} v-if="text">{ text || '' }</p>
-      {/* <p class={styles.authHeaderText}>Et profitez d'un essai gratuit pendant 30 jours sans engagement. 🎁</p> */}
+      {/* <p className={styles.authHeaderText}>Et profitez d'un essai gratuit pendant 30 jours sans engagement. 🎁</p> */}
     </div>
   </div>
   )
