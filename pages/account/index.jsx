@@ -14,6 +14,9 @@ import { CgClose } from 'react-icons/cg'
 import styles from './index.module.css'
 import client from '@/api/client'
 import Loader from '@/components/Loader'
+import DarkLoader from '@/components/DarkLoader'
+import ButtonContent from '@/components/ButtonContent'
+import GoToTop from '@/components/GoToTop'
 
 export default function Account() {
 
@@ -29,6 +32,23 @@ export default function Account() {
   const [popImage, setPopImage] = useState(null)
 
   const [process, setProcess] = useState({
+    loading: false,
+    status: ""
+  })
+
+  const [editing, setEditing] = useState({
+    phone: null,
+    email: "",
+    editingNames: false,
+    firstName: "",
+    lastName:  "",
+    checkingPassword: false,
+    currentPassword: "",
+    currPassOk: false,
+    password: "",
+    passwordConfirm: "",
+    passwordMessage: "",
+    type: "",
     loading: false,
     status: ""
   })
@@ -153,10 +173,13 @@ export default function Account() {
         const resp = await client.fetch(`
           *[_type == "seller" && userTag == "${tag}"]{
             _id,
+            firstName,
+            lastName,
             "name": firstName+" "+lastName,
             userTag,
             email,
             phone,
+            password,
             "picture": profilPicture.asset->url,
             "cover": coverPicture.asset->url,
             "projects": *[_type == "project" && references(^._id)] | order(_updatedAt, desc){
@@ -178,10 +201,23 @@ export default function Account() {
             cover: resp?.cover,
             email: resp?.email,
             phone: resp?.phone,
-            _id: resp?._id
+            _id: resp?._id,
+            password: resp?.password,
+            firstName: resp?.firstName,
+            lastName: resp?.lastName
           }})
 
           setProjects(resp?.projects)
+
+          setEditing(function(ed){
+            return {
+              ...ed,
+              firstName: resp?.firstName,
+              lastName: resp?.lastName,
+              phone: resp?.phone,
+              email: resp?.email,
+            }
+          })
         }
       } catch (error) {
         console.log({ error })
@@ -193,6 +229,85 @@ export default function Account() {
     console.log({ projects });
   }, [router])
   
+  function checkPassword(){
+    const result = editing.currentPassword === account?.password
+    setEditing(function(ed){
+      return {
+        ...ed,
+        currPassOk: result,
+        passwordMessage: result ? "" : "Mauvais mot de passe !",
+        checkingPassword: result
+      }
+    })
+  }
+
+  function handleEdit(type){
+    setEditing((e) => ({ 
+      ...e,
+      type,
+      loading: false,
+      status: ""
+    }))
+  }
+
+  function handleUpdate(type, value){
+    if(!editing.loading){
+      setEditing((e) => ({
+        ...e,
+        loading: true,
+        status: "pending"
+      }))
+      client
+        .patch(account?._id)
+        .set({[type]: value})
+        .commit()
+        .then(function(resp){
+          setEditing((e) => ({
+            ...e,
+            loading: false,
+            status: "succeed",
+            type: ""
+          }))
+
+          setAccount(function(acc){return { 
+            ...acc,
+            [type]: value
+          }})
+          return {resp}
+        })
+        .catch(function(error){
+          setEditing((e) => ({
+            ...e,
+            loading: false,
+            status: "failed"
+          }))
+
+          return {error}
+        })
+    }
+  }
+
+  async function updatePassword(e){
+    e.preventDefault()
+    if(editing.password === editing.passwordConfirm){
+      if(editing.password.length > 5){
+        const resp = handleUpdate("password", editing.password)
+
+        await resp?.resp && setEditing(function(ed){
+          return { ...ed, passwordMessage: "", checkingPassword: false, password:"", currentPassword: "", passwordConfirm: "", type: "", currPassOk: false}
+        })
+      } else {
+        setEditing(function(ed){
+          return { ...ed, passwordMessage: "Le mot de passe doit contenir plus de 5 caractères." }
+        })
+      }
+    } else {
+      setEditing(function(ed){
+        return { ...ed, passwordMessage: "Les mots de passes doivent être identiques."}
+      })
+    }
+    
+  }
 
   return (
     <>
@@ -200,7 +315,7 @@ export default function Account() {
         <title>{account.name}</title>
         <meta name="description" content="page de compte" />
       </Head>
-      <main className={`page ${styles.main}`}>
+      <main id="top" className={`page ${styles.main}`}>
         { editor !== null && 
           <div className="popup">
             <div className="popup-header">
@@ -274,10 +389,80 @@ export default function Account() {
               <BsEyeFill />
             </Link></p>
           </div>
+          {/* Names editing */}
+          {editing.editingNames &&
+            <section>
+              <div className={styles.sectionContent}>
+                <div className={styles.items}>
+                  <div className='box2 p2'>
+                    <BsWhatsapp />
+                    <div className={styles.itemValue}>
+                      {editing.type !== "firstName"
+                        ? <p>{account?.firstName || "Donnée absente !"}</p>
+                        : <input
+                        onBlur={function(){
+                          setEditing(function(ed){
+                            return {
+                              ...ed,
+                              type: ""
+                            }
+                          })
+                        }} type="text" value={editing.firstName} onChange={function(e){setEditing(function(ed){
+                          return {
+                            ...ed,
+                            firstName: e.target.value
+                          }
+                        })}} />
+                      }
+                    </div>
+                    {editing.type !== "firstName"
+                      ? <HiPencil onClick={function(){handleEdit("firstName")}} />
+                      : editing.loading 
+                        ? <DarkLoader />
+                        : <BiCheck onClick={function(){handleUpdate("firstName", editing.firstName.trim())}} />
+                    } 
+                  </div>
+
+                  <div className='box2 p2'>
+                    <MdOutlineEmail />
+                    <div className={styles.itemValue}>
+                      {editing.type !== "lastName"
+                        ? <p>{account?.lastName || "Donnée absente !"}</p>
+                        : <input
+                        onBlur={function(){
+                          setEditing(function(ed){
+                            return {
+                              ...ed,
+                              type: ""
+                            }
+                          })
+                        }} type="string" value={editing.lastName} onChange={function(e){setEditing(function(ed){
+                          return {
+                            ...ed,
+                            lastName: e.target.value
+                          }
+                        })}} />
+                      }
+                    </div>
+                    {editing.type !== "lastName"
+                      ? <HiPencil onClick={function(){handleEdit("lastName")}} />
+                      : editing.loading 
+                        ? <DarkLoader />
+                        : <BiCheck onClick={function(){handleUpdate("lastName", editing.lastName.trim())}} />
+                    } 
+                  </div>
+                </div>
+              </div>
+            </section>
+          }
           <div className={styles.topButtons}>
             <div className={styles.buttonSet}>
-              <button className={styles.button} onClick={() => setEditor("infos")}>
-                Modifier
+              <button className={styles.button} onClick={() => {
+                setEditing(function(ed){
+                return { ...ed, editingNames: !ed.editingNames }
+                })
+              }}>
+                {editing.editingNames ? "Fermer" : "Modifier"}
                 <HiPencil />
               </button>
               <button className={`offIcon ${styles.miniButton}`}>
@@ -285,7 +470,7 @@ export default function Account() {
                 <div className='oblic-line'></div>
               </button>
             </div>
-            <Link href="/projects/new" className={styles.button}>
+            <Link href="/projects/new" id="names" className={styles.button}>
               Ajouter un groupage
               <BiPlus />
             </Link>
@@ -301,15 +486,60 @@ export default function Account() {
               <div className={styles.items}>
                 <div className='box2 p2'>
                   <BsWhatsapp />
-                  <div>
-                    <p>{account?.phone || "Donnée absente !"}</p>
+                  <div className={styles.itemValue}>
+                    {editing.type !== "phone"
+                      ? <p>{account?.phone || "Donnée absente !"}</p>
+                      : <input
+                      onBlur={function(){
+                        setEditing(function(ed){
+                          return {
+                            ...ed,
+                            type: ""
+                          }
+                        })
+                      }} type="number" value={editing.phone} onChange={function(e){setEditing(function(ed){
+                        return {
+                          ...ed,
+                          phone: e.target.value
+                        }
+                      })}} />
+                    }
                   </div>
+                  {editing.type !== "phone"
+                    ? <HiPencil onClick={function(){handleEdit("phone")}} />
+                    : editing.loading 
+                      ? <DarkLoader />
+                      : <BiCheck onClick={function(){handleUpdate("phone", parseInt(editing.phone))}} />
+                  } 
                 </div>
+
                 <div className='box2 p2'>
                   <MdOutlineEmail />
-                  <div>
-                    <p>{account?.email || "Donnée absente !"}</p>
+                  <div className={styles.itemValue}>
+                    {editing.type !== "email"
+                      ? <p>{account?.email || "Donnée absente !"}</p>
+                      : <input
+                      onBlur={function(){
+                        setEditing(function(ed){
+                          return {
+                            ...ed,
+                            type: ""
+                          }
+                        })
+                      }} type="email" value={editing.email} onChange={function(e){setEditing(function(ed){
+                        return {
+                          ...ed,
+                          email: e.target.value
+                        }
+                      })}} />
+                    }
                   </div>
+                  {editing.type !== "email"
+                    ? <HiPencil onClick={function(){handleEdit("email")}} />
+                    : editing.loading 
+                      ? <DarkLoader />
+                      : <BiCheck onClick={function(){handleUpdate("email", editing.email)}} />
+                  } 
                 </div>
               </div>
             </div>
@@ -321,12 +551,85 @@ export default function Account() {
             </div>
             <div className={styles.sectionContent}>
               <div className={styles.items}>
-                <div className='box2 p2'>
+                <div className='box2 p2' onClick={function(){
+                  setEditing(function(ed){
+                    return { ...ed, type: "password", checkingPassword: true }
+                  })
+                }}>
                   <GiSilence />
-                  <div>
-                    <p>Modifier mon mot de passe</p>
+                  <div className={`${editing.type === "password" && styles.itemValue}`}>
+                    {(editing.type !== "password" || !editing.checkingPassword)
+                      ? <p>Modifier mon mot de passe</p>
+                      : <input
+                        type="password" 
+                        name="pass" 
+                        placeholder='Mot de passe actuel' 
+                        value={editing.currentPassword} onChange={function(e){
+                          setEditing(function(ed){
+                            return { ...ed, currentPassword: e.target.value }
+                          })
+                        }} 
+                        onBlur={function(){
+                          setEditing(function(ed){
+                            return { ...ed, checkingPassword: false }
+                          })
+                        }}
+                      />
+                    }
                   </div>
+                  {(editing.type !== "password" || !editing.checkingPassword)
+                    ? <HiPencil />
+                    : (editing.loading && editing.checkingPassword)
+                      ? <DarkLoader />
+                      : <BiCheck onClick={checkPassword} />
+                  }
                 </div>
+
+                {editing.type === "password" && editing.passwordMessage !== "" && <p>{editing.passwordMessage}</p>}
+                
+                {(editing.type === "password" && editing.currPassOk) && 
+                <form>
+                  <input type="password" className="input-set input" placeholder='Nouveau mot de passe' value={editing.password} onChange={function(e){
+                    setEditing(function(ed){
+                      return {
+                        ...ed,
+                        password: e.target.value
+                      }
+                    })
+                  }} />
+                  <input type="password" className="input-set input" placeholder='Confirmez mot de passe' value={editing.passwordConfirm} onChange={function(e){
+                    setEditing(function(ed){
+                      return {
+                        ...ed,
+                        passwordConfirm: e.target.value
+                      }
+                    })
+                  }} />
+                  <div>
+                    <button 
+                      type="submit" 
+                      className="submit"
+                      onClick={updatePassword}
+                    >
+                      <ButtonContent
+                        loading={editing.loading}
+                        status={editing.status}
+                        originalText="Confirmer"
+                      />
+                    </button>
+                    <button 
+                      className="submit submit__empty"
+                      onClick={function(e){
+                        e.preventDefault()
+                        setEditing(function(ed){
+                          return { ...ed, type: "", currPassOk: false, checkingPassword: false, currentPassword: "", passwordConfirm: "", password: "", passwordMessage: "" }
+                        })
+                      }}
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                </form> }
               </div>
             </div>
           </section>
@@ -336,19 +639,21 @@ export default function Account() {
           <section>
             <div className={styles.sectionTop}>
               <h3><RiAlertFill /> Zone de danger</h3>
-              
             </div>
             <div className={styles.sectionContent}>
               <div className={styles.items}>
-                <div className='box2 p2 box2-red'>
+                <p className='box2 p2 box2-red'>
                   <MdDelete />
                   <div>
-                    <p>Supprimer mon compte</p>
+                  <p>Supprimer mon compte</p>
                   </div>
-                </div>
+                </p>
               </div>
             </div>
           </section>
+          {/* <footer> */}
+            <GoToTop noGap tag="top" />
+          {/* </footer> */}
         </div>
       </main>
     </>

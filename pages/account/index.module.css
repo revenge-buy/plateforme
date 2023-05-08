@@ -334,6 +334,32 @@
   border: solid;
 } */
 
+.items > div{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 300px;
+}
+
+.itemValue{
+  width: 150px;
+  max-width: 150px;
+  overflow: hidden;
+}
+
+.itemValue input{
+  width: 100%;
+  max-width: 100%;
+  box-shadow: 0 0 2px var(--color-dark_blue);
+  border: none;
+  stroke: none;
+}
+
+.itemValue input:active{
+  border: none;
+  stroke: none;
+}
+
 .main .body .sectionContent .nothingText{
   color: var(--color-gray_blue)
 }

@@ -1,0 +1,33 @@
+@keyframes ldioVf23pybtrmd {
+  0% { transform: translate(-50%,-50%) rotate(0deg); }
+  100% { transform: translate(-50%,-50%) rotate(360deg); }
+}
+.ldioVf23pybtrmd div {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border: 4px solid var(--color-dark_blue);
+  border-top-color: transparent;
+  border-radius: 50%;
+}
+.ldioVf23pybtrmd div {
+  animation: ldioVf23pybtrmd 1s linear infinite;
+  top: 15px;
+  left: 15px
+}
+.loadingioSpinnerRollingEhjqnippbg {
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0);
+}
+.ldioVf23pybtrmd {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform: translateZ(0) scale(1);
+  backface-visibility: hidden;
+  transform-origin: 0 0; /* see note above */
+}
+.ldioVf23pybtrmd div { box-sizing: content-box; }

@@ -4,10 +4,10 @@ import { BiUpArrow } from 'react-icons/bi'
 
 import style from './GoToTop.module.css'
 
-const GoToTop = ({tag}) => {
+const GoToTop = ({tag, noGap}) => {
   return (
     <div className={style.goToTop}>
-      <div className="section-gap"></div>
+      {!noGap && <div className="section-gap"></div>}
       <Link className={style} href={`#${tag}`}>
         <BiUpArrow />
         <p>Remonter</p>

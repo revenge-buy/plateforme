@@ -32,3 +32,20 @@ export function checkTag(user, setUser) {
   
   setUser((user) => ({ ...user, prevUserTag: user.userTag }))
 }
+
+// export async function updateUser(_id, fields, loading){
+//   try {
+//     setProcess({ loading: true, status: "pending" })
+//     const updated = await client.patch(_id).set(fields).commit()
+
+//     if(updated){
+//       return updated;
+//     } else {
+//       return null
+//     }
+//   } catch (error) {
+//     setProcess({ loading: false, status: "failed" })
+//     console.log({ error })
+//     return null
+//   }
+// }
