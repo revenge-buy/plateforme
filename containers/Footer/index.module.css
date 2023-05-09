@@ -65,7 +65,7 @@
 }
 
 .footer .loginBtn{
-  background-color: goldenrod;
+  background-color: orange;
   color: white;
   padding: 10px 25px;
   border-radius: 5px;
@@ -76,7 +76,7 @@
 
 @keyframes btnBg {
   0% {
-    background-color: goldenrod;
+    background-color: orange;
   }
   50% {
     background-color: gold;
@@ -85,7 +85,7 @@
     background-color: rgb(245, 217, 63);
   }
   100% {
-    background-color: goldenrod;
+    background-color: orange;
   }
 }
 

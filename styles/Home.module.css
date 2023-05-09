@@ -115,9 +115,9 @@
 }
 
 .hero .heroButtons button{
-  /* border: solid goldenrod 2px; */
+  /* border: solid orange 2px; */
   border-radius: 4px;
-  /* color: goldenrod; */
+  /* color: orange; */
   color: white;
   font-size: 12px;
   font-weight: bold;

@@ -183,7 +183,7 @@ textarea{
 }
 
 .submit__gold{
-  background: goldenrod;
+  background: orange;
 }
 
 .submit:hover{
@@ -209,7 +209,7 @@ textarea{
 }
 
 .input-toggler__active{
-  background-color: goldenrod;
+  background-color: orange;
   border: unset;
 
 }
@@ -429,7 +429,7 @@ textarea{
 }
 
 .btn-share{
-  background: linear-gradient(-30deg, var(--color-dark_blue), goldenrod);
+  background: linear-gradient(-30deg, var(--color-dark_blue), orange);
   /* background-size: 200% 200%; */
   /* animation: gradient 10s ease infinite; */
   display: flex;

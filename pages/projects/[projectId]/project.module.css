@@ -21,7 +21,7 @@
 }
 
 .project .image_up_button{
-  background-color: goldenrod;
+  background-color: orange;
   color: var(--color-dark_blue);
   padding: 7px 20px;
   border-radius: 50px;
@@ -100,7 +100,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 100%;
-  background: linear-gradient(45deg, red, orange, goldenrod, gold, yellow);
+  background: linear-gradient(45deg, red, orange, orange, gold, yellow);
   /* box-shadow: 5px 5px 10px black; */
 }
 
@@ -119,7 +119,7 @@
   border-radius: 50%;
   position: absolute;
   bottom: 0;
-  border: solid 2px goldenrod;
+  border: solid 2px orange;
 }
 
 .project .profile img{
@@ -161,7 +161,7 @@
 }
 
 .project .infos div h3 svg{
-  color: goldenrod;
+  color: orange;
 }
 
 .project .infos div p, .infos span{
@@ -169,7 +169,7 @@
 }
 
 .project .infos span{
-  color: goldenrod;
+  color: orange;
   font-weight: bolder;
 }
 
@@ -201,7 +201,7 @@
 }
 
 .project .buttons button:first-child{
-  background-color: goldenrod;
+  background-color: orange;
   color: var(--color-dark_blue);
 }
 
@@ -240,7 +240,7 @@
 }
 
 .product a{
-  background-color: goldenrod;
+  background-color: orange;
   color: var(--color-dark_blue);
   padding: 7px 20px;
   border-radius: 50px;
@@ -308,11 +308,11 @@
   flex-direction: row;
   align-items: baseline;
   font-size: 14px;
-  color: goldenrod
+  color: orange
 }
 
 .memberOffer svg{
-  color: goldenrod;
+  color: orange;
   font-size: 0.8rem;
 }
 
@@ -322,9 +322,9 @@
 }
 
 .memberTrash p.myMemberOffer{
-  color: goldenrod;
+  color: orange;
   font-size: 14px;
-  border: solid goldenrod 2px;
+  border: solid orange 2px;
   padding: 5px 10px;
   border-radius: 50px;
 }
@@ -339,7 +339,7 @@
 
 .anonymeMembers button{
   background-color:var(--color-dark_blue) ;
-  color:goldenrod ;
+  color:orange ;
   padding: 10px 20px;
   border-radius: 50px;
   display: flex;
@@ -348,5 +348,5 @@
 }
 
 .anonymeMembers button svg{
-  color: goldenrod
+  color: orange
 }

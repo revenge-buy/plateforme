@@ -222,6 +222,7 @@ export default function Account() {
   }
 
   async function handleUpdate(type, value){
+    // update user basic infos instead of cover and profile pictures
     if(account[type] !== value){
       if(!editing.loading){
         setEditing((e) => ({
@@ -270,6 +271,7 @@ export default function Account() {
   }
 
   async function updatePassword(e){
+    // update password value
     e.preventDefault()
     if(editing.password === editing.passwordConfirm){
       if(editing.password.length > 5){
@@ -376,63 +378,25 @@ export default function Account() {
             <section>
               <div className={styles.sectionContent}>
                 <div className={styles.items}>
-                  <div className='box2 p2'>
-                    <BsWhatsapp />
-                    <div className={styles.itemValue}>
-                      {editing.type !== "firstName"
-                        ? <p>{account?.firstName || "Donnée absente !"}</p>
-                        : <input
-                        onBlur={function(){
-                          setEditing(function(ed){
-                            return {
-                              ...ed,
-                              type: ""
-                            }
-                          })
-                        }} type="text" value={editing.firstName} onChange={function(e){setEditing(function(ed){
-                          return {
-                            ...ed,
-                            firstName: e.target.value
-                          }
-                        })}} />
-                      }
-                    </div>
-                    {editing.type !== "firstName"
-                      ? <HiPencil onClick={function(){handleEdit("firstName")}} />
-                      : editing.loading 
-                        ? <DarkLoader />
-                        : <BiCheck onClick={function(){handleUpdate("firstName", editing.firstName.trim())}} />
-                    } 
-                  </div>
+                  <InputViewer
+                    value={account?.firstName}
+                    editing={editing}
+                    setEditing={setEditing}
+                    handleEdit={handleEdit}
+                    handleUpdate={handleUpdate}
+                    inputType="text"
+                    valueType="firstName"
+                  />
 
-                  <div className='box2 p2'>
-                    <MdOutlineEmail />
-                    <div className={styles.itemValue}>
-                      {editing.type !== "lastName"
-                        ? <p>{account?.lastName || "Donnée absente !"}</p>
-                        : <input
-                        onBlur={function(){
-                          setEditing(function(ed){
-                            return {
-                              ...ed,
-                              type: ""
-                            }
-                          })
-                        }} type="string" value={editing.lastName} onChange={function(e){setEditing(function(ed){
-                          return {
-                            ...ed,
-                            lastName: e.target.value
-                          }
-                        })}} />
-                      }
-                    </div>
-                    {editing.type !== "lastName"
-                      ? <HiPencil onClick={function(){handleEdit("lastName")}} />
-                      : editing.loading 
-                        ? <DarkLoader />
-                        : <BiCheck onClick={function(){handleUpdate("lastName", editing.lastName.trim())}} />
-                    } 
-                  </div>
+                  <InputViewer
+                    value={account?.lastName}
+                    editing={editing}
+                    setEditing={setEditing}
+                    handleEdit={handleEdit}
+                    handleUpdate={handleUpdate}
+                    inputType="text"
+                    valueType="lastName"
+                  />
                 </div>
               </div>
             </section>
@@ -466,34 +430,16 @@ export default function Account() {
             </div>
             <div className={styles.sectionContent}>
               <div className={styles.items}>
-                <div className='box2 p2'>
-                  <BsWhatsapp />
-                  <div className={styles.itemValue}>
-                    {editing.type !== "phone"
-                      ? <p>{account?.phone || "Donnée absente !"}</p>
-                      : <input
-                      onBlur={function(){
-                        setEditing(function(ed){
-                          return {
-                            ...ed,
-                            type: ""
-                          }
-                        })
-                      }} type="number" value={editing.phone} onChange={function(e){setEditing(function(ed){
-                        return {
-                          ...ed,
-                          phone: e.target.value
-                        }
-                      })}} />
-                    }
-                  </div>
-                  {editing.type !== "phone"
-                    ? <HiPencil onClick={function(){handleEdit("phone")}} />
-                    : editing.loading 
-                      ? <DarkLoader />
-                      : <BiCheck onClick={function(){handleUpdate("phone", parseInt(editing.phone))}} />
-                  } 
-                </div>
+
+                <InputViewer
+                  value={account?.phone}
+                  editing={editing}
+                  setEditing={setEditing}
+                  handleEdit={handleEdit}
+                  handleUpdate={handleUpdate}
+                  inputType="number"
+                  valueType="phone"
+                />
 
                 <InputViewer
                   value={account?.email}
@@ -507,18 +453,20 @@ export default function Account() {
               </div>
             </div>
           </section>
-          <section>
+          <section className={styles.security}>
             <div className={styles.sectionTop}>
               <h3><MdSecurity /> Sécurité</h3>
-              
             </div>
             <div className={styles.sectionContent}>
               <div className={styles.items}>
-                <div className='box2 p2' onClick={function(){
+                <div 
+                  className={`box2 p2 ${styles.inputView}`} 
+                  onClick={function(){
                   setEditing(function(ed){
                     return { ...ed, type: "password", checkingPassword: true }
-                  })
-                }}>
+                  })}}
+                  tabIndex={0}
+                >
                   <GiSilence />
                   <div className={`${editing.type === "password" && styles.itemValue}`}>
                     {(editing.type !== "password" || !editing.checkingPassword)
@@ -531,11 +479,6 @@ export default function Account() {
                           setEditing(function(ed){
                             return { ...ed, currentPassword: e.target.value }
                           })
-                        }} 
-                        onBlur={function(){
-                          setEditing(function(ed){
-                            return { ...ed, checkingPassword: false }
-                          })
                         }}
                       />
                     }
@@ -544,7 +487,15 @@ export default function Account() {
                     ? <HiPencil />
                     : (editing.loading && editing.checkingPassword)
                       ? <DarkLoader />
-                      : <BiCheck onClick={checkPassword} />
+                      : <div className={styles.options}>
+                          <BiCheck onClick={checkPassword} tabIndex={1}/>
+                          <CgClose tabIndex={1} className={styles.option_close} 
+                          onClick={function(){
+                            setTimeout(() => {
+                              handleEdit("")
+                            }, 200); 
+                          }} />
+                        </div>
                   }
                 </div>
 
@@ -568,7 +519,7 @@ export default function Account() {
                       }
                     })
                   }} />
-                  <div>
+                  <div className={styles.buttons}>
                     <button 
                       type="submit" 
                       className="submit"

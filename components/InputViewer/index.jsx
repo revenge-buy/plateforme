@@ -22,7 +22,9 @@ const InputViewer = ({value, editing, setEditing, handleEdit, handleUpdate, inpu
         {editing.type !== valueType
           ? <p>{value || "Donnée absente !"}</p>
           : <input
-              type={inputType || "text"} value={editing[valueType]} onChange={function(e){setEditing(function(ed){
+              type={inputType || "text"} 
+              value={editing[valueType]} 
+              onChange={function(e){setEditing(function(ed){
                 return {
                   ...ed,
                   [valueType]: e.target.value
@@ -37,8 +39,7 @@ const InputViewer = ({value, editing, setEditing, handleEdit, handleUpdate, inpu
           {editing.loading 
           ? <DarkLoader />
           : <div className={style.options}>
-              <button type='submit'
-              onClick={function(){handleUpdate(valueType, editing[valueType])}} ><BiCheck tabIndex={1}/></button>
+              <BiCheck onClick={function(){handleUpdate(valueType, editing[valueType])}} tabIndex={1}/>
               <CgClose tabIndex={1} className={style.option_close} 
               onClick={function(){
                 setTimeout(() => {
