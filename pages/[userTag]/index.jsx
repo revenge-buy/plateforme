@@ -1,12 +1,9 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { HiPencil, HiLogout } from 'react-icons/hi'
-import { BiPlus } from 'react-icons/bi'
-import { RiVipCrown2Fill, RiGroupFill } from 'react-icons/ri'
+import {  RiGroupFill } from 'react-icons/ri'
 import { SlArrowDown } from 'react-icons/sl'
 import { RiUserFollowFill } from 'react-icons/ri'
-import { BsActivity } from 'react-icons/bs'
 import { MdJoinInner, MdSettings } from 'react-icons/md'
 
 
@@ -25,12 +22,6 @@ export default function Account() {
   const [accIsUser, setAccIsUser] = useState(false)
   const [projects, setProjects] = useState([])
   const [joinedProjects, setJoinedProjects] = useState([])
-
-  function logout(){
-    localStorage.clear('revenge-user');
-    SetUser(null);
-    router.push("/")
-  }
 
   useEffect(() => {
     async function getAccount(){

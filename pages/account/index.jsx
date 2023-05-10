@@ -583,7 +583,7 @@ export default function Account() {
       {tag === false && <div>
         <div className="section-gap"></div>
         <div className='flexed'>
-          <h4>Vous n'avez pas le droit d'être ici ... </h4>
+          <h4>Vous n&apos;avez pas le droit d&apos;être ici ... </h4>
           <p>Veuillez vous connecter à votre compte !</p>
         </div>
       </div>  }
