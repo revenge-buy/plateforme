@@ -19,7 +19,7 @@ export default function Footer() {
 
     if(user !== null) {
       SetUser(user);
-      router.push(`/account?tag=${user.userTag}`);
+      router.push(`/account`);
     } else {
       router.push("/auth");
     }

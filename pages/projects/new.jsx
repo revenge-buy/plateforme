@@ -1,15 +1,18 @@
+import { useEffect, useState } from "react";
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+
 import { CgClose } from 'react-icons/cg'
 
 import client from "@/api/client";
 import Metas from "@/components/Metas";
 import AuthBox from "@/containers/Auth/AuthBox";
-import { useState } from "react";
-import Link from 'next/link';
 import DragAndDrop from '@/components/DragAndDrop/DragAndDrop';
-import { isValidURL, somethingLoading } from '@/helpers';
+import { equalObjects, isValidURL, somethingLoading } from '@/helpers';
 import ButtonContent from '@/components/ButtonContent';
-import { useRouter } from 'next/router';
-
+import DarkLoader from '@/components/DarkLoader'
+import Reload from "@/components/Reload";
+import getUser from "@/helpers/getUser";
 
 const metas = {
   title: 'Créer un projet',
@@ -25,6 +28,17 @@ export default function NewProjects() {
 
   const router = useRouter()
 
+  // state variable to say if the form is editing an existing project
+  const [editionMode, setEditionMode] = useState({
+    editing: true,
+    loading: false,
+    status: ""
+  })
+
+  // object used to obtain existing project prev value in other to check if there are any changes
+  const [prevEditionObject, setPrevEditionObject] = useState({})
+
+  // state variables to handle fast sign, when the user started creating a project without being loaded
   const [fastSignOn, setFastSignOn] = useState(false)
   const [fastUser, setFastUser] = useState({
     email: "",
@@ -36,18 +50,28 @@ export default function NewProjects() {
     loading: false,
     status: ""
   })
+
+  const [rightUser, setRightuser] = useState(null)
   
+  // state objec to check processing status, in other to set loader component and to give users appropriate request responses
   const [process, setProcess] = useState({
     loading: false,
     status: ""
   })
+
+  // satte variable to define loaded file
   const [file, setFile] = useState(null);
+
+  // state varaible to define step
   const [step, setStep] = useState(0)
+
+  // project object
   const [project, setProject] = useState({
     name: "",
     private: false
   })
 
+  // product object
   const [product, setProduct] = useState({
     title: "",
     description: "",
@@ -57,10 +81,111 @@ export default function NewProjects() {
     url: "",
     quantity: NaN
   })
+
+  // state variable to handle url verification
   const [urlOk, setUrlOk] = useState(null)
+
+  // state var to say weither the project price is correct or not (it has to be cheaper than the real price)
   const [projectValueOk, setProjectValueOk] = useState(null)
 
+  useEffect(() => {
+    const projectId = router.query?.editedId
+    const userTag = getUser("userTag")
+    if(projectId){
+      console.log({projectId})
+      setStep(1);
+      setEditionMode({
+        editing: true,
+        loading: true,
+        status: "pending"
+      })
+      client.fetch(
+        `*[_type == "project" && _id == "${projectId}"][0]{
+          _id,
+          creator -> {
+            userTag
+          },
+          name,
+          private,
+          "product": *[_type == "product" && references(^._id)][0]{
+            _id,
+            title,
+            description,
+            realUnitValue,
+            projectUnitValue,
+            url,
+            quantity
+          },
+          "productImage": *[_type == "product" && references(^._id)][0].image.asset->url,
+        }`
+      )
+        .then((resp) => {
+          console.log({resp})
+          if(resp && resp !== {}){
+            if(resp?.creator?.userTag === userTag){
+              setRightuser(true);
+              setEditionMode({
+                editing: true,
+                loading: false,
+                status: "succeed"
+              })
+              setFile({remote: true, url: resp?.productImage})
+              setProject({
+                name: resp?.name,
+                private: resp?.private,
+                _id: resp?._id,
+                creator: resp?.creator
+              })
+
+              setProduct(resp?.product)
+
+              setPrevEditionObject({
+                name: resp?.name,
+                private: resp?.private,
+                title: resp?.product.title.trim(),
+                description: resp?.product.description.trim(),
+                realUnitValue: parseFloat(resp?.product.realUnitValue),
+                projectUnitValue: parseFloat(resp?.product?.projectUnitValue),
+                url: resp?.product.url.trim(),
+                quantity: parseInt(resp?.product?.quantity),
+                discount: 0,
+              })
+            } else {
+              setRightuser(false)
+              setEditionMode({
+                editing: true,
+                loading: false,
+                status: "failed"
+              })
+            }
+          } else {
+            setEditionMode({
+              editing: true,
+              loading: false,
+              status: "failed"
+            })
+          }
+        })
+        .catch((error) => {
+          console.log({editedError: error})
+          setEditionMode({
+            editing: true,
+            loading: false,
+            status: "failed"
+          })
+        })
+    } else {
+      setEditionMode({
+        editing: false,
+        loading: false,
+        status: ""
+      })
+    }
+  }, [router])
+  
+
   function handleProjectDef(e){
+    // function to handle project creation
     e.preventDefault();
 
     // checking fields values
@@ -255,94 +380,223 @@ export default function NewProjects() {
         product.quantity !== NaN &&
         checkProjectValue()
       ){
-        try {
-          const user = await client.fetch(
-            `
-              * [_type == "seller" && email == "${rbUser.email}"]{
-                _id
-              }
-            `
-          );
-  
-          if(user[0]._id) {
-            console.log(user[0]._id);
-            try {
-              const newProject = await client.create(
-                {
-                  _type: "project",
-                  creator: {
-                    _type: 'reference',
-                    _ref: user[0]._id
-                  },
-                  ...project,
-                  accepted: confirmed,
-                  status: "active"
+        if(!editionMode.editing){
+          try {
+            const user = await client.fetch(
+              `
+                * [_type == "seller" && email == "${rbUser.email}"]{
+                  _id
                 }
-              )
-              if (newProject) {
-                console.log({newProject})
-                if(file){
-                  client.assets
-                  .upload('image', file, {
-                    contentType: file.type,
-                    filename: file.name
-                  })
-                  .then(async function(imageAsset){
-                    try {
-                      const newProduct = await client.create(
-                        {
-                          _type: "product",
-                          project: {
-                            _type: 'reference',
-                            _ref: newProject._id
-                          },
-                          title: product.title.trim(),
-                          description: product.description.trim(),
-                          realUnitValue: parseFloat(product.realUnitValue),
-                          projectUnitValue: parseFloat(product.projectUnitValue),
-                          url: product.url.trim(),
-                          quantity: parseInt(product.quantity),
-                          discount: 0,
-                          image: {
-                            _type: 'image',
-                            asset: {
-                              _type: "reference",
-                              _ref: imageAsset?._id
+              `
+            );
+    
+            if(user[0]._id) {
+              console.log(user[0]._id);
+              try {
+                const newProject = await client.create(
+                  {
+                    _type: "project",
+                    creator: {
+                      _type: 'reference',
+                      _ref: user[0]._id
+                    },
+                    ...project,
+                    accepted: confirmed,
+                    status: "active"
+                  }
+                )
+                if (newProject) {
+                  console.log({newProject})
+                  if(file){
+                    client.assets
+                    .upload('image', file, {
+                      contentType: file.type,
+                      filename: file.name
+                    })
+                    .then(async function(imageAsset){
+                      try {
+                        const newProduct = await client.create(
+                          {
+                            _type: "product",
+                            project: {
+                              _type: 'reference',
+                              _ref: newProject._id
+                            },
+                            title: product.title.trim(),
+                            description: product.description.trim(),
+                            realUnitValue: parseFloat(product.realUnitValue),
+                            projectUnitValue: parseFloat(product.projectUnitValue),
+                            url: product.url.trim(),
+                            quantity: parseInt(product.quantity),
+                            discount: 0,
+                            image: {
+                              _type: 'image',
+                              asset: {
+                                _type: "reference",
+                                _ref: imageAsset?._id
+                              }
                             }
                           }
+                        )
+                        if(newProduct) {
+                          console.log({newProduct});
+                          setProcess({ loading: false, status: "succeed" })
+                          router.push(`/projects/${newProject._id}`);
                         }
-                      )
-                      if(newProduct) {
-                        console.log({newProduct});
-                        setProcess({ loading: false, status: "succeed" })
-                        router.push(`/projects/${newProject._id}`);
+                      } catch (error) {
+                        setProcess({ loading: false, status: "failed" })
+                        alert("Une erreur est survenue lors de l'ajout du produit.\nVeuillez réessayer plus tard ou vérifier vos informations !");
+                        console.log("prod pb")
                       }
-                    } catch (error) {
-                      setProcess({ loading: false, status: "failed" })
-                      alert("Une erreur est survenue lors de l'ajout du produit.\nVeuillez réessayer plus tard ou vérifier vos informations !");
-                      console.log("prod pb")
-                    }
-                  })
+                    })
+                  } else {
+                    setProcess({ loading: false, status: "failed" })
+                    alert("L'image est obligatoire !")
+                  }
                 } else {
                   setProcess({ loading: false, status: "failed" })
-                  alert("L'image est obligatoire !")
+                  alert("Une erreur est survenue lors de la création du projet")
+                }
+              } catch (error) {
+                setProcess({ loading: false, status: "failed" })
+                alert("Une erreur s'est produite lors de l'initialisation du projet !")
+                console.log({ error })
+                console.log("proj pb")
+              }
+            }
+    
+          } catch(error) {
+            setProcess({ loading: false, status: "failed" })
+            console.log({error});
+            console.log("user pb");
+          }
+        } else {
+          const actEditionObject = {
+            name: project?.name,
+            private: project?.private,
+            title: product.title.trim(),
+            description: product.description.trim(),
+            realUnitValue: parseFloat(product.realUnitValue),
+            projectUnitValue: parseFloat(product.projectUnitValue),
+            url: product.url.trim(),
+            quantity: parseInt(product.quantity),
+            discount: 0
+          }
+
+          console.log({prevEditionObject});
+          console.log({actEditionObject})
+
+          if((equalObjects(actEditionObject, prevEditionObject)) && file.remote){
+            alert("Aucune donnée modifiée !")
+            setProcess({ loading: false, status: "" })
+          } else {
+            try {
+              const isRightUser = rbUser.userTag === project?.creator?.userTag
+      
+              if(isRightUser) {
+                console.log("right user !")
+                try {
+                  const updatedProject = await client.patch(project?._id)
+                    .set({
+                      name: project?.name,
+                      private: project?.private
+                    })
+                    .commit()
+  
+                  if (updatedProject) {
+                    let productObject = {
+                      project: {
+                        _type: 'reference',
+                        _ref: project?._id
+                      },
+                      title: product.title.trim(),
+                      description: product.description.trim(),
+                      realUnitValue: parseFloat(product.realUnitValue),
+                      projectUnitValue: parseFloat(product.projectUnitValue),
+                      url: product.url.trim(),
+                      quantity: parseInt(product.quantity),
+                      discount: 0
+                    }
+                    console.log({updatedProject})
+                    if(!file.remote){
+                      client.assets
+                      .upload('image', file, {
+                        contentType: file.type,
+                        filename: file.name
+                      })
+                      .then(async function(imageAsset){
+                        const image = {
+                          _type: 'image',
+                          asset: {
+                            _type: "reference",
+                            _ref: imageAsset?._id
+                          }
+                        }
+  
+                        productObject = {
+                          ...productObject,
+                          image
+                        }
+  
+                        try {
+                          const updatedProduct = await client.patch(product?._id)
+                            .set(productObject)
+                            .commit()
+  
+                          if(updatedProduct) {
+                            console.log({updatedProduct});
+                            setProcess({ loading: false, status: "succeed" })
+                            router.push(`/projects/${project?._id}`);
+                          } else {
+                            setProcess({ loading: false, status: "failed" })
+                          }
+                        } catch (error) {
+                          setProcess({ loading: false, status: "failed" })
+                          alert("Une erreur est survenue lors de l'ajout du produit.\nVeuillez réessayer plus tard ou vérifier vos informations !");
+                          console.log("prod pb")
+                        }
+                      })
+                    } else {
+                      try {
+                        const updatedProduct = await client.patch(product?._id)
+                          .set(productObject)
+                          .commit()
+  
+                        if(updatedProduct) {
+                          console.log({updatedProduct});
+                          setProcess({ loading: false, status: "succeed" })
+                          console.log({id: project?._id})
+                          router.push(`/projects/${project?._id}`);
+                        } else {
+                          setProcess({ loading: false, status: "failed" })
+                        }
+                      } catch (error) {
+                        setProcess({ loading: false, status: "failed" })
+                        alert("Une erreur est survenue lors de l'ajout du produit.\nVeuillez réessayer plus tard ou vérifier vos informations !");
+                        console.log("prod pb")
+                      }
+                    }
+                  } else {
+                    setProcess({ loading: false, status: "failed" })
+                    alert("Une erreur est survenue lors de la création du projet")
+                  }
+                } catch (error) {
+                  setProcess({ loading: false, status: "failed" })
+                  alert("Une erreur s'est produite lors de l'initialisation du projet !")
+                  console.log({ error })
+                  console.log("proj pb")
                 }
               } else {
                 setProcess({ loading: false, status: "failed" })
-                alert("Une erreur est survenue lors de la création du projet")
+                console.log("not the right user")
               }
-            } catch (error) {
+      
+            } catch(error) {
               setProcess({ loading: false, status: "failed" })
-              alert("Une erreur s'est produite lors de l'initialisation du projet !")
-              console.log({ error })
-              console.log("proj pb")
+              console.log({error});
+              console.log("user pb");
             }
           }
-  
-        } catch(error) {
-          setProcess({ loading: false, status: "failed" })
-          console.log({error});
-          console.log("user pb");
         }
   
         // alert("Cette fonctinnalité n'est pas encore complète. \nDate maximale prévue de complétion : 06 Avril 2023 !\nMerci d'utiliser Revenge !")
@@ -395,176 +649,210 @@ export default function NewProjects() {
             </div>
           </div>
         }
-        <AuthBox
-          title="Nouveau Groupage" text="Créez votre groupage en 5 minutes !"
-          component={
-            <form>
-              {
-                step === 0 &&
-                <section>
-                  <div className="form-step-header">
-                    <h3><p>01</p><span>(1 min)</span></h3>
-                    <p>Définissez votre groupage</p>
-                  </div>
-
-                  <div>
-                    <div className="input-set">
-                      <label htmlFor="name">Nom du projet :</label>
-                      <input value={project.name} onChange={(e) => setProject((proj) => ({ ...proj, name: e.target.value }))} id="name" className="input" type="text" placeholder="Nommez votre projet" />
-                    </div>
-
-                    {/* <div className="input-set">
-                      <div className="flexed">
-                        <label htmlFor="">Privé</label>
-                        <div 
-                          onClick={() => setProject((proj) => ({ ...proj, private: !proj.private }))} 
-                          className={`input-toggler ${project.private && "input-toggler__active"}`}
-                          >
-                          <span></span>
-                        </div>
-                      </div>
-                      <p>En mode privé, seuls ceux que vous décidez verront votre projet.</p>
-                    </div> */}
-
-                    <button onClick={handleProjectDef} className="submit">Suivant</button>
-                  </div>
-                </section>
-              }
-
-              {
-                step === 1 &&
-                <section>
-                  <div className="form-step-header">
-                    <h3><p>02</p><span>(3,5 min)</span></h3>
-                    <p>Ajoutez un produit</p>
-                  </div>
-
-                  <div>
-                    <div className="input-set">
-                      <label htmlFor="title">Titre du produit :</label>
-                      <input 
-                        name="title" 
-                        id="title" 
-                        className="input" 
-                        type="text" 
-                        placeholder="Nommez votre produit"
-                        value={product.title}
-                        onChange={handleChange}
-                      />
-                    </div>
-
-                    <div className="input-set">
-                      <DragAndDrop
-                        file={file}
-                        setFile={setFile}
-                        title="Photo de produit"
-                        text="En choisissant cette image, vous assumez qu'il s'agit bien de celle de votre produit, soit que vous détenez, soit que vous avez repéré sur une plateforme de vente populaire !"
-                      />
-                    </div>
-
-                    <div className="input-set">
-                      <label htmlFor="description">Description du produit :</label>
-                      <textarea 
-                        name="description" 
-                        id="description" 
-                        className="input" 
-                        type="text" 
-                        placeholder="Décrivez votre produit"
-                        value={product.description}
-                        onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="input-set">
-                      <label htmlFor="url">Lien du produit : <span className='optional'>(facultatif)</span></label>
-                      <p>Vos clients pourront vérifier les informations de produit.</p>
-                      <input 
-                        name="url" 
-                        id="url" 
-                        className="input" 
-                        type="url" 
-                        placeholder="https://..."
-                        value={product.url}
-                        onChange={handleChange}
-                        onBlur={(e) => {
-                          e.target.value.trim() !== ""
-                          ? setUrlOk(isValidURL(e.target.value))
-                          : setUrlOk(null)
-                        }}
-                        />
-                        {urlOk === false 
-                          ? <p className="field-message">
-                              <span className='field-message__wrong'>Url non valide : </span>
-                              Doit être de type &quo;http ou https://blabla.exemple/bla&quote;
-                            </p> 
-                          : null
-                        }
-                    </div>
-
-                    <div className="input-set">
-                      <label htmlFor="real-unit-value">Prix unitaire :</label>
-                      <input 
-                        name="realUnitValue" 
-                        id="real-unit-value" 
-                        className="input" 
-                        type="number" 
-                        min={1}
-                        placeholder="Valeur unitaire réelle"
-                        value={product.realUnitValue}
-                        onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="input-set">
-                      <label htmlFor="projectUnitValue">Prix unitaire du groupage :</label>
-                      <input 
-                        name="projectUnitValue" 
-                        id="projectUnitValue" 
-                        className="input" 
-                        type="number" 
-                        min={1}
-                        placeholder="Le prix obtenue grace au groupage"
-                        value={product.projectUnitValue}
-                        onChange={handleChange}
-                      />
-                      {projectValueOk === false 
-                        ? <p className="field-message">
-                            <span className='field-message__wrong'>Valeur non valide : </span>
-                            Le prix du projet doit être inférieur au prix réél, c&apos;est là tout l&apos;avantage du groupage. Merci !
-                          </p> 
-                        : null
-                      }
-                    </div>
-
-                    <div className="input-set">
-                      <label htmlFor="projectUnitValue">Objectif du projet :</label>
-                      <input 
-                        name="quantity" 
-                        id="quantity"
-                        className="input" 
-                        type="number" 
-                        min={1}
-                        placeholder="Quantité totale minimum"
-                        value={product.quantity}
-                        onChange={handleChange}
-                      />
+        {rightUser === false
+          ? <h2>Vous n'avez pas le droit d'être ici !</h2>
+          : <AuthBox
+            title={editionMode.editing ? "Modifier un Groupage" : "Nouveau Groupage"} text={editionMode.editing ? "Éditez votre groupage en 3 minutes !": "Créez votre groupage en 5 minutes !"}
+            component={
+              <form>
+                {
+                  step === 0 &&
+                  <section>
+                    <div className="form-step-header">
+                      <h3><p>01</p><span>(1 min)</span></h3>
+                      <p>Définissez votre groupage</p>
                     </div>
 
                     <div>
-                      <button onClick={() => setStep(0)} className="submit">Retour</button>
-                      <button onClick={handleSubmit} className="submit submit__gold">
-                        <ButtonContent
-                          loading={process?.loading}
-                          status={process?.status}
-                          originalText="Terminer"
-                        />
-                      </button>
+                      <div className="input-set">
+                        <label htmlFor="name">Nom du projet :</label>
+                        <input value={project.name} onChange={(e) => setProject((proj) => ({ ...proj, name: e.target.value }))} id="name" className="input" type="text" placeholder="Nommez votre projet" />
+                      </div>
+
+                      {/* <div className="input-set">
+                        <div className="flexed">
+                          <label htmlFor="">Privé</label>
+                          <div 
+                            onClick={() => setProject((proj) => ({ ...proj, private: !proj.private }))} 
+                            className={`input-toggler ${project.private && "input-toggler__active"}`}
+                            >
+                            <span></span>
+                          </div>
+                        </div>
+                        <p>En mode privé, seuls ceux que vous décidez verront votre projet.</p>
+                      </div> */}
+
+                      <button onClick={handleProjectDef} className="submit">Suivant</button>
                     </div>
-                  </div>
-                </section>
-              }
-            </form>
-          } />
+                  </section>
+                }
+
+                {
+                  step === 1 &&
+                  <section>
+                    {!editionMode.editing && <div className="form-step-header">
+                      <h3><p>02</p><span>(3,5 min)</span></h3>
+                      <p>Ajoutez un produit: {project.name}</p>
+                    </div>}
+
+                    {(editionMode.editing && editionMode.loading) 
+                    ? <div>
+                        <DarkLoader />
+                        <p className="loader-message">Merci de patienter un instant ... 🙏🏾</p>
+                      </div>
+                    : (editionMode.editing && editionMode.status === "failed")
+                    ? <div>
+                      <p>Une erreur s'est produite lors de la récupération de votre projet !</p>
+                      <Reload />
+                      </div>
+                    : <div>
+                        <div className="input-set">
+                        <label htmlFor="title">Nom du projet :</label>
+                        <input 
+                          name="name" 
+                          id="name" 
+                          className="input" 
+                          type="text" 
+                          placeholder="Redéfinissez votre projet"
+                          value={project.name}
+                          onChange={function(e){
+                            setProject((proj) => ({
+                              ...proj, name: e.target.value
+                            }))
+                          }}
+                        />
+                        </div>
+
+                        <div className="input-set">
+                          <label htmlFor="title">Titre du produit :</label>
+                          <input 
+                            name="title" 
+                            id="title" 
+                            className="input" 
+                            type="text" 
+                            placeholder="Nommez votre produit"
+                            value={product.title}
+                            onChange={handleChange}
+                          />
+                        </div>
+
+                        <div className="input-set">
+                          <DragAndDrop
+                            file={file}
+                            setFile={setFile}
+                            title="Photo de produit"
+                            text="En choisissant cette image, vous assumez qu'il s'agit bien de celle de votre produit, soit que vous détenez, soit que vous avez repéré sur une plateforme de vente populaire !"
+                            editing={editionMode.editing}
+                          />
+                        </div>
+
+                        <div className="input-set">
+                          <label htmlFor="description">Description du produit :</label>
+                          <textarea 
+                            name="description" 
+                            id="description" 
+                            className="input" 
+                            type="text" 
+                            placeholder="Décrivez votre produit"
+                            value={product.description}
+                            onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="input-set">
+                          <label htmlFor="url">Lien du produit : <span className='optional'>(facultatif)</span></label>
+                          <p>Vos clients pourront vérifier les informations de produit.</p>
+                          <input 
+                            name="url" 
+                            id="url" 
+                            className="input" 
+                            type="url" 
+                            placeholder="https://..."
+                            value={product.url}
+                            onChange={handleChange}
+                            onBlur={(e) => {
+                              e.target.value.trim() !== ""
+                              ? setUrlOk(isValidURL(e.target.value))
+                              : setUrlOk(null)
+                            }}
+                            />
+                            {urlOk === false 
+                              ? <p className="field-message">
+                                  <span className='field-message__wrong'>Url non valide : </span>
+                                  Doit être de type &quo;http ou https://blabla.exemple/bla&quote;
+                                </p> 
+                              : null
+                            }
+                        </div>
+
+                        <div className="input-set">
+                          <label htmlFor="real-unit-value">Prix unitaire :</label>
+                          <input 
+                            name="realUnitValue" 
+                            id="real-unit-value" 
+                            className="input" 
+                            type="number" 
+                            min={1}
+                            placeholder="Valeur unitaire réelle"
+                            value={product.realUnitValue}
+                            onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="input-set">
+                          <label htmlFor="projectUnitValue">Prix unitaire du groupage :</label>
+                          <input 
+                            name="projectUnitValue" 
+                            id="projectUnitValue" 
+                            className="input" 
+                            type="number" 
+                            min={1}
+                            placeholder="Le prix obtenue grace au groupage"
+                            value={product.projectUnitValue}
+                            onChange={handleChange}
+                          />
+                          {projectValueOk === false 
+                            ? <p className="field-message">
+                                <span className='field-message__wrong'>Valeur non valide : </span>
+                                Le prix du projet doit être inférieur au prix réél, c&apos;est là tout l&apos;avantage du groupage. Merci !
+                              </p> 
+                            : null
+                          }
+                        </div>
+
+                        <div className="input-set">
+                          <label htmlFor="projectUnitValue">Objectif du projet :</label>
+                          <input 
+                            name="quantity" 
+                            id="quantity"
+                            className="input" 
+                            type="number" 
+                            min={1}
+                            placeholder="Quantité totale minimum"
+                            value={product.quantity}
+                            onChange={handleChange}
+                          />
+                        </div>
+
+                        <div>
+                          {!editionMode.editing  && <button onClick={() => setStep(0)} className="submit">Retour</button>}
+                          <button onClick={function(e) {handleSubmit(e)}} className="submit submit__gold">
+                            <ButtonContent
+                              loading={process?.loading}
+                              status={process?.status}
+                              originalText={editionMode.editing ? "Valider" : "Terminer"}
+                            />
+                          </button>
+                        </div>
+                        
+                      </div>
+                    }
+                  </section>
+                }
+              </form>
+            }
+          />
+        }
       </main>
     </div>
   )

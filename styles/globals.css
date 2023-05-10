@@ -456,6 +456,13 @@ textarea{
   height: 70px;
 }
 
+.loader-message{
+  font-weight: 700;
+  color: orange;
+  text-decoration: underline;
+  letter-spacing: -0.9px;
+}
+
 @keyframes gradient {
   0% {
     background-position: 0% 50%;

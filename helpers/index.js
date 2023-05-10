@@ -15,3 +15,7 @@ export function isValidURL(str) {
 export function somethingLoading(){
   alert("Enregistrement en cours. Merci de patienter !");
 }
+
+export function equalObjects(obj1, obj2){
+  return JSON.stringify(obj1) === JSON.stringify(obj2)
+}

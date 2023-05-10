@@ -1,13 +1,13 @@
-import Link from 'next/link'
 import Head from 'next/head'
+import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { HiPencil, HiLogout } from 'react-icons/hi'
 import { BiCheck, BiPlus } from 'react-icons/bi'
 import { RiVipCrown2Fill, RiAlertFill } from 'react-icons/ri'
-import { BsEyeFill, BsWhatsapp } from 'react-icons/bs'
-import { MdChangeCircle, MdContacts, MdDelete, MdOutlineEmail, MdSecurity } from 'react-icons/md'
+import { BsEyeFill } from 'react-icons/bs'
+import { MdChangeCircle, MdContacts, MdDelete, MdSecurity } from 'react-icons/md'
 import { GiSilence } from 'react-icons/gi'
 import { CgClose } from 'react-icons/cg'
 
@@ -18,12 +18,13 @@ import DarkLoader from '@/components/DarkLoader'
 import ButtonContent from '@/components/ButtonContent'
 import GoToTop from '@/components/GoToTop'
 import InputViewer from '@/components/InputViewer'
+import getUser, { setLocalUser } from '@/helpers/getUser'
 
 export default function Account() {
 
   const router = useRouter();
-  const tag = router.query.tag;
   
+  const [tag, setTag] = useState(null)
   const [account, setAccount] = useState({})
   const [projects, setProjects] = useState([])
   const [editor, setEditor] = useState(null)
@@ -138,8 +139,8 @@ export default function Account() {
     }
   }, [file])
   
-
-  useEffect(() => {async function getAccount(){
+  useEffect(() => {
+    async function getAccount(){
       try{
         const resp = await client.fetch(`
           *[_type == "seller" && userTag == "${tag}"]{
@@ -194,11 +195,11 @@ export default function Account() {
         console.log({ error })
       }
     };
-  
-    tag && getAccount()
+    setTag(() => getUser("userTag"));
+    tag && getAccount();
     console.log({ account });
     console.log({ projects });
-  }, [router])
+  }, [router, tag])
   
   function checkPassword(){
     const result = editing.currentPassword === account?.password
@@ -248,6 +249,10 @@ export default function Account() {
               ...acc,
               [type]: value
             }})
+
+            if(type === "email" || type === "userTag"){
+              setLocalUser({[type]: value})
+            }
             return {resp}
           } else {
             setEditing((e) => ({
@@ -299,6 +304,7 @@ export default function Account() {
         <title>{account.name}</title>
         <meta name="description" content="page de compte" />
       </Head>
+      
       <main id="top" className={`page ${styles.main}`}>
         { editor !== null && 
           <div className="popup">
@@ -365,7 +371,7 @@ export default function Account() {
             </div>
           </div>
         </header>
-        <div className={styles.top}>
+        {tag && <div className={styles.top}>
           <div className={styles.topInfos}>
             <h2>{account?.name || ""}</h2>
             <p className='box2 box2-blue'><Link href={`/${account?.userTag || "#"}`}>
@@ -386,6 +392,7 @@ export default function Account() {
                     handleUpdate={handleUpdate}
                     inputType="text"
                     valueType="firstName"
+                    type="profile"
                   />
 
                   <InputViewer
@@ -396,6 +403,7 @@ export default function Account() {
                     handleUpdate={handleUpdate}
                     inputType="text"
                     valueType="lastName"
+                    type="profile"
                   />
                 </div>
               </div>
@@ -421,8 +429,8 @@ export default function Account() {
               <BiPlus />
             </Link>
           </div>
-        </div>
-        <div className={`${styles.body}`}>
+        </div>}
+        {tag && <div className={`${styles.body}`}>
           <section>
             <div className={styles.sectionTop}>
               <h3><MdContacts /> Contacts</h3>
@@ -439,6 +447,7 @@ export default function Account() {
                   handleUpdate={handleUpdate}
                   inputType="number"
                   valueType="phone"
+                  type="whatsapp"
                 />
 
                 <InputViewer
@@ -449,6 +458,7 @@ export default function Account() {
                   handleUpdate={handleUpdate}
                   inputType="email"
                   valueType="email"
+                  type="email"
                 />
               </div>
             </div>
@@ -568,8 +578,15 @@ export default function Account() {
           {/* <footer> */}
             <GoToTop noGap tag="top" />
           {/* </footer> */}
-        </div>
+        </div>}
       </main>
+      {tag === false && <div>
+        <div className="section-gap"></div>
+        <div className='flexed'>
+          <h4>Vous n'avez pas le droit d'être ici ... </h4>
+          <p>Veuillez vous connecter à votre compte !</p>
+        </div>
+      </div>  }
     </>
   )
 }

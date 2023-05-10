@@ -1,0 +1,15 @@
+.reload{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--color-dark_blue);
+  color: white;
+  width: fit-content;
+  margin: auto;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+}

@@ -150,7 +150,7 @@ export default function Project({ projects }) {
           console.log("user not a member")
         }
       } else {
-        router.push(`/projects/${project?._id}?edit=true`)
+        router.push(`/projects/new?editedId=${project?._id}`)
       }
     } else {
       // if user is not logged in go to log in page
@@ -239,10 +239,10 @@ export default function Project({ projects }) {
                 alt={project?.product?.title || "Titre du projet"}
                 src={project?.productImage || "/product.jpg"}
               />
-              <Link target="_blank" className={styles.image_up_button} href={project?.product?.url}>
+              {project?.product?.url && <Link target="_blank" className={styles.image_up_button} href={project?.product?.url}>
                 Voir le produit
                 <TbOutbound /> 
-              </Link>
+              </Link>}
             </div>
           </div>
         }
@@ -355,7 +355,7 @@ export default function Project({ projects }) {
                         <div>
                           <h4>{seller?.name || ""}</h4>
                           {/* <p>{_createdAt || ""}</p> */}
-                          <p>{seller?.phone || ""}</p>
+                          {userIsCreator && <p>{seller?.phone || ""}</p>}
                           {userIsCreator &&
                             <span className={styles.memberOffer}>
                               <MdOutlineProductionQuantityLimits />

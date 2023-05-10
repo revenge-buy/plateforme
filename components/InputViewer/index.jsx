@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
-import { BiCheck } from 'react-icons/bi'
-import { CgClose } from 'react-icons/cg'
+import { BiCheck, BiPhone } from 'react-icons/bi'
+import { BsWhatsapp } from 'react-icons/bs'
+import { CgClose, CgProfile } from 'react-icons/cg'
 import { HiPencil } from 'react-icons/hi'
 import { MdOutlineEmail } from 'react-icons/md'
 
@@ -8,7 +9,7 @@ import DarkLoader from '../DarkLoader'
 
 import style from './style.module.css'
 
-const InputViewer = ({value, editing, setEditing, handleEdit, handleUpdate, inputType, valueType}) => {
+const InputViewer = ({value, editing, setEditing, handleEdit, handleUpdate, inputType, valueType, type}) => {
 
 
   return (
@@ -17,7 +18,12 @@ const InputViewer = ({value, editing, setEditing, handleEdit, handleUpdate, inpu
       className={`box2 p2 ${style.inputViewer}`}  
       onClick={function(){handleEdit(valueType)}}
     >
-      <MdOutlineEmail />
+      {
+        (type === "email" && <MdOutlineEmail />) ||
+        (type === "profile" && <CgProfile /> ) ||
+        (type === "whatsapp" && <BsWhatsapp /> ) ||
+        (type === "phone" && <BiPhone /> )
+      }
       <div className={style.itemValue}>
         {editing.type !== valueType
           ? <p>{value || "Donnée absente !"}</p>
