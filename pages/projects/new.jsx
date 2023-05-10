@@ -650,7 +650,7 @@ export default function NewProjects() {
           </div>
         }
         {rightUser === false
-          ? <h2>Vous n'avez pas le droit d'être ici !</h2>
+          ? <h2>Vous n'avez pas le droit d&apos;être ici !</h2>
           : <AuthBox
             title={editionMode.editing ? "Modifier un Groupage" : "Nouveau Groupage"} text={editionMode.editing ? "Éditez votre groupage en 3 minutes !": "Créez votre groupage en 5 minutes !"}
             component={
@@ -702,7 +702,7 @@ export default function NewProjects() {
                       </div>
                     : (editionMode.editing && editionMode.status === "failed")
                     ? <div>
-                      <p>Une erreur s'est produite lors de la récupération de votre projet !</p>
+                      <p>Une erreur s&apos;est produite lors de la récupération de votre projet !</p>
                       <Reload />
                       </div>
                     : <div>
