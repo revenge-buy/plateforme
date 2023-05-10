@@ -8,7 +8,7 @@ import client from "@/api/client";
 import Metas from "@/components/Metas";
 import AuthBox from "@/containers/Auth/AuthBox";
 import DragAndDrop from '@/components/DragAndDrop/DragAndDrop';
-import { equalObjects, isValidURL, somethingLoading } from '@/helpers';
+import { equalObjects, isValidURL, pushPage, somethingLoading } from '@/helpers';
 import ButtonContent from '@/components/ButtonContent';
 import DarkLoader from '@/components/DarkLoader'
 import Reload from "@/components/Reload";
@@ -441,7 +441,7 @@ export default function NewProjects() {
                         if(newProduct) {
                           console.log({newProduct});
                           setProcess({ loading: false, status: "succeed" })
-                          router.push(`/projects/${newProject._id}`);
+                          pushPage(router, `/projects/${newProject._id}`)
                         }
                       } catch (error) {
                         setProcess({ loading: false, status: "failed" })
@@ -546,7 +546,7 @@ export default function NewProjects() {
                           if(updatedProduct) {
                             console.log({updatedProduct});
                             setProcess({ loading: false, status: "succeed" })
-                            router.push(`/projects/${project?._id}`);
+                            pushPage(router, `/projects/${project?._id}`)
                           } else {
                             setProcess({ loading: false, status: "failed" })
                           }
@@ -566,7 +566,7 @@ export default function NewProjects() {
                           console.log({updatedProduct});
                           setProcess({ loading: false, status: "succeed" })
                           console.log({id: project?._id})
-                          router.push(`/projects/${project?._id}`);
+                          pushPage(router, `/projects/${project?._id}`)
                         } else {
                           setProcess({ loading: false, status: "failed" })
                         }
