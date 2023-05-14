@@ -19,7 +19,7 @@ const metas = {
 }
 
 export default function Projects({ allProjects }) {
-
+  
   return (
     <div className={styles.projects}>
       <Metas title={metas.title} metas={metas.metas} />
@@ -54,7 +54,7 @@ export async function getServerSideProps({ req, res }) {
   try {
     const allProjects = await client.fetch(
       `
-        * [_type == "project"]{
+        * [_type == "project" && archived == ${false}]{
           _id,
           creator->{
             userTag,
@@ -73,15 +73,18 @@ export async function getServerSideProps({ req, res }) {
       `
     );
 
+    console.log({allProjects})
+
     return {
       props: {
         allProjects
       }
     }
   } catch (error) {
-    // console.log({ error })
+    console.log({ error })
     return {
       props: {
+        error,
         allProjects: []
       }
     }

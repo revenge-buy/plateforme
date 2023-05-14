@@ -7,16 +7,18 @@ import { GiPodiumWinner, GiPriceTag } from 'react-icons/gi'
 import { TbDiscountCheckFilled, TbInfoSquareRoundedFilled, TbOutbound } from 'react-icons/tb'
 import { RiUserFollowFill, RiCloseLine } from 'react-icons/ri'
 import { MdJoinInner, MdOutlineProductionQuantityLimits } from 'react-icons/md'
-import { BiTrash } from 'react-icons/bi';
+import { BiArchiveOut, BiTrash } from 'react-icons/bi';
 import { CgClose } from 'react-icons/cg';
 
 import Metas from '@/components/Metas';
 import client from '@/api/client';
-import { deleteMembership, joinProject, updateMembership } from '@/helpers/projects';
+import { archiveProject, deleteMembership, joinProject, updateMembership } from '@/helpers/projects';
 
 import styles from './project.module.css'
 import ShareButton from '@/containers/ShareButton';
 import ButtonContent from '@/components/ButtonContent';
+import Confirmer from '@/containers/Confirmer';
+import ArchiveButton from '@/components/ArchiveButton';
  
 export default function Project({ projects }) {
   const project = projects[0];
@@ -31,6 +33,27 @@ export default function Project({ projects }) {
   const [joiningProcess, setJoiningProcess] = useState({
     loading: false,
     status: ""
+  })
+  const [deleteProcess, setDeleteProcess] = useState({
+    loading: false,
+    status: ""
+  })
+  const [unArchiveProcess, setUnArchiveProcess] = useState({
+    loading: false,
+    status: ""
+  })
+
+  const [confirmer, setConfirmer] = useState({
+    on: false,
+    setOn: function(on){
+      setConfirmer((confirmer) => ({ ...confirmer, on }))
+    },
+    title: "",
+    message: "",
+    handleConfirm: null,
+    handleCancel: null,
+    type: "",
+    process: deleteProcess
   })
   
   const router = useRouter()
@@ -197,6 +220,35 @@ export default function Project({ projects }) {
 
   }
 
+  const archiveProjectSetUp = {
+    title: "Voulez vous vraiment archiver ce projet ?",
+    message: "Vous pourrez toujours consulter vos groupages archivés ! Cependant, les membres y seront définitivement retirés !",
+    handleConfirm: function(){
+      archiveProject(project._id, deleteProcess, setDeleteProcess, "archiving", router);
+    },
+    handleCancel: () => {
+      const { setOn } = confirmer;
+      setOn(false)
+    },
+    type: "deletion",
+  }
+
+  function handleConfirmDeleteMembership(_id, name){
+    setConfirmer((confirmer) => ({
+      ...confirmer,
+      on: true,
+      title: `Retirer ${name} du groupage ?`,
+      message: "Vous ne pourrez pas revenir en arrière !",
+      handleConfirm: () => {
+        deleteMembership(_id, deleteProcess, setDeleteProcess);
+      },
+      type: "deletion",
+    }))
+  }
+
+  async function handleUnarchive(){
+    archiveProject(project?._id, unArchiveProcess, setUnArchiveProcess, "unArchiving", router)
+  }
 
   const [imageUp, setImageUp] = useState(false)
 
@@ -217,6 +269,10 @@ export default function Project({ projects }) {
   return (
     <div className={styles.project}>
       <Metas title={metas.title} metas={metas.metas} />
+      <Confirmer
+        { ...confirmer }
+        process={deleteProcess}
+      />
       <main className={`page ${styles.main}`}>
         <Image
           className={styles.back_image}
@@ -318,9 +374,18 @@ export default function Project({ projects }) {
             </div>
             <div className='separator1' />
             <div className={styles.buttons}>
-              <button onClick={handleOpenJoin}>
-                <MdJoinInner />
-                {userIsMember ? "Mon offre" : userIsCreator ? "Éditer" : "Rejoindre"}
+              <button onClick={project?.archived ? handleUnarchive : handleOpenJoin}>
+                {project?.archived ? <BiArchiveOut /> : <MdJoinInner />}
+                {(userIsCreator && project?.archived)
+                  ? <ButtonContent { ...unArchiveProcess } originalText="Désarchiver" />
+                  : (userIsMember 
+                  ? "Mon offre" 
+                  : userIsCreator
+                    ? project?.archived
+                      ? "Désarchiver"
+                      : "Éditer" 
+                    : "Rejoindre")
+                }
               </button>
               <button>
                 <RiUserFollowFill />
@@ -337,7 +402,7 @@ export default function Project({ projects }) {
             </div>
             <div className='separator1'/>
             <div className={styles.pageBottom}>
-              {(userIsCreator === true || userIsMember) ?
+              {!project?.archived && ((userIsCreator === true || userIsMember) ?
               <div className={styles.knownMembers}>
                 <h4><span>{members.length}</span> Participant{members.length>1 && "s"}</h4>
                 <div className={styles.members}>
@@ -365,7 +430,7 @@ export default function Project({ projects }) {
                         </div>
                         {
                           userIsCreator ? 
-                          <div className={`box2-red ${styles.memberTrash}`} onClick={function(){deleteMembership(_id)}}>
+                          <div className={`box2-red ${styles.memberTrash}`} onClick={() => handleConfirmDeleteMembership(_id, seller?.name)}>
                             <BiTrash />
                           </div> :
                           seller?.email === userEmail && <div className={styles.memberTrash}>
@@ -380,9 +445,19 @@ export default function Project({ projects }) {
               : <p className={styles.anonymeMembers}>
                   {members.length === 0 ? "Aucun" : members.length} participants
                   {members.length === 0 && <button onClick={handleOpenJoin}><GiPodiumWinner /> Soyez le premier</button>}
-                </p>
+                </p>)
               }
-              <ShareButton link={`https://revengebuy.vercel.app/projects/${project?._id}`} />
+              {!project?.archived && <ShareButton link={`https://revengebuy.vercel.app/projects/${project?._id}`} />}
+              {(userIsCreator && !project?.archived) &&
+                <>
+                  <div className="separator1"></div>
+                  <ArchiveButton handleClick={() => setConfirmer((confirmer) => ({
+                    ...confirmer,
+                    on: true,
+                    ...archiveProjectSetUp
+                  }))} />
+                </>
+              }
             </div>
           </div>
         </div>
@@ -415,6 +490,7 @@ export async function getServerSideProps({ req, res, query }) {
         },
         name,
         private,
+        archived,
         "product": *[_type == "product" && references(^._id)][0],
         "productImage": *[_type == "product" && references(^._id)][0].image.asset->url,
         _createdAt,

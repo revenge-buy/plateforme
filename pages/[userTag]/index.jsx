@@ -32,7 +32,7 @@ export default function Account() {
             userTag,
             "picture": profilPicture.asset->url,
             "cover": coverPicture.asset->url,
-            "projects": *[_type == "project" && references(^._id)] | order(_updatedAt, desc){
+            "projects": *[_type == "project"  && archived == ${false} && references(^._id)] | order(_updatedAt, desc){
               _id,
               name,
               "description": *[_type == "product" && references(^._id)][0].description,

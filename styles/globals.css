@@ -235,7 +235,7 @@ textarea{
   top: 0;
   background-color: rgba(0, 0, 0, 0.521);
   backdrop-filter: blur(15px);
-  z-index: 10000;
+  z-index: 1001;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -477,4 +477,17 @@ textarea{
   100% {
     background-position: 0% 100%;
   }
+}
+
+.color-red{
+  color: rgb(241, 70, 70);
+}
+
+.bg-red{
+  background-color: rgb(241, 70, 70);
+  color: white;
+}
+
+.bg-gray{
+  background-color: rgb(209, 209, 209);
 }
