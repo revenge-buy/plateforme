@@ -19,8 +19,11 @@ import ShareButton from '@/containers/ShareButton';
 import ButtonContent from '@/components/ButtonContent';
 import Confirmer from '@/containers/Confirmer';
 import ArchiveButton from '@/components/ArchiveButton';
+import { useUser } from '@auth0/nextjs-auth0/client';
  
 export default function Project({ projects }) {
+  const {user} = useUser()
+
   const project = projects[0];
   const [joining, setJoining] = useState(false)
   const [quantity, setQuantity] = useState(NaN)
@@ -60,10 +63,9 @@ export default function Project({ projects }) {
 
   // run this to update membership status when the page loads for the 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('revenge-user'))
-
     if(user && user?.email){
       setUserEmail(user.email)
+      console.log({userEmail})
     }
 
     client.fetch(`
@@ -89,10 +91,8 @@ export default function Project({ projects }) {
   // Run this after we've found the members list of the project, in other to determine if the current user is part of them
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('revenge-user'))
-
     if(user){
-      if(user.userTag !== project?.creator?.userTag){
+      if(user.email !== project?.creator?.email){
         const filteredMembers = members?.filter(function(member){ return member?.seller?.email === user.email });
     
         if(filteredMembers.length > 0){
@@ -184,7 +184,6 @@ export default function Project({ projects }) {
   }
 
   function handleJoin(){
-    const user = JSON.parse(localStorage.getItem("revenge-user"))
     let userId = ""
 
     if (quantity > 1) {
@@ -217,7 +216,6 @@ export default function Project({ projects }) {
     deleteMembership(membershipId);
     setJoining(false)
     setUserIsMember(false)
-
   }
 
   const archiveProjectSetUp = {
@@ -484,6 +482,7 @@ export async function getServerSideProps({ req, res, query }) {
         _id,
         creator->{
           userTag,
+          email,
           firstName,
           lastName,
           "picture": profilPicture.asset->url

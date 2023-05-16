@@ -19,14 +19,15 @@ import ButtonContent from '@/components/ButtonContent'
 import GoToTop from '@/components/GoToTop'
 import InputViewer from '@/components/InputViewer'
 import getUser, { setLocalUser } from '@/helpers/getUser'
+import { useUser } from '@auth0/nextjs-auth0/client'
 
 export default function Account() {
 
   const router = useRouter();
+  const { user } = useUser()
   
-  const [tag, setTag] = useState(null)
+  const [email, setEmail] = useState(null)
   const [account, setAccount] = useState({})
-  const [projects, setProjects] = useState([])
   const [editor, setEditor] = useState(null)
   const [file, setFile] = useState(null);
   const [fileDataURL, setFileDataURL] = useState(null);
@@ -138,12 +139,18 @@ export default function Account() {
       }
     }
   }, [file])
+
+  useEffect(() => {
+    if(user){
+      setEmail(user.email)
+    }
+  }, [])
   
   useEffect(() => {
-    async function getAccount(){
+    async function getAccount(email){
       try{
         const resp = await client.fetch(`
-          *[_type == "seller" && userTag == "${tag}"]{
+          *[_type == "seller" && email == "${email}"]{
             _id,
             firstName,
             lastName,
@@ -154,17 +161,10 @@ export default function Account() {
             password,
             "picture": profilPicture.asset->url,
             "cover": coverPicture.asset->url,
-            "projects": *[_type == "project" && references(^._id)] | order(_updatedAt, desc){
-              _id,
-              name,
-              "description": *[_type == "product" && references(^._id)][0].description,
-              "image": *[_type == "product" && references(^._id)][0].image.asset->url
-            }[0...3],
           }[0]
         `)
 
         if(resp){
-          console.log({ resp })
           setAccount(function(acc){return { 
             ...acc, 
             name: resp?.name,
@@ -178,8 +178,6 @@ export default function Account() {
             firstName: resp?.firstName,
             lastName: resp?.lastName
           }})
-
-          setProjects(resp?.projects)
 
           setEditing(function(ed){
             return {
@@ -195,11 +193,9 @@ export default function Account() {
         console.log({ error })
       }
     };
-    setTag(() => getUser("userTag"));
-    tag && getAccount();
+    email && getAccount(email);
     console.log({ account });
-    console.log({ projects });
-  }, [router, tag])
+  }, [email])
   
   function checkPassword(){
     const result = editing.currentPassword === account?.password
@@ -371,7 +367,7 @@ export default function Account() {
             </div>
           </div>
         </header>
-        {tag && <div className={styles.top}>
+        {user && <div className={styles.top}>
           <div className={styles.topInfos}>
             <h2>{account?.name || ""}</h2>
             <p className='box2 box2-blue'><Link href={`/${account?.userTag || "#"}`}>
@@ -430,7 +426,7 @@ export default function Account() {
             </Link>
           </div>
         </div>}
-        {tag && <div className={`${styles.body}`}>
+        {user && <div className={`${styles.body}`}>
           <section>
             <div className={styles.sectionTop}>
               <h3><MdContacts /> Contacts</h3>
@@ -580,7 +576,7 @@ export default function Account() {
           {/* </footer> */}
         </div>}
       </main>
-      {tag === false && <div>
+      {user === false && <div>
         <div className="section-gap"></div>
         <div className='flexed'>
           <h4>Vous n&apos;avez pas le droit d&apos;être ici ... </h4>

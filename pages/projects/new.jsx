@@ -13,6 +13,7 @@ import ButtonContent from '@/components/ButtonContent';
 import DarkLoader from '@/components/DarkLoader'
 import Reload from "@/components/Reload";
 import getUser from "@/helpers/getUser";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 const metas = {
   title: 'Créer un projet',
@@ -27,6 +28,7 @@ const metas = {
 export default function NewProjects() {
 
   const router = useRouter()
+  const { user } = useUser()
 
   // state variable to say if the form is editing an existing project
   const [editionMode, setEditionMode] = useState({
@@ -90,7 +92,6 @@ export default function NewProjects() {
 
   useEffect(() => {
     const projectId = router.query?.editedId
-    const userTag = getUser("userTag")
     if(projectId){
       console.log({projectId})
       setStep(1);
@@ -103,7 +104,8 @@ export default function NewProjects() {
         `*[_type == "project" && _id == "${projectId}"][0]{
           _id,
           creator -> {
-            userTag
+            userTag,
+            email
           },
           name,
           private,
@@ -122,7 +124,7 @@ export default function NewProjects() {
         .then((resp) => {
           console.log({resp})
           if(resp && resp !== {}){
-            if(resp?.creator?.userTag === userTag){
+            if(resp?.creator?.email === user.email){
               setRightuser(true);
               setEditionMode({
                 editing: true,
@@ -190,9 +192,6 @@ export default function NewProjects() {
 
     // checking fields values
     if(project.name.trim() !== "") {
-      // taking user identity
-      const user = localStorage.getItem("revenge-user");
-
       // checking if user exists
       if(user) {
         setStep(1)
@@ -207,6 +206,13 @@ export default function NewProjects() {
   function handleChange(e) {
     const { name, value } = e.target;
     setProduct((prod) => ({ ...prod, [name]: value }));
+  }
+
+  function handleChangePUP(e){
+    handleChange(e)
+    checkProjectValue()
+    console.log("project value changed")
+    console.log({projectValueOk})
   }
 
   function handleChangeUser(e) {
@@ -359,7 +365,7 @@ export default function NewProjects() {
   }
 
   function checkProjectValue(){
-    const result = product.realUnitValue > product.projectUnitValue
+    const result = parseFloat(product.realUnitValue) > parseFloat(product.projectUnitValue)
     setProjectValueOk(result)
     return result
   }
@@ -368,40 +374,32 @@ export default function NewProjects() {
     e.preventDefault()
     if(!process.loading){
       setProcess({ loading: true, status: "pending" })
-      const rbUser = JSON.parse(localStorage?.getItem("revenge-user"));
-      console.log({product})
-  
-      const confirmed = rbUser.confirmed ? true : false
-  
+      const userStatus = await client.fetch(`
+        *[_type == "seller" && email == "${user.email}"]{
+          confirmed,
+          _id
+        }[0]
+      `)
+    
       if(
         product.description !== "" &&
         product.realUnitValue !== NaN &&
         product.projectUnitValue !== NaN &&
-        product.quantity !== NaN &&
-        checkProjectValue()
+        product.quantity !== NaN
       ){
         if(!editionMode.editing){
           try {
-            const user = await client.fetch(
-              `
-                * [_type == "seller" && email == "${rbUser.email}"]{
-                  _id
-                }
-              `
-            );
-    
-            if(user[0]._id) {
-              console.log(user[0]._id);
+            if(userStatus._id) {
               try {
                 const newProject = await client.create(
                   {
                     _type: "project",
                     creator: {
                       _type: 'reference',
-                      _ref: user[0]._id
+                      _ref: userStatus._id
                     },
                     ...project,
-                    accepted: confirmed,
+                    accepted: userStatus.confirmed,
                     status: "active"
                   }
                 )
@@ -483,15 +481,12 @@ export default function NewProjects() {
             discount: 0
           }
 
-          console.log({prevEditionObject});
-          console.log({actEditionObject})
-
           if((equalObjects(actEditionObject, prevEditionObject)) && file.remote){
             alert("Aucune donnée modifiée !")
             setProcess({ loading: false, status: "" })
           } else {
             try {
-              const isRightUser = rbUser.userTag === project?.creator?.userTag
+              const isRightUser = user.email === project?.creator?.email
       
               if(isRightUser) {
                 console.log("right user !")
@@ -668,20 +663,6 @@ export default function NewProjects() {
                         <label htmlFor="name">Nom du projet :</label>
                         <input value={project.name} onChange={(e) => setProject((proj) => ({ ...proj, name: e.target.value }))} id="name" className="input" type="text" placeholder="Nommez votre projet" />
                       </div>
-
-                      {/* <div className="input-set">
-                        <div className="flexed">
-                          <label htmlFor="">Privé</label>
-                          <div 
-                            onClick={() => setProject((proj) => ({ ...proj, private: !proj.private }))} 
-                            className={`input-toggler ${project.private && "input-toggler__active"}`}
-                            >
-                            <span></span>
-                          </div>
-                        </div>
-                        <p>En mode privé, seuls ceux que vous décidez verront votre projet.</p>
-                      </div> */}
-
                       <button onClick={handleProjectDef} className="submit">Suivant</button>
                     </div>
                   </section>
@@ -692,7 +673,7 @@ export default function NewProjects() {
                   <section>
                     {!editionMode.editing && <div className="form-step-header">
                       <h3><p>02</p><span>(3,5 min)</span></h3>
-                      <p>Ajoutez un produit: {project.name}</p>
+                      <p>Ajoutez un produit</p>
                     </div>}
 
                     {(editionMode.editing && editionMode.loading) 
@@ -706,7 +687,7 @@ export default function NewProjects() {
                       <Reload />
                       </div>
                     : <div>
-                        <div className="input-set">
+                        {editionMode.editing && <div className="input-set">
                         <label htmlFor="title">Nom du projet :</label>
                         <input 
                           name="name" 
@@ -721,7 +702,7 @@ export default function NewProjects() {
                             }))
                           }}
                         />
-                        </div>
+                        </div>}
 
                         <div className="input-set">
                           <label htmlFor="title">Titre du produit :</label>
@@ -809,7 +790,7 @@ export default function NewProjects() {
                             min={1}
                             placeholder="Le prix obtenue grace au groupage"
                             value={product.projectUnitValue}
-                            onChange={handleChange}
+                            onChange={handleChangePUP}
                           />
                           {projectValueOk === false 
                             ? <p className="field-message">
