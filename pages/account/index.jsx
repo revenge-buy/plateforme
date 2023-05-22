@@ -45,13 +45,20 @@ export default function Account() {
     editingNames: false,
     firstName: "",
     lastName:  "",
+    type: "",
+    loading: false,
+    status: ""
+  })
+
+  const [editingPassword, setEditingPassword] = useState({
+    on: false,
     checkingPassword: false,
     currentPassword: "",
     currPassOk: false,
     password: "",
     passwordConfirm: "",
     passwordMessage: "",
-    type: "",
+    updatePasswordMessage: "",
     loading: false,
     status: ""
   })
@@ -198,13 +205,13 @@ export default function Account() {
   }, [email])
   
   function checkPassword(){
-    const result = editing.currentPassword === account?.password
-    setEditing(function(ed){
+    const result = editingPassword.currentPassword === account?.password
+    setEditingPassword(function(ed){
       return {
         ...ed,
         currPassOk: result,
         passwordMessage: result ? "" : "Mauvais mot de passe !",
-        checkingPassword: result
+        checkingPassword: !result
       }
     })
   }
@@ -213,8 +220,6 @@ export default function Account() {
     !editing.loading && setEditing((e) => ({ 
       ...e,
       type,
-      loading: false,
-      status: ""
     }))
   }
 
@@ -274,21 +279,67 @@ export default function Account() {
   async function updatePassword(e){
     // update password value
     e.preventDefault()
-    if(editing.password === editing.passwordConfirm){
-      if(editing.password.length > 5){
-        const resp = handleUpdate("password", editing.password)
+    if(editingPassword.password === editingPassword.passwordConfirm){
+      if(editingPassword.password.length > 5){
+        if(account.password !== editingPassword.password){
+          if(!editingPassword.loading){
+            setEditingPassword((e) => ({
+              ...e,
+              loading: true,
+              status: "pending"
+            }))
+            try{
+              const resp = await client
+                .patch(account?._id)
+                .set({password: editingPassword.password})
+                .commit()
 
-        await resp?.resp && setEditing(function(ed){
-          return { ...ed, passwordMessage: "", checkingPassword: false, password:"", currentPassword: "", passwordConfirm: "", type: "", currPassOk: false}
-        })
+              if(resp){
+                setEditingPassword((e) => ({
+                  ...e,
+                  on: false,
+                  loading: false,
+                  status: "succeed",
+                  passwordMessage: "", 
+                  updatePasswordMessage: "", 
+                  password:"", 
+                  currentPassword: "", 
+                  passwordConfirm: "", 
+                  currPassOk: false
+                }))
+      
+                setAccount(function(acc){return { 
+                  ...acc,
+                  password: editingPassword.password
+                  }
+                })
+              } else {
+                setEditingPassword((e) => ({
+                  ...e,
+                  loading: false,
+                  status: "failed",
+                }))
+              }
+            } catch(error){
+              setEditingPassword((e) => ({
+                ...e,
+                loading: false,
+                status: "failed"
+              }))
+              return {error}
+            }
+          }
+        } else {
+          alert("valeur non modifiée.")
+        }
       } else {
-        setEditing(function(ed){
-          return { ...ed, passwordMessage: "Le mot de passe doit contenir plus de 5 caractères." }
+        setEditingPassword(function(ed){
+          return { ...ed, updatePasswordMessage: "Le mot de passe doit contenir plus de 5 caractères." }
         })
       }
     } else {
-      setEditing(function(ed){
-        return { ...ed, passwordMessage: "Les mots de passes doivent être identiques."}
+      setEditingPassword(function(ed){
+        return { ...ed, updatePasswordMessage: "Les mots de passes doivent être identiques."}
       })
     }
     
@@ -468,63 +519,83 @@ export default function Account() {
                 <div 
                   className={`box2 p2 ${styles.inputView}`} 
                   onClick={function(){
-                  setEditing(function(ed){
-                    return { ...ed, type: "password", checkingPassword: true }
+                  setEditingPassword(function(ed){
+                    return { ...ed, on: true, checkingPassword: true }
                   })}}
                   tabIndex={0}
                 >
                   <GiSilence />
-                  <div className={`${editing.type === "password" && styles.itemValue}`}>
-                    {(editing.type !== "password" || !editing.checkingPassword)
+                  <div className={`${editingPassword.on && styles.itemValue}`}>
+                    {(!editingPassword.checkingPassword)
                       ? <p>Modifier mon mot de passe</p>
                       : <input
                         type="password" 
                         name="pass" 
                         placeholder='Mot de passe actuel' 
-                        value={editing.currentPassword} onChange={function(e){
-                          setEditing(function(ed){
-                            return { ...ed, currentPassword: e.target.value }
+                        value={editingPassword.currentPassword} onChange={function(e){
+                          setEditingPassword(function(ed){
+                            return { ...ed, currentPassword: e.target.value, checkingPassword: true }
                           })
                         }}
                       />
                     }
                   </div>
-                  {(editing.type !== "password" || !editing.checkingPassword)
+                  {(!editingPassword.on
                     ? <HiPencil />
-                    : (editing.loading && editing.checkingPassword)
-                      ? <DarkLoader />
+                    : !editingPassword.checkingPassword)
+                      ? <HiPencil />
                       : <div className={styles.options}>
-                          <BiCheck onClick={checkPassword} tabIndex={1}/>
+                          <BiCheck
+                            onClick={function(){
+                              setTimeout(() => {
+                                checkPassword()
+                              }, 200)
+                            }}
+                            tabIndex={1}
+                          />
                           <CgClose tabIndex={1} className={styles.option_close} 
                           onClick={function(){
                             setTimeout(() => {
-                              handleEdit("")
+                              setEditingPassword({
+                                on: false,
+                                checkingPassword: false,
+                                currentPassword: "",
+                                currPassOk: false,
+                                password: "",
+                                confirmPassword: "",
+                                passwordMessage: "",
+                                updatePasswordMessage: "",
+                                loading: false,
+                                status: ""})
                             }, 200); 
                           }} />
                         </div>
                   }
                 </div>
 
-                {editing.type === "password" && editing.passwordMessage !== "" && <p>{editing.passwordMessage}</p>}
+                {editingPassword.checkingPassword && editingPassword.passwordMessage !== "" && <p>{editingPassword.passwordMessage}</p>}
                 
-                {(editing.type === "password" && editing.currPassOk) && 
+                {(editingPassword.on && editingPassword.currPassOk) && 
                 <form>
-                  <input type="password" className="input-set input" placeholder='Nouveau mot de passe' value={editing.password} onChange={function(e){
-                    setEditing(function(ed){
+                  <input type="password" className="input-set input" placeholder='Nouveau mot de passe' value={editingPassword.password} onChange={function(e){
+                    setEditingPassword(function(ed){
                       return {
                         ...ed,
                         password: e.target.value
                       }
                     })
                   }} />
-                  <input type="password" className="input-set input" placeholder='Confirmez mot de passe' value={editing.passwordConfirm} onChange={function(e){
-                    setEditing(function(ed){
+                  <input type="password" className="input-set input" placeholder='Confirmez mot de passe' value={editingPassword.passwordConfirm} onChange={function(e){
+                    setEditingPassword(function(ed){
                       return {
                         ...ed,
                         passwordConfirm: e.target.value
                       }
                     })
                   }} />
+
+                  {editingPassword.updatePasswordMessage !== "" && <p>{editingPassword.updatePasswordMessage}</p>}
+                    
                   <div className={styles.buttons}>
                     <button 
                       type="submit" 
@@ -532,8 +603,8 @@ export default function Account() {
                       onClick={updatePassword}
                     >
                       <ButtonContent
-                        loading={editing.loading}
-                        status={editing.status}
+                        loading={editingPassword.loading}
+                        status={editingPassword.status}
                         originalText="Confirmer"
                       />
                     </button>
@@ -541,8 +612,8 @@ export default function Account() {
                       className="submit submit__empty"
                       onClick={function(e){
                         e.preventDefault()
-                        setEditing(function(ed){
-                          return { ...ed, type: "", currPassOk: false, checkingPassword: false, currentPassword: "", passwordConfirm: "", password: "", passwordMessage: "" }
+                        setEditingPassword(function(ed){
+                          return { ...ed, on: false, currPassOk: false, checkingPassword: false, currentPassword: "", passwordConfirm: "", password: "", passwordMessage: "", updatePasswordMessage: "", loading: false, status: "" }
                         })
                       }}
                     >
