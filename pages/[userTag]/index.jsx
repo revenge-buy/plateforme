@@ -1,22 +1,23 @@
+import Link from 'next/link'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import {  RiGroupFill } from 'react-icons/ri'
 import { SlArrowDown } from 'react-icons/sl'
 import { RiUserFollowFill } from 'react-icons/ri'
 import { MdJoinInner, MdSettings } from 'react-icons/md'
+import { useUser } from '@auth0/nextjs-auth0/client'
 
 
 
 import styles from './index.module.css'
-import { useRouter } from 'next/router'
 import client from '@/api/client'
-import Link from 'next/link'
 
 export default function Account() {
-
   const router = useRouter();
   const tag = router.query.userTag;
+  const { user } = useUser()
   
   const [account, setAccount] = useState({})
   const [accIsUser, setAccIsUser] = useState(false)
@@ -30,6 +31,7 @@ export default function Account() {
           * [_type == "seller" && userTag == "${tag}"]{
             "name": firstName+" "+lastName,
             userTag,
+            email,
             "picture": profilPicture.asset->url,
             "cover": coverPicture.asset->url,
             "projects": *[_type == "project"  && archived == ${false} && references(^._id)] | order(_updatedAt, desc){
@@ -58,9 +60,8 @@ export default function Account() {
             picture: resp?.picture,
             cover: resp?.cover,
           }})
-          const user = JSON.parse(localStorage.getItem('revenge-user'))
 
-          if(user && user.userTag === resp?.userTag){
+          if(user && user.email === resp?.email){
             setAccIsUser(true)
           } else {
             setAccIsUser(false)
@@ -76,8 +77,6 @@ export default function Account() {
     };
   
     getAccount()
-    console.log({ account });
-    console.log({ projects });
   }, [router])
   
 
@@ -111,35 +110,15 @@ export default function Account() {
             {/* <span>" Je vend TSOUU !! "</span> */}
           </div>
           <div className={styles.topButtons}>
-            {/* <div className={styles.buttonSet}>
-              <button className={styles.button}>
-                Modifier
-                <HiPencil />
-              </button>
-              <button className={`offIcon ${styles.miniButton}`}>
-                <RiVipCrown2Fill />
-                <div className='oblic-line'></div>
-              </button>
-            </div> */}
             {!accIsUser
               ?<button className={styles.button}>
                 Suivre {account?.name?.split(" ")[0]}
               </button>
-              : <Link className={styles.button} href={`/account?tag=${account.userTag}`}>
+              : <Link className={styles.button} href={`/account`}>
                 <MdSettings /> paramètres
               </Link>
             }
           </div>
-          {/* <div className={`insert-box ${styles.contactInfos}`}>
-            <p>
-              <BsWhatsapp />
-              655061836
-            </p>
-            <p>
-              <FiMail />
-              temgoua484@gmail.com
-            </p>
-          </div> */}
         </div>
         <div className={`${styles.body}`}>
           <section>

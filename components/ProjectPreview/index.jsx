@@ -10,8 +10,11 @@ import { CgClose } from "react-icons/cg"
 import { useRouter } from "next/router"
 import ButtonContent from "../ButtonContent"
 import getUser from "@/helpers/getUser"
+import { useUser } from "@auth0/nextjs-auth0/client"
 
 export default function ProjectPreview({ _id, creator, name, _createdAt, productImage, product }) {
+
+  const { user } = useUser()
 
   const [joining, setJoining] = useState("")
   const [quantity, setQuantity] = useState(NaN)
@@ -53,10 +56,8 @@ export default function ProjectPreview({ _id, creator, name, _createdAt, product
   }, [router])
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('revenge-user'))
-
     if(user){
-      if(user.userTag !== creator.userTag){
+      if(user.email !== creator.email){
         setUserEmail(user.email)
         console.log({ userEmail })
         const filteredMembers = members?.filter(function(member){ return member?.seller?.email === user.email });

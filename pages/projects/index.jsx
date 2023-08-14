@@ -58,6 +58,7 @@ export async function getServerSideProps({ req, res }) {
           _id,
           creator->{
             userTag,
+            email,
             firstName,
             lastName,
             "picture": profilPicture.asset->url

@@ -2,6 +2,8 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import Script from 'next/script'
 
+import { UserProvider } from '@auth0/nextjs-auth0/client'
+
 import Header from '@/containers/Header'
 import Footer from '@/containers/Footer'
 import AuthProvider from '@/context/auth'
@@ -61,11 +63,13 @@ export default function App({ Component, pageProps }) {
         }}
       />
       <AuthProvider>
+      <UserProvider>
         <Header />
         {pageLoading
           ? <PageWaiter />
           : <Component {...pageProps} />}
         <Footer />
+      </UserProvider>
       </AuthProvider>
     </div>
   )
